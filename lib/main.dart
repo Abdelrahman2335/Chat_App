@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -5,6 +6,7 @@ void main() {
 }
 
 var myColorScheme = ColorScheme.fromSeed(seedColor: Colors.teal);
+var myDarkColorScheme = ColorScheme.fromSeed(seedColor: Colors.teal);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,10 +17,8 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       theme: ThemeData().copyWith(colorScheme: myColorScheme),
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () {}),
-        appBar: AppBar(title: Text("Chat")),
-      ),
+      darkTheme: ThemeData().copyWith(colorScheme: myColorScheme),
+      home: LoginScreen(),
     );
   }
 }
