@@ -1,3 +1,7 @@
+import 'package:chat_app/home/chat_home.dart';
+import 'package:chat_app/home/contact_home.dart';
+import 'package:chat_app/home/group_home.dart';
+import 'package:chat_app/home/settings_home.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -22,19 +26,11 @@ class _LayOutAppState extends State<LayOutApp> {
           });
         },
         controller: pageController,
-        children: [
-          Container(
-            color: Colors.red,
-          ),
-          Container(
-            color: Colors.black,
-          ),
-          Container(
-            color: Colors.blue,
-          ),
-          Container(
-            color: Colors.green,
-          ),
+        children: const [
+          ChatHomeScreen(),
+          GroupHomeScreen(),
+          ContactHomeScreen(),
+          SettingHomeScreen(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
