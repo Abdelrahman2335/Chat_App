@@ -9,12 +9,32 @@ class LayOutApp extends StatefulWidget {
 }
 
 class _LayOutAppState extends State<LayOutApp> {
+  int currentIndex = 0;
+
+  /// you have to write this int here so we can setState.
   @override
   Widget build(BuildContext context) {
-    int currentIndex = 0;
+    List<Widget> screens = [
+      Container(
+        color: Colors.red,
+      ),
+      Container(
+        color: Colors.black,
+      ),
+      Container(
+        color: Colors.blue,
+      ),
+      Container(
+        color: Colors.green,
+      ),
+    ];
     return Scaffold(
+      body: screens[currentIndex],
       bottomNavigationBar: NavigationBar(
         elevation: 1,
+
+        /// elevation is like the backgrond of the bottomNavigationBar
+
         selectedIndex: currentIndex,
         onDestinationSelected: (value) {
           setState(() {
