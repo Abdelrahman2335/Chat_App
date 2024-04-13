@@ -10,35 +10,43 @@ class LayOutApp extends StatefulWidget {
 
 class _LayOutAppState extends State<LayOutApp> {
   int currentIndex = 0;
-
+  PageController pageController = PageController();
   /// you have to write this int here so we can setState.
   @override
   Widget build(BuildContext context) {
-    List<Widget> screens = [
-      Container(
-        color: Colors.red,
-      ),
-      Container(
-        color: Colors.black,
-      ),
-      Container(
-        color: Colors.blue,
-      ),
-      Container(
-        color: Colors.green,
-      ),
-    ];
     return Scaffold(
-      body: screens[currentIndex],
+      body: PageView(
+        onPageChanged: (value) {
+          setState(() {
+            currentIndex = value;
+          });
+        },
+        controller: pageController,
+        children: [
+          Container(
+            color: Colors.red,
+          ),
+          Container(
+            color: Colors.black,
+          ),
+          Container(
+            color: Colors.blue,
+          ),
+          Container(
+            color: Colors.green,
+          ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         elevation: 1,
 
         /// elevation is like the backgrond of the bottomNavigationBar
 
         selectedIndex: currentIndex,
-        onDestinationSelected: (value) {
+        onDestinationSelected: (value) { /// Here we are naviagte throw navigation bar so if we have any problem in the bar we have to back here.
           setState(() {
             currentIndex = value;
+            pageController.jumpToPage(value);
           });
         },
         destinations: const [
