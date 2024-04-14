@@ -1,4 +1,6 @@
+import 'package:chat_app/Widget/chat_card.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ChatHomeScreen extends StatefulWidget {
   const ChatHomeScreen({super.key});
@@ -11,7 +13,25 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Chats"),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Iconsax.message_add),
+      ),
+      appBar: AppBar(
+        title: const Text("Chats"),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return const ChatCard();
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
