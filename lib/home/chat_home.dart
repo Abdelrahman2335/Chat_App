@@ -24,7 +24,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: 1,
               itemBuilder: (context, index) {
                 return const ChatCard();
               },

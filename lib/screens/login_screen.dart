@@ -1,4 +1,5 @@
 import 'package:chat_app/Widget/text_field.dart';
+import 'package:chat_app/layout.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/forget_password.dart';
 import 'package:chat_app/screens/setup_profile.dart';
@@ -69,7 +70,14 @@ class LoginScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12)),
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LayOutApp(),
+                      ),
+                      (route) => false);
+                },
                 child: const Center(
                   child: Text(
                     "LOGIN",
@@ -86,7 +94,11 @@ class LoginScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.all(16)),
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const SetUpProfile()), (route) => false);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SetUpProfile()),
+                      (route) => false);
                 },
                 child: Center(
                   child: Text(

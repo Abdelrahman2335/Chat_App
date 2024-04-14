@@ -15,13 +15,13 @@ class ChatCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => const ChatScreen(),
             )),
-        title: const Text("Name"),
-        subtitle: const Text("Last message"),
+        title: const Text("Abdelrahman"),
+        subtitle: const Text("Hi"),
         leading: const CircleAvatar(),
         trailing: Badge(
           backgroundColor: Theme.of(context).colorScheme.primary,
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          label: const Text("3"),
+          label: const Text("1"),
           largeSize: 30,
         ),
       ),
