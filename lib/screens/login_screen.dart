@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                       },
                       child: const Text("Forget Password?")),
 
-                  /// note that we can use here GesturDetector.
+                  /// note that we can use here GestureDetector.
                 ],
               ),
               const SizedBox(

@@ -36,10 +36,10 @@ class _LayOutAppState extends State<LayOutApp> {
       bottomNavigationBar: NavigationBar(
         elevation: 1,
 
-        /// elevation is like the backgrond of the bottomNavigationBar
+        /// elevation is like the background of the bottomNavigationBar
 
         selectedIndex: currentIndex,
-        onDestinationSelected: (value) { /// Here we are naviagte throw navigation bar so if we have any problem in the bar we have to back here.
+        onDestinationSelected: (value) { /// Here we are navigate throw navigation bar so if we have any problem in the bar we have to back here.
           setState(() {
             currentIndex = value;
             pageController.jumpToPage(value);
