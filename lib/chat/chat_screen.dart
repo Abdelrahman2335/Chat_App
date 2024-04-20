@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -40,70 +44,40 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                reverse: true,
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisAlignment: index % 2 == 0
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-                    children: [
-                      index % 2 == 0
-                          ? IconButton(
-                              onPressed: () {},
-                              icon: Icon(Iconsax.message_edit),
-                            )
-                          : SizedBox(),
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft:
-                                Radius.circular(index % 2 == 0 ? 16 : 0),
-                            bottomRight:
-                                Radius.circular(index % 2 == 0 ? 0 : 16),
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
+              // child: ListView.builder(
+              //   reverse: true,
+              //   itemCount: 2,
+              //   itemBuilder: (context, index) {
+              //     return const ChatMessageCard();
+              //   },
+              // ),
+
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    log("Taped!");
+                  },
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "👋",
+                            style: Theme.of(context).textTheme.displayMedium,
                           ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 20),
-                          child: Container(
-                            constraints: BoxConstraints(
-                                maxWidth: MediaQuery.sizeOf(context).width / 2),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Hi!"),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "10:00 am",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall,
-                                    ),
-                                    SizedBox(
-                                      width: 6,
-                                    ),
-                                    Icon(
-                                      Iconsax.tick_circle,
-                                      size: 15,
-                                      color: Colors.blueAccent,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                          SizedBox(height: 16,),
+                          Text(
+                            "Say Assalamu Alaikum",
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                        ),
-                      )
-                    ],
-                  );
-                },
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
             Padding(

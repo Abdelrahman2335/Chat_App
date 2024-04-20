@@ -11,6 +11,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// We have to use dispose with any Controller.
     TextEditingController emailCon = TextEditingController();
     TextEditingController passCon = TextEditingController();
     return Scaffold(
