@@ -10,6 +10,7 @@ class CustomField extends StatefulWidget {
 
   const CustomField({
     super.key,
+
     required this.lable,
     required this.icon,
     required this.controller,
@@ -44,7 +45,8 @@ class _CustomFieldState extends State<CustomField> {
                   icon: const Icon(Iconsax.eye))
               : const SizedBox(),
           labelText: widget.lable,
-          prefix: Icon(widget.icon)),
+          prefix: Icon(widget.icon),
+          ),
     );
   }
 }

@@ -68,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             "👋",
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
-                          SizedBox(height: 16,),
+                          const SizedBox(height: 16,),
                           Text(
                             "Say Assalamu Alaikum",
                             style: Theme.of(context).textTheme.bodyMedium,

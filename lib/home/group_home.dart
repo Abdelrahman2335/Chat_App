@@ -1,6 +1,5 @@
 import 'package:chat_app/Widget/Group/create_group.dart';
 import 'package:chat_app/Widget/Group/group_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -28,14 +27,14 @@ class _GroupHomeScreenState extends State<GroupHomeScreen> {
         title: const Text("Groups"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Expanded(
               child: ListView.builder(
                 itemCount: 5,
                 itemBuilder: (context, index) {
-                  return GroupCard();
+                  return const GroupCard();
                 },
               ),
             )

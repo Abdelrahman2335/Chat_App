@@ -1,4 +1,4 @@
-import 'package:chat_app/Widget/chat_card.dart';
+import 'package:chat_app/Widget/chat/chat_card.dart';
 import 'package:chat_app/Widget/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';

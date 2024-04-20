@@ -1,27 +1,44 @@
+import 'dart:developer';
+
 import 'package:chat_app/Widget/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-class CreateGroup extends StatefulWidget {
-  const CreateGroup({super.key});
+class EditGroup extends StatefulWidget {
+  const EditGroup({super.key});
 
   @override
-  State<CreateGroup> createState() => _CreateGroupState();
+  State<EditGroup> createState() => _EditGroupState();
 }
 
-class _CreateGroupState extends State<CreateGroup> {
+class _EditGroupState extends State<EditGroup> {
   TextEditingController gName = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+          gName.text = "name";
+
+    });
+  }
+
+  @override
+  void dispose() {
+
+    super.dispose();
+    gName.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {log(gName.text);},
         label: const Text("Done"),
         icon: const Icon(Iconsax.tick_circle),
       ),
       appBar: AppBar(
-        title: const Text("Create Group"),
+        title: const Text("Edit Group"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -49,9 +66,12 @@ class _CreateGroupState extends State<CreateGroup> {
                 ),
                 Expanded(
                   child: CustomField(
-                      lable: "Group Name",
-                      icon: Iconsax.people,
-                      controller: gName),
+                    
+                    controller: gName,
+                    lable: "Group Name",
+                    icon: Iconsax.people,
+                    
+                  ),
                 ),
               ],
             ),
@@ -61,7 +81,7 @@ class _CreateGroupState extends State<CreateGroup> {
             ),
             const Row(
               children: [
-                Text("Members"),
+                Text("Add Members"),
                 Spacer(),
                 Text("2"),
               ],
@@ -76,7 +96,9 @@ class _CreateGroupState extends State<CreateGroup> {
                 return CheckboxListTile(
                   value: true,
                   checkboxShape: const CircleBorder(),
-                  title:  index % 2 ==0? const Text("Abdelrahman"):const Text("Ali"),
+                  title: index % 2 == 0
+                      ? const Text("Mahmoud")
+                      : const Text("Khalid"),
                   onChanged: (value) {},
                 );
               },

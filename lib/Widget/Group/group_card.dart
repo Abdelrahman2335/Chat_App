@@ -1,4 +1,4 @@
-import 'package:chat_app/chat/chat_screen.dart';
+import 'package:chat_app/Widget/Group/group_screen.dart';
 import 'package:flutter/material.dart';
 
 class GroupCard extends StatelessWidget {
@@ -13,7 +13,7 @@ class GroupCard extends StatelessWidget {
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ChatScreen(),
+              builder: (context) => const GroupScreen(),
             )),
         title: const Text("Group Name"),
         subtitle: const Text("Last Message"),
