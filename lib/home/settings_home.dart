@@ -9,6 +9,7 @@ class SettingHomeScreen extends StatefulWidget {
 }
 
 class _SettingHomeScreenState extends State<SettingHomeScreen> {
+  bool isSwitch = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,26 +17,26 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
         title: const Text("Settings"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
             children: [
               ListTile(
                 minVerticalPadding: 40,
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   radius: 30,
                 ),
-                title: Text("Name"),
-                trailing: IconButton(onPressed: (){}, icon: Icon(Iconsax.scan_barcode),),
+                title: const Text("Name"),
+                trailing: IconButton(onPressed: (){}, icon: const Icon(Iconsax.scan_barcode),),
               ),
-              Card(
+              const Card(
                 child: ListTile(
                   title: Text("Profile"),
                   leading: Icon(Iconsax.user),
                   trailing: Icon(Iconsax.arrow_right_3),
                 ),
               ),
-              Card(
+              const Card(
                 child: ListTile(
                   title: Text("Theme"),
                   leading: Icon(Iconsax.color_swatch),
@@ -43,12 +44,17 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
               ),
               Card(
                 child: ListTile(
-                  title: Text("Dark Mode"),
-                  leading: Icon(Iconsax.user),
-                  trailing: Switch(value: true, onChanged: (value) {}),
+                  title: const Text("Dark Mode"),
+                  leading: const Icon(Iconsax.user),
+                  trailing: Switch(value: isSwitch,
+                   onChanged: (value) {
+                    setState(() {
+                      isSwitch = value;
+                    });
+                   }),
                 ),
               ),
-              Card(
+              const Card(
                 child: ListTile(
                   title: Text("Sign out"),
                   trailing: Icon(Iconsax.logout_1),

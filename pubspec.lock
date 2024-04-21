@@ -139,6 +139,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  linear_step_indicator:
+    dependency: "direct main"
+    description:
+      name: linear_step_indicator
+      sha256: "8c3f4a7d6f8a42ba18695f4372a1a0a8ebcdea5f684b3145fc4d53bb94e3f178"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+3"
   lints:
     dependency: transitive
     description:
