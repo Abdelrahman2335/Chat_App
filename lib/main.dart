@@ -1,4 +1,4 @@
-import 'package:chat_app/Widget/Group/group_screen.dart';
+import 'package:chat_app/layout.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData().copyWith(colorScheme: myColorScheme),
       darkTheme: ThemeData().copyWith(colorScheme: myDarkColorScheme),
-      home: const GroupScreen(),
+      home: const LayOutApp(),
     );
   }
 }

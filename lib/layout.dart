@@ -49,7 +49,7 @@ class _LayOutAppState extends State<LayOutApp> {
           NavigationDestination(icon: Icon(Iconsax.message), label: "Chat"),
           NavigationDestination(icon: Icon(Iconsax.messages), label: "Group"),
           NavigationDestination(icon: Icon(Iconsax.user), label: "Contacts"),
-          NavigationDestination(icon: Icon(Iconsax.setting), label: "Setting"),
+          NavigationDestination(icon: Icon(Iconsax.setting), label: "Settings"),
         ],
       ),
     );
