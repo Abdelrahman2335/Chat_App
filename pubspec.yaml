@@ -40,6 +40,8 @@ dependencies:
   linear_step_indicator: ^1.0.0+3
   flutter_colorpicker: ^1.0.3
   qr_flutter: ^4.1.0
+  firebase_core: ^2.30.1
+  firebase_auth: ^4.19.3
 
 dev_dependencies:
   flutter_test:

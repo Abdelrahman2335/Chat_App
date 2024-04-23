@@ -1,7 +1,16 @@
-import 'package:chat_app/home/settings_home.dart';
+import 'package:chat_app/screens/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
@@ -18,7 +27,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData().copyWith(colorScheme: myColorScheme),
       darkTheme: ThemeData().copyWith(colorScheme: myDarkColorScheme),
-      home: const SettingHomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }
