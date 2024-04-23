@@ -1,4 +1,4 @@
-import 'package:chat_app/screens/login_screen.dart';
+import 'package:chat_app/home/settings_home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData().copyWith(colorScheme: myColorScheme),
       darkTheme: ThemeData().copyWith(colorScheme: myDarkColorScheme),
-      home: const LoginScreen(),
+      home: const SettingHomeScreen(),
     );
   }
 }

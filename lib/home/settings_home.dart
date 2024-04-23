@@ -4,6 +4,7 @@ import 'package:chat_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class SettingHomeScreen extends StatefulWidget {
   const SettingHomeScreen({super.key});
@@ -34,36 +35,45 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                 title: const Text("Name"),
                 trailing: IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QrCodeScreen(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const QrCodeScreen(),
+                    //   ),
+                    // );
 
-                    //   showDialog(
-                    //     context: context,
-                    //     builder: (context) => AlertDialog(
-                    //       alignment: Alignment.center,
-                    //       title: Text(
-                    //         "QR code",
-                    //         style: Theme.of(context).textTheme.titleLarge,
-                    //       ),
-                    //
-                    //       content: QrImageView(
-                    //           data: 'QR Code',
-                    //           version: QrVersions.auto,
-                    //           size: 100.0),
-                    //       actions: [
-                    //         TextButton(
-                    //           onPressed: () {
-                    //             Navigator.pop(context);
-                    //           },
-                    //           child: const Text("Done"),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   );
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                          alignment: Alignment.center,
+                          title: Text(
+                            "QR code",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                    
+                          content: SizedBox(
+                            width: 200,
+                            height: 150,
+                            child: Center(
+                              child: QrImageView(
+                                backgroundColor: Colors.white,
+                                  data: 'QR Code',
+                                  version: QrVersions.auto,
+                                  ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Done"),
+                            ),
+                          ],
+                        ),
+                      );
                   },
                   icon: const Icon(Iconsax.scan_barcode),
                 ),
@@ -97,13 +107,13 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text("Done"))
+                                  child: const Text("Done"))
                             ],
                           );
                         });
                   },
-                  title: Text("Theme"),
-                  leading: Icon(Iconsax.color_swatch),
+                  title: const Text("Theme"),
+                  leading: const Icon(Iconsax.color_swatch),
                 ),
               ),
               Card(
@@ -129,7 +139,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                         (route) => false);
                   },
                   title: const Text("Sign out"),
-                  trailing: Icon(Iconsax.logout_1),
+                  trailing: const Icon(Iconsax.logout_1),
                 ),
               ),
             ],
