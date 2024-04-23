@@ -19,7 +19,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
     return Scaffold(
       floatingActionButton: ActionBotton(emailCon: emailCon, icon: Iconsax.message_add, bottonName: "Create Chat",),
       appBar: AppBar(
-        title: const Text("Chat"),
+        title: const Text("Chats"),
       ),
       body: Column(
         children: [
