@@ -3,6 +3,7 @@ import 'package:chat_app/layout.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/forget_password.dart';
 import 'package:chat_app/screens/setup_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -50,14 +51,15 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   const Spacer(),
                   TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForgetScreen(),
-                            ));
-                      },
-                      child: const Text("Forget Password?")),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgetScreen(),
+                          ));
+                    },
+                    child: const Text("Forget Password?"),
+                  ),
 
                   /// note that we can use here GestureDetector.
                 ],
@@ -71,13 +73,24 @@ class LoginScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12)),
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LayOutApp(),
-                      ),
-                      (route) => false);
+                onPressed: () async {
+                  await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: emailCon.text, password: passCon.text)
+                      .then((value) => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LayOutApp(),
+                          ),
+                          (route) => false))
+                      .onError(
+                        (error, stackTrace) =>
+                            ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(error.toString()),
+                          ),
+                        ),
+                      );
                 },
                 child: const Center(
                   child: Text(

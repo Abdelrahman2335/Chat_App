@@ -1,5 +1,6 @@
 import 'package:chat_app/Widget/text_field.dart';
 import 'package:chat_app/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -34,7 +35,7 @@ class ForgetScreen extends StatelessWidget {
                 icon: Iconsax.direct,
               ),
 
-              /// note that we can use here GesturDetector.
+              /// note that we can use here GestureDetector.
 
               const SizedBox(
                 height: 16,
@@ -45,8 +46,27 @@ class ForgetScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12)),
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  await FirebaseAuth.instance
+                      .sendPasswordResetEmail(email: emailCon.text)
+                      .then(
+                    (value) {
+                      Navigator.pop(context);
+
+                      return ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Email sent check you email"),
+                        ),
+                      );
+                    },
+                  ).onError(
+                    (error, stackTrace) =>
+                        ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(error.toString()),
+                      ),
+                    ),
+                  );
                 },
                 child: const Center(
                   child: Text(

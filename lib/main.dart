@@ -1,21 +1,23 @@
+import 'package:chat_app/layout.dart';
 import 'package:chat_app/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
 
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
-var myColorScheme = ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light);
-var myDarkColorScheme = ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark);
+var myColorScheme =
+    ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light);
+var myDarkColorScheme =
+    ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -27,7 +29,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData().copyWith(colorScheme: myColorScheme),
       darkTheme: ThemeData().copyWith(colorScheme: myDarkColorScheme),
-      home: const LoginScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.userChanges(),
+        builder: (context, snapshot) {
+          /// note you can use ? : rather than if and else but in this case you will need to use Navigator.push in sign out of the app
+          if (snapshot.hasData) {
+            return LayOutApp();
+          } else {
+            return const LoginScreen();
+          }
+        },
+      ),
     );
   }
 }

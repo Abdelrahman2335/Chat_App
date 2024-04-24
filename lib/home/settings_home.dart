@@ -1,6 +1,5 @@
 import 'package:chat_app/Widget/Settings/profile.dart';
-import 'package:chat_app/Widget/Settings/qr_code.dart';
-import 'package:chat_app/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:iconsax/iconsax.dart';
@@ -42,38 +41,38 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                     //   ),
                     // );
 
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          titleTextStyle: Theme.of(context).textTheme.bodyMedium,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                          alignment: Alignment.center,
-                          title: Text(
-                            "QR code",
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                    
-                          content: SizedBox(
-                            width: 200,
-                            height: 150,
-                            child: Center(
-                              child: QrImageView(
-                                backgroundColor: Colors.white,
-                                  data: 'QR Code',
-                                  version: QrVersions.auto,
-                                  ),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Done"),
-                            ),
-                          ],
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        alignment: Alignment.center,
+                        title: Text(
+                          "QR code",
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      );
+                        content: SizedBox(
+                          width: 200,
+                          height: 150,
+                          child: Center(
+                            child: QrImageView(
+                              backgroundColor: Colors.white,
+                              data: 'QR Code',
+                              version: QrVersions.auto,
+                            ),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Done"),
+                          ),
+                        ],
+                      ),
+                    );
                   },
                   icon: const Icon(Iconsax.scan_barcode),
                 ),
@@ -131,13 +130,15 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
               ),
               Card(
                 child: ListTile(
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                        (route) => false);
-                  },
+                  onTap: () async =>
+                      await FirebaseAuth.instance.signOut().onError(
+                            (error, stackTrace) =>
+                                ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Error occur"),
+                              ),
+                            ),
+                          ),
                   title: const Text("Sign out"),
                   trailing: const Icon(Iconsax.logout_1),
                 ),

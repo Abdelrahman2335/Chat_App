@@ -10,7 +10,6 @@ class CustomField extends StatefulWidget {
 
   const CustomField({
     super.key,
-
     required this.lable,
     required this.icon,
     required this.controller,
@@ -22,31 +21,33 @@ class CustomField extends StatefulWidget {
 }
 
 class _CustomFieldState extends State<CustomField> {
-  bool hidepass = true ;
+  bool hidepass = true;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText:widget.secure? hidepass: false,
+      controller: widget.controller,
+      obscureText: widget.secure ? hidepass : false,
       decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(17),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(13),
-              borderSide: BorderSide(color: myColorScheme.primary)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          suffixIcon: widget.secure
-              ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      hidepass = !hidepass;
-                    });
-                  },
-                  icon: const Icon(Iconsax.eye))
-              : const SizedBox(),
-          labelText: widget.lable,
-          prefix: Icon(widget.icon),
-          ),
+        contentPadding: const EdgeInsets.all(17),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(13),
+            borderSide: BorderSide(color: myColorScheme.primary)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        suffixIcon: widget.secure
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    hidepass = !hidepass;
+                  });
+                },
+                icon: const Icon(Iconsax.eye))
+            : const SizedBox(),
+        labelText: widget.lable,
+        prefix: Icon(widget.icon),
+      ),
     );
   }
 }
