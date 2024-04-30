@@ -1,4 +1,5 @@
 import 'package:chat_app/Widget/text_field.dart';
+import 'package:chat_app/firebase/firebase_auth.dart';
 import 'package:chat_app/layout.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/login_screen.dart';
@@ -77,11 +78,14 @@ class SetUpProfile extends StatelessWidget {
                       .createUserWithEmailAndPassword(
                           email: emailCon.text, password: passCon.text)
                       .then(
-                        (value) => Navigator.pushAndRemoveUntil(
+                        (value) {
+                          FireAuth.creatUser();
+                          return Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const LayOutApp()),
-                            (route) => false),
+                            (route) => false);
+                        },
                       )
                       .onError(
                         (error, stackTrace) =>
