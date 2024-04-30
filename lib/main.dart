@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase_options.dart';
+import 'firebase_optionsdart pub global activate flutterfire_cli.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
