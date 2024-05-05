@@ -8,12 +8,13 @@ class FireAuth {
 
   static User user = auth.currentUser!;
 
-  static Future creatUser() async{
+
+  static Future createUser() async{
     ChatUser chatUser = ChatUser(
         id: user.uid,
         name: user.displayName,
         email: user.email,
-        about: "Hi I'm ${user.displayName}",
+        about: "Hi I'm using chat app",
         image: "",
         createdAt: DateTime.now().toString(),
         lastSeen: DateTime.now().toString(),

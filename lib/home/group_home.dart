@@ -1,6 +1,7 @@
 import 'package:chat_app/Widget/Group/create_group.dart';
 import 'package:chat_app/Widget/Group/group_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class GroupHomeScreen extends StatefulWidget {
@@ -16,10 +17,7 @@ class _GroupHomeScreenState extends State<GroupHomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateGroup()),
-          );
+          Get.to(const CreateGroup());
         },
         child: const Icon(Iconsax.message_add_1),
       ),

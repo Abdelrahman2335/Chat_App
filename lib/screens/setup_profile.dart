@@ -1,10 +1,10 @@
 import 'package:chat_app/Widget/text_field.dart';
-import 'package:chat_app/firebase/firebase_auth.dart';
-import 'package:chat_app/layout.dart';
 import 'package:chat_app/main.dart';
+import 'package:chat_app/screens/info_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class SetUpProfile extends StatelessWidget {
@@ -20,12 +20,7 @@ class SetUpProfile extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                    (route) => false);
+                Get.offAll(() => const LoginScreen());
               },
               icon: const Icon(Iconsax.logout_1))
         ],
@@ -41,7 +36,7 @@ class SetUpProfile extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               Text(
-                "Enter Your Name",
+                "Lets create new account!",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(
@@ -76,27 +71,28 @@ class SetUpProfile extends StatelessWidget {
                 onPressed: () async {
                   await FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
-                          email: emailCon.text, password: passCon.text)
+                          email: emailCon.text.trim(), password: passCon.text.trim())
                       .then(
-                        (value) {
-                          FireAuth.creatUser();
-                          return Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LayOutApp()),
-                            (route) => false);
-                        },
-                      )
-                      .onError(
-                        (error, stackTrace) =>
-                            ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              error.toString(),
-                            ),
-                          ),
+                    (value) {
+
+                      /// We cannot replace Navigator.pushAndRemoveUntil with Get now because of an error
+
+                      return Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const InfoScreen()),
+                          (route) => false);
+                    },
+                  ).onError(
+                    (error, stackTrace) =>
+                        ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          error.toString(),
                         ),
-                      );
+                      ),
+                    ),
+                  );
                 },
                 child: const Center(
                   child: Text(

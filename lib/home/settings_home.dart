@@ -1,7 +1,9 @@
 import 'package:chat_app/Widget/Settings/profile.dart';
+import 'package:chat_app/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -79,10 +81,11 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
               ),
               Card(
                 child: ListTile(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProfileScreen())),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileScreen(),
+                    ),
+                  ),
                   title: const Text("Profile"),
                   leading: const Icon(Iconsax.user),
                   trailing: const Icon(Iconsax.arrow_right_3),
@@ -104,7 +107,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                             actions: [
                               ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    Get.back();
                                   },
                                   child: const Text("Done"))
                             ],
@@ -130,15 +133,17 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
               ),
               Card(
                 child: ListTile(
-                  onTap: () async =>
-                      await FirebaseAuth.instance.signOut().onError(
-                            (error, stackTrace) =>
-                                ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Error occur"),
-                              ),
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut().onError(
+                          (error, stackTrace) =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Error occur"),
                             ),
                           ),
+                        );
+                    Get.to(LoginScreen());
+                  },
                   title: const Text("Sign out"),
                   trailing: const Icon(Iconsax.logout_1),
                 ),
