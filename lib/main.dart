@@ -4,7 +4,6 @@ import 'package:chat_app/screens/info_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
             if (FirebaseAuth.instance.currentUser!.displayName == null) {
 
               return const InfoScreen();
-            } else {
+            } else  {
               return const LayOutApp();
             }
           } else {

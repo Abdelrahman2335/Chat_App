@@ -14,7 +14,7 @@ class FireAuth {
         id: user.uid,
         name: user.displayName,
         email: user.email,
-        about: "Hi I'm using chat app",
+        about: "Hi I'm ${user.displayName}",
         image: "",
         createdAt: DateTime.now().toString(),
         lastSeen: DateTime.now().toString(),
