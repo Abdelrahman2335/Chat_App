@@ -85,7 +85,6 @@ class LoginScreen extends StatelessWidget {
                         if(FirebaseAuth.instance.currentUser!.displayName == null){
                           return const InfoScreen();
                         }else {
-                          print(FirebaseAuth.instance.currentUser!.displayName);
                     /// We cannot replace Navigator.pushAndRemoveUntil with Get now because of an error
                     return Navigator.pushAndRemoveUntil(
                         context,

@@ -17,13 +17,12 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SingleChildScrollView(
-        child: ActionBottom(
+      resizeToAvoidBottomInset: true,
+      floatingActionButton: ActionBottom(
           emailCon: emailCon,
           icon: Iconsax.message_add,
           bottomName: "Create Chat",
         ),
-      ),
 
       /// Bro this is function don't forget.
       appBar: AppBar(

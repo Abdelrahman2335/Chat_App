@@ -21,18 +21,23 @@ class ActionBottom extends StatelessWidget {
     return FloatingActionButton(
       onPressed: () {
         showModalBottomSheet(
+          isScrollControlled: true,
           context: context,
           builder: (context) {
-            return Container(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Enter Friend Email",
+            return Padding(
+              padding: const EdgeInsets.all(20).add(
+                EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+
+                /// Here we are using MediaQuery to push the BottomSheet to the top
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Enter Friend Email",
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const Spacer(),
@@ -62,8 +67,13 @@ class ActionBottom extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
                       onPressed: () {
-                        FireData().createRoom(emailCon.text);
-                      },
+                        if(emailCon.text.isNotEmpty){
+                      FireData().createRoom(emailCon.text).then(
+                            (value) {
+                              Navigator.pop(context);
+                            },
+                          );
+                    }},
                       child: Center(
                         child: Text(
                           bottomName,
@@ -73,7 +83,6 @@ class ActionBottom extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
             );
           },
         );

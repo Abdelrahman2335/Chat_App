@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,7 @@ void main() async {
 }
 
 var myColorScheme =
-    ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light);
+    ColorScheme.fromSeed(seedColor : Colors.blue, brightness: Brightness.light);
 var myDarkColorScheme =
     ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark);
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       theme: ThemeData().copyWith(colorScheme: myColorScheme),
