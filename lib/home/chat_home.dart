@@ -18,6 +18,12 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
   TextEditingController emailCon = TextEditingController();
 
   @override
+  void dispose() {
+    super.dispose();
+    emailCon.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -46,7 +52,11 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     List<ChatRoom> items = snapshot.data!.docs
-                        .map((e) => ChatRoom.fromjson(e.data()))
+                        .map(
+                          (e) => ChatRoom.fromjson(
+                            e.data(),
+                          ),
+                        )
                         .toList()
                       ..sort(
                         (item1, item2) => item2.lastMessageTime!
@@ -58,7 +68,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        return const ChatCard();
+                        return  ChatCard(item: items[index],);
                       },
                     );
                   } else {

@@ -1,7 +1,7 @@
 
 class ChatRoom {
   String? id;
-  List<String>? members;
+  List? members;
   String? lastMessage;
   String? lastMessageTime;
   String? createdAt;

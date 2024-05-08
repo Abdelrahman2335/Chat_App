@@ -16,7 +16,7 @@ class SettingHomeScreen extends StatefulWidget {
 
 class _SettingHomeScreenState extends State<SettingHomeScreen> {
   bool isSwitch = false;
-
+  final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.toString();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +33,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                 leading: const CircleAvatar(
                   radius: 30,
                 ),
-                title: const Text("Name"),
+                title:  Text(currentUserName),
                 trailing: IconButton(
                   onPressed: () {
                     // Navigator.push(

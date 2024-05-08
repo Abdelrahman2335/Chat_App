@@ -11,6 +11,8 @@ class ForgetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailCon = TextEditingController();
+
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -81,5 +83,6 @@ class ForgetScreen extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

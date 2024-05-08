@@ -1,9 +1,11 @@
 import 'package:chat_app/Widget/chat/chat_screen.dart';
+import 'package:chat_app/models/room_model.dart';
 import 'package:flutter/material.dart';
 
 class ChatCard extends StatelessWidget {
+  final ChatRoom item;
   const ChatCard({
-    super.key,
+    super.key, required this.item,
   });
 
   @override
@@ -13,10 +15,10 @@ class ChatCard extends StatelessWidget {
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ChatScreen(),
+              builder: (context) =>  ChatScreen(roomId: item.id!,),
             )),
         title: const Text("Abdelrahman"),
-        subtitle: const Text("Hi"),
+        subtitle:  Text(item.lastMessage.toString()),
         leading: const CircleAvatar(),
         trailing: Badge(
           backgroundColor: Theme.of(context).colorScheme.primary,

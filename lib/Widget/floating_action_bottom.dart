@@ -67,18 +67,41 @@ class ActionBottom extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
                       onPressed: () {
-                        if(emailCon.text.isNotEmpty){
-                      FireData().createRoom(emailCon.text).then(
-                            (value) {
-                              Navigator.pop(context);
-                            },
-                          );
-                    }},
-                      child: Center(
-                        child: Text(
-                          bottomName,
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                      if (emailCon.text != "") {
+                        FireData().createRoom(emailCon.text).then(
+                              (value) {},
+                            );
+                        Navigator.pop(context);
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            titleTextStyle:
+                                Theme.of(context).textTheme.bodyMedium,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            alignment: Alignment.center,
+                            title: Text(
+                              "Invalid Email",
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Done"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: Center(
+                      child: Text(
+                        bottomName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                       ),
                     ),
                   ],
