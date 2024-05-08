@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -15,13 +16,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController infoCon = TextEditingController();
   bool changeName = false;
   bool info = false;
+  final String currentUserEmail = FirebaseAuth.instance.currentUser!.email.toString();
+  final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.toString();
 
   @override
   void initState() {
     super.initState();
-    nameCon.text = "Abdelrahman";
+    nameCon.text = currentUserName;
     infoCon.text = "Hi, I'm using chat app";
   }
+  @override
+  void dispose() {
+    super.dispose();
+    nameCon.dispose();
+    infoCon.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,11 +109,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              const Card(
+               Card(
                 child: ListTile(
-                  leading: Icon(Iconsax.direct),
-                  title: Text("Email"),
-                  subtitle: Text("Abdelrahman@gmail.com"),
+                  leading: const Icon(Iconsax.direct),
+                  subtitle: Text(currentUserEmail),
+                  title: const Text("Email"),
                 ),
               ),const Card(
                 child: ListTile(
@@ -112,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   subtitle: Text("11/5/2024"),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               ElevatedButton(

@@ -1,5 +1,6 @@
 import 'package:chat_app/Widget/text_field.dart';
 import 'package:chat_app/main.dart';
+import 'package:chat_app/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -10,6 +11,8 @@ class ForgetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailCon = TextEditingController();
+
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -51,7 +54,7 @@ class ForgetScreen extends StatelessWidget {
                       .sendPasswordResetEmail(email: emailCon.text)
                       .then(
                     (value) {
-                      Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const LoginScreen()), (route) => false);
 
                       return ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -80,5 +83,6 @@ class ForgetScreen extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

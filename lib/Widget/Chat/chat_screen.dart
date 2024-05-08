@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final String roomId;
+  const ChatScreen({super.key, required this.roomId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();

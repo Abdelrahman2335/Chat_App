@@ -41,9 +41,10 @@ class _CustomFieldState extends State<CustomField> {
                 onPressed: () {
                   setState(() {
                     hidepass = !hidepass;
+
                   });
                 },
-                icon: const Icon(Iconsax.eye))
+                icon: hidepass? const Icon(Iconsax.eye): const Icon(Iconsax.eye_slash),)
             : const SizedBox(),
         labelText: widget.lable,
         prefix: Icon(widget.icon),

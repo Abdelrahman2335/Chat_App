@@ -89,6 +89,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  date_format:
+    dependency: "direct main"
+    description:
+      name: date_format
+      sha256: "8e5154ca363411847220c8cbc43afcf69c08e8debe40ba09d57710c25711760c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -184,6 +192,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      sha256: e4e7335ede17452b391ed3b2ede016545706c01a02292a6c97619705e7d2a85e
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.6"
   http:
     dependency: transitive
     description:
@@ -208,6 +224,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.8"
+  intl:
+    dependency: "direct main"
+    description:
+      name: intl
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -439,4 +463,4 @@ packages:
     version: "6.5.0"
 sdks:
   dart: ">=3.3.2 <4.0.0"
-  flutter: ">=3.7.0"
+  flutter: ">=3.13.0"

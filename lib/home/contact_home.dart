@@ -1,4 +1,4 @@
-import 'package:chat_app/Widget/floating_action_botton.dart';
+import 'package:chat_app/Widget/floating_action_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../Widget/Contacts/contact_card.dart';
@@ -18,10 +18,10 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: ActionBotton(
+      floatingActionButton: ActionBottom(
         emailCon: emailCon,
         icon: Iconsax.user_add,
-        bottonName: "Add contact",
+        bottomName: "Add contact",
       ),
       appBar: AppBar(
         title: isSearch

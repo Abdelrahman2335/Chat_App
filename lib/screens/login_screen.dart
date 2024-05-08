@@ -2,6 +2,7 @@ import 'package:chat_app/Widget/text_field.dart';
 import 'package:chat_app/layout.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/forget_password.dart';
+import 'package:chat_app/screens/info_screen.dart';
 import 'package:chat_app/screens/setup_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class LoginScreen extends StatelessWidget {
     /// We have to use dispose with any Controller.
     TextEditingController emailCon = TextEditingController();
     TextEditingController passCon = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(title: const Text("Chat")),
       body: SingleChildScrollView(
@@ -53,10 +55,11 @@ class LoginScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ForgetScreen(),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ForgetScreen(),
+                        ),
+                      );
                     },
                     child: const Text("Forget Password?"),
                   ),
@@ -74,16 +77,22 @@ class LoginScreen extends StatelessWidget {
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
+
                   await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: emailCon.text, password: passCon.text)
-                      .then((value) => Navigator.pushAndRemoveUntil(
-                          context,
+                      .then((value) {
+                        if(FirebaseAuth.instance.currentUser!.displayName == null){
+                          return const InfoScreen();
+                        }else {
+                    /// We cannot replace Navigator.pushAndRemoveUntil with Get now because of an error
+                    return Navigator.pushAndRemoveUntil(
+                        context,
                           MaterialPageRoute(
                             builder: (context) => const LayOutApp(),
                           ),
-                          (route) => false))
-                      .onError(
+                        (route) => false);}
+                  }).onError(
                         (error, stackTrace) =>
                             ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
