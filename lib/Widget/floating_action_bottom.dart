@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 
 import 'text_field.dart';
 
-class ActionBottom extends StatelessWidget {
+class ActionBottom extends StatefulWidget {
   const ActionBottom({
     super.key,
     required this.emailCon,
@@ -16,6 +16,11 @@ class ActionBottom extends StatelessWidget {
   final IconData icon;
   final String bottomName;
 
+  @override
+  State<ActionBottom> createState() => _ActionBottomState();
+}
+
+class _ActionBottomState extends State<ActionBottom> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
@@ -56,7 +61,7 @@ class ActionBottom extends StatelessWidget {
                     CustomField(
                         lable: "Email",
                         icon: Iconsax.direct,
-                        controller: emailCon),
+                        controller: widget.emailCon),
                     const SizedBox(
                       height: 16,
                     ),
@@ -67,9 +72,14 @@ class ActionBottom extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
                       onPressed: () {
-                      if (emailCon.text != "") {
-                        FireData().createRoom(emailCon.text).then(
-                              (value) {},
+                      if (widget.emailCon.text != "") {
+                        FireData().createRoom(widget.emailCon.text).then(
+                              (value) {
+                                setState(() {
+                                  widget.emailCon.text = "";
+                                });
+                                Navigator.pop(context);
+                              },
                             );
                         Navigator.pop(context);
                       } else {
@@ -99,7 +109,7 @@ class ActionBottom extends StatelessWidget {
                     },
                     child: Center(
                       child: Text(
-                        bottomName,
+                        widget.bottomName,
                         style: const TextStyle(color: Colors.white),
                       ),
                       ),
@@ -110,7 +120,7 @@ class ActionBottom extends StatelessWidget {
           },
         );
       },
-      child: Icon(icon),
+      child: Icon(widget.icon),
     );
   }
 }

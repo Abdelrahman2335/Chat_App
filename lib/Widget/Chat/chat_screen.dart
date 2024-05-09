@@ -1,18 +1,32 @@
 import 'dart:developer';
 
+import 'package:chat_app/firebase/fire_database.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../models/user_model.dart';
 
 class ChatScreen extends StatefulWidget {
+  final ChatUser friendData;
+
+  /// on the course he use chatUser not friendData
   final String roomId;
-  const ChatScreen({super.key, required this.roomId});
+
+  const ChatScreen({super.key, required this.roomId, required this.friendData});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  TextEditingController msgCon = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    msgCon.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,9 +34,9 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Abdelrahman"),
+            Text(widget.friendData.name!),
             Text(
-              "Online",
+              widget.friendData.lastSeen!,
               style: Theme.of(context).textTheme.labelMedium,
             ),
           ],
@@ -68,7 +82,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             "👋",
                             style: Theme.of(context).textTheme.displayMedium,
                           ),
-                          const SizedBox(height: 16,),
+                          const SizedBox(
+                            height: 16,
+                          ),
                           Text(
                             "Say Assalamu Alaikum",
                             style: Theme.of(context).textTheme.bodyMedium,
@@ -87,6 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: Card(
                       child: TextField(
+                        controller: msgCon,
                         maxLines: 7,
                         minLines: 1,
                         decoration: InputDecoration(
@@ -116,7 +133,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: 5,
                   ),
                   IconButton.filled(
-                      onPressed: () {}, icon: const Icon(Iconsax.send_1)),
+                      onPressed: () {
+                        if (msgCon.text.isNotEmpty) {
+                          FireData()
+                              .sendMessage(widget.friendData.id!, msgCon.text,
+                                  widget.roomId)
+                              .then((value) => setState(() {
+                                    msgCon.text = "";
+                                  }));
+                        }
+                      },
+                      icon: const Icon(Iconsax.send_1)),
                 ],
               ),
             )
