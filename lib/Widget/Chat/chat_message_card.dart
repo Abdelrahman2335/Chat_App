@@ -1,26 +1,24 @@
+import 'package:chat_app/models/message_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-class ChatMessageCard extends StatefulWidget {
+class ChatMessageCard extends StatelessWidget {
   final int index;
+  final Message messageContent;
   const ChatMessageCard({
-    super.key, required this.index,
+    super.key,
+    required this.index,
+    required this.messageContent,
   });
 
   @override
-  State<ChatMessageCard> createState() => _ChatMessageCardState();
-}
-
-class _ChatMessageCardState extends State<ChatMessageCard> {
-  @override
   Widget build(BuildContext context) {
-    
-
+    bool isMe = messageContent.fromId == FirebaseAuth.instance.currentUser!.uid;
     return Row(
-      mainAxisAlignment:
-          widget.index % 2 == 0 ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
-        widget.index % 2 == 0
+        isMe
             ? IconButton(
                 onPressed: () {},
                 icon: const Icon(Iconsax.message_edit),
@@ -29,8 +27,8 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
         Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(widget.index % 2 == 0 ? 16 : 0),
-              bottomRight: Radius.circular(widget.index % 2 == 0 ? 0 : 16),
+              bottomLeft: Radius.circular(isMe ? 16 : 0),
+              bottomRight: Radius.circular(isMe ? 0 : 16),
               topLeft: const Radius.circular(16),
               topRight: const Radius.circular(16),
             ),
@@ -43,11 +41,16 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Hi!"),
+                  Text(messageContent.msg!),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      const Icon(
+                        Iconsax.tick_circle,
+                        size: 15,
+                        color: Colors.blueAccent,
+                      ),
                       Text(
                         "10:00 am",
                         style: Theme.of(context).textTheme.labelSmall,
@@ -55,11 +58,6 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                       const SizedBox(
                         width: 6,
                       ),
-                      const Icon(
-                        Iconsax.tick_circle,
-                        size: 15,
-                        color: Colors.blueAccent,
-                      )
                     ],
                   ),
                 ],

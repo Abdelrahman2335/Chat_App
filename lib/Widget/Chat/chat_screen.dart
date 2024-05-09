@@ -1,10 +1,12 @@
-import 'dart:developer';
 
 import 'package:chat_app/firebase/fire_database.dart';
+import 'package:chat_app/models/message_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../models/user_model.dart';
+import 'chat_message_card.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser friendData;
@@ -58,43 +60,63 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              // child: ListView.builder(
-              //   reverse: true,
-              //   itemCount: 2,
-              //   itemBuilder: (context, index) {
-              //     return const ChatMessageCard();
-              //   },
-              // ),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("rooms")
+                      .doc(widget.roomId)
+                      .collection("messages")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<Message> messageContent = snapshot.data!.docs
+                          .map((e) => Message.fromjson(e.data()))
+                          .toList()
+                        ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: messageContent.length,
+                        itemBuilder: (context, index) {
+                          return ChatMessageCard(
+                            messageContent: messageContent[index],
+                            index: index,
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
 
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    log("Taped!");
-                  },
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "👋",
-                            style: Theme.of(context).textTheme.displayMedium,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Text(
-                            "Say Assalamu Alaikum",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // child:
+              // Center(
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       log("Taped!");
+              //     },
+              //     child: Card(
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(12.0),
+              //         child: Column(
+              //           mainAxisSize: MainAxisSize.min,
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Text(
+              //               "👋",
+              //               style: Theme.of(context).textTheme.displayMedium,
+              //             ),
+              //             const SizedBox(
+              //               height: 16,
+              //             ),
+              //             Text(
+              //               "Say Assalamu Alaikum",
+              //               style: Theme.of(context).textTheme.bodyMedium,
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),

@@ -13,7 +13,6 @@ class InfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController nameCon = TextEditingController();
 
-
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -21,7 +20,8 @@ class InfoScreen extends StatelessWidget {
               onPressed: () {
                 FirebaseAuth.instance.signOut();
               },
-              icon: const Icon(Iconsax.logout_1))
+            icon: const Icon(Iconsax.logout_1),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -53,13 +53,18 @@ class InfoScreen extends StatelessWidget {
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
-                  if (nameCon.text.isNotEmpty || nameCon.text == "") {
+                  if (nameCon.text != "".trim()) {
                     await FirebaseAuth.instance.currentUser!
                         .updateDisplayName(nameCon.text)
                         .then(
                       (value) {
                         FireAuth.createUser();
-                        return Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LayOutApp()), (route) => false);
+                        return Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LayOutApp(),
+                            ),
+                            (route) => false);
                       },
                     );
                   } else {

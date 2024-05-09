@@ -71,17 +71,16 @@ class _ActionBottomState extends State<ActionBottom> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
-                      onPressed: () {
+                    onPressed: () async {
                       if (widget.emailCon.text != "") {
-                        FireData().createRoom(widget.emailCon.text).then(
-                              (value) {
+                        await FireData().createRoom(widget.emailCon.text).then(
+                          (value) {
                                 setState(() {
                                   widget.emailCon.text = "";
                                 });
                                 Navigator.pop(context);
                               },
                             );
-                        Navigator.pop(context);
                       } else {
                         showDialog(
                           context: context,
