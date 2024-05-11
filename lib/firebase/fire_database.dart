@@ -33,10 +33,10 @@ class FireData {
         /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat or the room
         ChatRoom chatdata = ChatRoom(
           id: members.toString(),
-          createdAt: DateTime.now().toString(),
+          createdAt:DateTime.now().millisecondsSinceEpoch.toString(),
           lastMessage: "",
           members: members,
-          lastMessageTime: DateTime.now().toString(),
+          lastMessageTime: DateTime.now().millisecondsSinceEpoch.toString(),
         );
         await firestore.collection("rooms").doc(members.toString()).set(
               /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
@@ -57,7 +57,7 @@ class FireData {
         fromId: myUid,
         msg: msg,
         type: "text",
-        createdAt: DateTime.now().toString(),
+        createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         read: "");
    await firestore
         .collection("rooms")

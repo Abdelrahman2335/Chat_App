@@ -4,6 +4,7 @@ import 'package:chat_app/models/message_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../models/user_model.dart';
 import 'chat_message_card.dart';
@@ -72,51 +73,58 @@ class _ChatScreenState extends State<ChatScreen> {
                           .map((e) => Message.fromjson(e.data()))
                           .toList()
                         ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-                      return ListView.builder(
-                        reverse: true,
-                        itemCount: messageContent.length,
-                        itemBuilder: (context, index) {
-                          return ChatMessageCard(
+                      return messageContent.isNotEmpty
+                          ? ListView.builder(
+                              reverse: true,
+                              itemCount: messageContent.length,
+                              itemBuilder: (context, index) {
+                                return ChatMessageCard(
                             messageContent: messageContent[index],
                             index: index,
                           );
                         },
-                      );
+                            )
+                          : Center(
+                              child: GestureDetector(
+                                onTap: () => FireData().sendMessage(
+                                    widget.friendData.id!,
+                                    "Assalamu Alaikum👋",
+                                    widget.roomId),
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "👋",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayMedium,
+                                        ),
+                                        const SizedBox(
+                                          height: 16,
+                                        ),
+                                        Text(
+                                          "Say Assalamu Alaikum",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
                     } else {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
                   }),
-
-              // child:
-              // Center(
-              //   child: GestureDetector(
-              //     onTap: () {
-              //       log("Taped!");
-              //     },
-              //     child: Card(
-              //       child: Padding(
-              //         padding: const EdgeInsets.all(12.0),
-              //         child: Column(
-              //           mainAxisSize: MainAxisSize.min,
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children: [
-              //             Text(
-              //               "👋",
-              //               style: Theme.of(context).textTheme.displayMedium,
-              //             ),
-              //             const SizedBox(
-              //               height: 16,
-              //             ),
-              //             Text(
-              //               "Say Assalamu Alaikum",
-              //               style: Theme.of(context).textTheme.bodyMedium,
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -138,7 +146,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                 icon: const Icon(Icons.emoji_emotions_outlined),
                               ),
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () async{
+                                  ImagePicker picker  = ImagePicker();
+                                  XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                                  if(image != null){
+                                    FireData().sendMessage(widget.friendData.id!, "Nice you picked an image! we still working on sending images 😀", widget.roomId);
+                                  }
+                                },
                                 icon: const Icon(Icons.camera_alt_outlined),
                               ),
                             ],
@@ -146,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           border: InputBorder.none,
                           hintText: "Message",
                           contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                              horizontal: 10.0, vertical: 10.0),
                         ),
                       ),
                     ),

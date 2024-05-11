@@ -2,6 +2,7 @@ import 'package:chat_app/models/message_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessageCard extends StatelessWidget {
   final int index;
@@ -52,7 +53,13 @@ class ChatMessageCard extends StatelessWidget {
                         color: Colors.blueAccent,
                       ),
                       Text(
-                        "10:00 am",
+                        DateFormat.yMMMEd()
+                            .format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(messageContent.createdAt!),
+                              ),
+                            )
+                            .toString(),
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
                       const SizedBox(

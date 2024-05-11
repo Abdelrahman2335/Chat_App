@@ -16,8 +16,8 @@ class FireAuth {
         email: user.email,
         about: "Hi I'm ${user.displayName}",
         image: "",
-        createdAt: DateTime.now().toString(),
-        lastSeen: DateTime.now().toString(),
+        createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
+        lastSeen: DateTime.now().millisecondsSinceEpoch.toString(),
         pushToken: "",
         online: false
 
