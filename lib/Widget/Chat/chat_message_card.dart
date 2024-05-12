@@ -42,7 +42,11 @@ class ChatMessageCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(messageContent.msg!),
+                  messageContent.type == "image"
+                      ? Container(
+                          child: Image.network(messageContent.msg!),
+                        )
+                      : Text(messageContent.msg!),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     mainAxisSize: MainAxisSize.min,

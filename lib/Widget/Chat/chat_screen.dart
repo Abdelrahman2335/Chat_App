@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:chat_app/firebase/fire_database.dart';
 import 'package:chat_app/models/message_model.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../firebase/fire_storage.dart';
 import '../../models/user_model.dart';
 import 'chat_message_card.dart';
 
@@ -150,7 +152,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ImagePicker picker  = ImagePicker();
                                   XFile? image = await picker.pickImage(source: ImageSource.gallery);
                                   if(image != null){
-                                    FireData().sendMessage(widget.friendData.id!, "Nice you picked an image! we still working on sending images 😀", widget.roomId);
+                                    FireStorage().sendImage(
+                                        file: File(image.path),
+                                        roomId: widget.roomId,
+                                        uid: widget.friendData.id!);
                                   }
                                 },
                                 icon: const Icon(Icons.camera_alt_outlined),

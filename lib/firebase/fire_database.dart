@@ -4,11 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
-
+///class named FireData
 class FireData {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
-
+///anythings in this class named method
   Future createRoom(String email) async {
     QuerySnapshot userEmail = await firestore
         .collection("users")
@@ -49,14 +49,14 @@ class FireData {
     }
   }
 
-  Future sendMessage(String uid, String msg, roomId) async{
+  Future sendMessage(String uid, String msg, roomId,{String? type}) async{
     String msgId = const Uuid().v6();
     Message message = Message(
         id: msgId,
         toId: uid,
         fromId: myUid,
         msg: msg,
-        type: "text",
+        type: type?? "text",
         createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         read: "");
    await firestore

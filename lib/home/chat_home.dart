@@ -47,7 +47,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                         arrayContains: FirebaseAuth.instance.currentUser!.uid)
                     .snapshots(),
 
-                ///here we are making sure that the current user can see ONLY this chat and not others chat
+                ///here we are making sure that the current user can see ONLY his chat and not others chat
                 ///why here we use snapshots cuz the stream need this check stream
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
