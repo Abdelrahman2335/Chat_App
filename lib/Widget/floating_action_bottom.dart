@@ -1,4 +1,5 @@
 import 'package:chat_app/firebase/fire_database.dart';
+import 'package:chat_app/firebase/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -72,7 +73,7 @@ class _ActionBottomState extends State<ActionBottom> {
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
                     onPressed: () async {
-                      if (widget.emailCon.text != "") {
+                      if (widget.emailCon.text != "" && widget.emailCon.text != FireAuth.user.email) {
                         await FireData().createRoom(widget.emailCon.text).then(
                           (value) {
                                 setState(() {

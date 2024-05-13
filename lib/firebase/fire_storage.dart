@@ -27,6 +27,6 @@ class FireStorage {
     ///this line knows where is the file is stored so we can use it later in any part of the project
     String imageUrl = await ref.getDownloadURL();
 
-    FireData().sendMessage(uid, imageUrl, roomId);
+    FireData().sendMessage(uid, imageUrl, roomId, type: "image");
   }
 }

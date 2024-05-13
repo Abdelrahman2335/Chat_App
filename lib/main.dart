@@ -34,7 +34,6 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.userChanges(),
         builder: (context, snapshot) {
-          /// note you can use ? : rather than if and else but in this case you will need to use Navigator.push in sign out of the app
           if (snapshot.hasData) {
 
             if (FirebaseAuth.instance.currentUser!.displayName == null) {
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
             return const LoginScreen();
           }
 
-          // return LayOutApp();
         },
       ),
     );

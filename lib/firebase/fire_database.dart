@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/room_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -49,7 +51,7 @@ class FireData {
     }
   }
 
-  Future sendMessage(String uid, String msg, roomId,{String? type}) async{
+  Future sendMessage(String uid, String msg, String roomId,{String? type}) async{
     String msgId = const Uuid().v6();
     Message message = Message(
         id: msgId,
@@ -67,5 +69,14 @@ class FireData {
         .set(
           message.tojson(),
         );///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
+  }
+
+  Future readMessage(String roomId, String msgId) async {
+    await firestore
+        .collection("rooms")
+        .doc(roomId)
+        .collection("messages")
+        .doc(msgId)
+        .update({"read": DateTime.now().millisecondsSinceEpoch.toString()});
   }
 }

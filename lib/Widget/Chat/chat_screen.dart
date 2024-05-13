@@ -82,7 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               itemBuilder: (context, index) {
                                 return ChatMessageCard(
                             messageContent: messageContent[index],
-                            index: index,
+                            index: index, roomId: widget.roomId,
                           );
                         },
                             )
