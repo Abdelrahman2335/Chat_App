@@ -1,9 +1,11 @@
 import 'package:chat_app/Widget/chat/chat_screen.dart';
+import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/room_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatCard extends StatelessWidget {
   final ChatRoom item;
@@ -29,24 +31,53 @@ class ChatCard extends StatelessWidget {
             ChatUser chatUser = ChatUser.fromjson(snapshot.data!.data()!);
             return Card(
               child: ListTile(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatScreen(
-                        friendData: chatUser,
-                        roomId: item.id!,
-                      ),
-                    )),
-                title: Text(chatUser.name!),
-                subtitle: Text(item.lastMessage! == ""? "Let's chat 😀" :item.lastMessage!),
-                leading: const CircleAvatar(),
-                trailing: Badge(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  label: const Text("1"),
-                  largeSize: 30,
-                ),
-              ),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                          friendData: chatUser,
+                          roomId: item.id!,
+                        ),
+                      )),
+                  title: Text(chatUser.name!),
+                  subtitle: Text(item.lastMessage! == ""
+                      ? chatUser.about!
+                      : item.lastMessage!),
+                  leading: const CircleAvatar(),
+                  trailing: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("rooms")
+                          .doc(item.id)
+                          .collection("messages")
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        }
+
+                        if (!snapshot.hasData) {
+                          return const CircularProgressIndicator();
+                        }
+                        final unReadList = (snapshot.data!.docs)
+                            .map((e) => Message.fromjson(e.data()))
+                            .where((element) => element.read == "")
+                            .where((element) =>
+                                element.fromId !=
+                                FirebaseAuth.instance.currentUser!.uid);
+                        return unReadList.isNotEmpty
+                            ? Badge(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                label: Text(unReadList.length.toString()),
+                                largeSize: 30,
+                              )
+                            : Text(DateFormat.yMMMEd()
+                                .format(DateTime.fromMillisecondsSinceEpoch(
+                                    int.parse(item.lastMessageTime.toString())))
+                                .toString());
+                      })),
             );
           } else {
             return Container();

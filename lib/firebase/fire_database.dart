@@ -6,11 +6,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
+
 ///class named FireData
 class FireData {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
-///anythings in this class named method
+
+  ///anythings in this class named method
   Future createRoom(String email) async {
     QuerySnapshot userEmail = await firestore
         .collection("users")
@@ -31,11 +33,10 @@ class FireData {
           .where("members", isEqualTo: members)
           .get();
       if (roomExist.docs.isEmpty) {
-
         /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat or the room
         ChatRoom chatdata = ChatRoom(
           id: members.toString(),
-          createdAt:DateTime.now().millisecondsSinceEpoch.toString(),
+          createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
           lastMessage: "",
           members: members,
           lastMessageTime: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -44,31 +45,37 @@ class FireData {
               /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
               chatdata.tojson(),
             );
-      }
-      else{
+      } else {
         return Container();
       }
     }
   }
 
-  Future sendMessage(String uid, String msg, String roomId,{String? type}) async{
+  Future sendMessage(String uid, String msg, String roomId,
+      {String? type}) async {
     String msgId = const Uuid().v6();
     Message message = Message(
         id: msgId,
         toId: uid,
         fromId: myUid,
         msg: msg,
-        type: type?? "text",
+        type: type ?? "text",
         createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         read: "");
-   await firestore
+    await firestore
         .collection("rooms")
         .doc(roomId)
         .collection("messages")
         .doc(msgId)
         .set(
           message.tojson(),
-        );///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
+        );
+
+    ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
+    await firestore.collection("rooms").doc(roomId).update({
+      "lastMessage": type ?? msg,
+      "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString()
+    });
   }
 
   Future readMessage(String roomId, String msgId) async {
@@ -78,5 +85,11 @@ class FireData {
         .collection("messages")
         .doc(msgId)
         .update({"read": DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+    deleteMsg(String roomId, List<String> msgs)async{
+    for (var element in msgs){
+     await firestore.collection("rooms").doc(roomId).collection("messages").doc(element).delete();
+      /// so we can't use msgs directly in the doc because this list and doc will not find list he will find only string
+    }
   }
 }

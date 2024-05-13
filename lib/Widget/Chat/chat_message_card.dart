@@ -10,11 +10,12 @@ class ChatMessageCard extends StatefulWidget {
   final int index;
   final Message messageContent;
   final String roomId;
+  final bool selected;
   const ChatMessageCard({
     super.key,
     required this.index,
     required this.messageContent,
-    required this.roomId,
+    required this.roomId, required this.selected,
   });
 
   @override
@@ -25,7 +26,7 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
   @override
   void initState() {
     if (widget.messageContent.toId == FirebaseAuth.instance.currentUser!.uid) {
-        FireData().readMessage(widget.roomId, widget.messageContent.id!);
+      FireData().readMessage(widget.roomId, widget.messageContent.id!);
     }
     super.initState();
   }
@@ -34,77 +35,83 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
   Widget build(BuildContext context) {
     bool isMe =
         widget.messageContent.fromId == FirebaseAuth.instance.currentUser!.uid;
-    return Row(
-      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        isMe
-            ? IconButton(
-                onPressed: () {},
-                icon: const Icon(Iconsax.message_edit),
-              )
-            : const SizedBox(),
-        Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(isMe ? 16 : 0),
-              bottomRight: Radius.circular(isMe ? 0 : 16),
-              topLeft: const Radius.circular(16),
-              topRight: const Radius.circular(16),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-            child: Container(
-              constraints: BoxConstraints(
-                  maxWidth: MediaQuery.sizeOf(context).width / 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  widget.messageContent.type == "image"
-                      ? CachedNetworkImage(
-                          imageUrl: widget.messageContent.msg!,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                        )
-                      : Text(widget.messageContent.msg!),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Iconsax.tick_circle,
-                        size: 15,
-                        color: widget.messageContent.read == ""
-                            ? Colors.grey
-                            : Colors.blueAccent,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        DateFormat.yMMMEd()
-                            .format(
-                              DateTime.fromMillisecondsSinceEpoch(
-                                int.parse(widget.messageContent.createdAt!),
-                              ),
-                            )
-                            .toString(),
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      const SizedBox(
-                        width: 6,
-                      ),
-                    ],
-                  ),
-                ],
+    return Container(
+      decoration: BoxDecoration(
+          color:widget.selected? Colors.grey : Colors.transparent, borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 1),
+      child: Row(
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          isMe
+              ? IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Iconsax.message_edit),
+                )
+              : const SizedBox(),
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(isMe ? 16 : 0),
+                bottomRight: Radius.circular(isMe ? 0 : 16),
+                topLeft: const Radius.circular(16),
+                topRight: const Radius.circular(16),
               ),
             ),
-          ),
-        )
-      ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              child: Container(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.sizeOf(context).width / 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    widget.messageContent.type == "image"
+                        ? CachedNetworkImage(
+                            imageUrl: widget.messageContent.msg!,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                          )
+                        : Text(widget.messageContent.msg!),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Iconsax.tick_circle,
+                          size: 15,
+                          color: widget.messageContent.read == ""
+                              ? Colors.grey
+                              : Colors.blueAccent,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          DateFormat.yMMMEd()
+                              .format(
+                                DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse(widget.messageContent.createdAt!),
+                                ),
+                              )
+                              .toString(),
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

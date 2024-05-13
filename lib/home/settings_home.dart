@@ -142,7 +142,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                             ),
                           ),
                         );
-                    Get.to(LoginScreen());
+                    Get.offAll(const LoginScreen());
                   },
                   title: const Text("Sign out"),
                   trailing: const Icon(Iconsax.logout_1),
