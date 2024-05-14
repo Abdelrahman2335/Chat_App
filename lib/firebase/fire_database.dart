@@ -18,8 +18,8 @@ class FireData {
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
-    String userId = userEmail.docs.first.id;
     if (userEmail.docs.isNotEmpty) {
+      String userId = userEmail.docs.first.id;
       List<String> members = [
         myUid,
         userId,
@@ -48,6 +48,22 @@ class FireData {
       } else {
         return Container();
       }
+    }
+  }
+
+  Future creatContacts(String email) async {
+    QuerySnapshot userEmail = await firestore
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .get();
+    if (userEmail.docs.isNotEmpty) {
+      String userId = userEmail.docs.first.id;
+      firestore.collection("users").doc(myUid).update({
+        "my_users": FieldValue.arrayUnion([userId])
+
+        ///note that my_users is exist and you can add contacts normally,
+        /// but if it was empty(have no data) you will not see it on the firebase
+      });
     }
   }
 

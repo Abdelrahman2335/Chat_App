@@ -1,5 +1,7 @@
 import 'package:chat_app/Widget/floating_action_bottom.dart';
+import 'package:chat_app/firebase/fire_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../Widget/Contacts/contact_card.dart';
 
@@ -14,6 +16,14 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
   TextEditingController emailCon = TextEditingController();
   TextEditingController searchCon = TextEditingController();
   bool isSearch = false;
+   contactLogic(){
+     FireData().creatContacts(emailCon.text).then((value) {
+       setState(() {
+       emailCon.text = "";
+     });
+       Get.back();
+     });
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +31,7 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
       floatingActionButton: ActionBottom(
         emailCon: emailCon,
         icon: Iconsax.user_add,
-        bottomName: "Add contact",
+        bottomName: "Add contact", onPressedLogic: contactLogic,
       ),
       appBar: AppBar(
         title: isSearch
@@ -46,7 +56,7 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
                       isSearch = false;
                     });
                   },
-                  icon: Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.arrow_forward),
                 )
               : IconButton(
                   onPressed: () {
@@ -54,7 +64,7 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
                       isSearch = true;
                     });
                   },
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                 ),
         ],
       ),

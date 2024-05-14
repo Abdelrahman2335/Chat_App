@@ -42,7 +42,7 @@ class ChatCard extends StatelessWidget {
                   title: Text(chatUser.name!),
                   subtitle: Text(item.lastMessage! == ""
                       ? chatUser.about!
-                      : item.lastMessage!),
+                      : item.lastMessage!,maxLines: 1,overflow: TextOverflow.ellipsis,),
                   leading: const CircleAvatar(),
                   trailing: StreamBuilder(
                       stream: FirebaseFirestore.instance

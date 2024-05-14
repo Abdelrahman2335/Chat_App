@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../Widget/floating_action_bottom.dart';
+import '../firebase/fire_database.dart';
+import '../firebase/firebase_auth.dart';
 
 class ChatHomeScreen extends StatefulWidget {
   const ChatHomeScreen({super.key});
@@ -16,6 +18,42 @@ class ChatHomeScreen extends StatefulWidget {
 
 class _ChatHomeScreenState extends State<ChatHomeScreen> {
   TextEditingController emailCon = TextEditingController();
+ void chatLogic() async {
+
+    if (emailCon.text != "" && emailCon.text != FireAuth.user.email) {
+      await FireData().createRoom(emailCon.text).then(
+            (value) {
+          setState(() {
+            emailCon.text = "";
+          });
+          Navigator.pop(context);
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          titleTextStyle:
+          Theme.of(context).textTheme.bodyMedium,
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 10, vertical: 10),
+          alignment: Alignment.center,
+          title: Text(
+            "Invalid Email",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Done"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -30,7 +68,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
       floatingActionButton: ActionBottom(
           emailCon: emailCon,
           icon: Iconsax.message_add,
-          bottomName: "Create Chat",
+          bottomName: "Create Chat", onPressedLogic: chatLogic,
         ),
 
       /// Bro this is function don't forget.

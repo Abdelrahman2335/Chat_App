@@ -19,9 +19,8 @@ class FireAuth {
         createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         lastSeen: DateTime.now().millisecondsSinceEpoch.toString(),
         pushToken: "",
-        online: false
-
-
+      online: false,
+      myUsers: [],
     );
     await firebaseFirestore.collection("users").doc(user.uid).set(chatUser.tojson());
   }

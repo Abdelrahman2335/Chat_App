@@ -1,5 +1,3 @@
-import 'package:chat_app/firebase/fire_database.dart';
-import 'package:chat_app/firebase/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -11,11 +9,13 @@ class ActionBottom extends StatefulWidget {
     required this.emailCon,
     required this.icon,
     required this.bottomName,
+    required this.onPressedLogic,
   });
 
   final TextEditingController emailCon;
   final IconData icon;
   final String bottomName;
+  final Function onPressedLogic;
 
   @override
   State<ActionBottom> createState() => _ActionBottomState();
@@ -72,41 +72,7 @@ class _ActionBottomState extends State<ActionBottom> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
-                    onPressed: () async {
-                      if (widget.emailCon.text != "" && widget.emailCon.text != FireAuth.user.email) {
-                        await FireData().createRoom(widget.emailCon.text).then(
-                          (value) {
-                                setState(() {
-                                  widget.emailCon.text = "";
-                                });
-                                Navigator.pop(context);
-                              },
-                            );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            titleTextStyle:
-                                Theme.of(context).textTheme.bodyMedium,
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            alignment: Alignment.center,
-                            title: Text(
-                              "Invalid Email",
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("Done"),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: ()  {widget.onPressedLogic();},
                     child: Center(
                       child: Text(
                         widget.bottomName,
