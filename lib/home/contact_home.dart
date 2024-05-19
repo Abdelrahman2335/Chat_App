@@ -1,5 +1,7 @@
 import 'package:chat_app/Widget/floating_action_bottom.dart';
 import 'package:chat_app/firebase/fire_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -16,7 +18,17 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
   TextEditingController emailCon = TextEditingController();
   TextEditingController searchCon = TextEditingController();
   bool isSearch = false;
-   contactLogic(){
+  List myContact = [];
+
+  getMyContact() async{
+    final contact = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => myContact = value.data()!["my_users"]);
+  }
+
+  contactLogic(){
      FireData().creatContacts(emailCon.text).then((value) {
        setState(() {
        emailCon.text = "";
