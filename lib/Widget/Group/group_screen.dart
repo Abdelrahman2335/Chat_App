@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:chat_app/Widget/Group/group_member.dart';
 import 'package:chat_app/Widget/Group/group_message_card.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,16 @@ class _GroupScreenState extends State<GroupScreen> {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => const GroupMemberScreen(),));}, icon: const Icon(Iconsax.user))
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GroupMemberScreen(),
+                  ));
+            },
+            icon: const Icon(Iconsax.user),
+          )
         ],
       ),
       body: Padding(

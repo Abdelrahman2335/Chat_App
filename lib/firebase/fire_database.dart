@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/room_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ import 'package:uuid/uuid.dart';
 class FireData {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
+  final String now = DateTime.now().millisecondsSinceEpoch.toString();
 
   ///anythings in this class named method
   Future createRoom(String email) async {
@@ -36,10 +38,10 @@ class FireData {
         /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat or the room
         ChatRoom chatdata = ChatRoom(
           id: members.toString(),
-          createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
+          createdAt: now,
           lastMessage: "",
           members: members,
-          lastMessageTime: DateTime.now().millisecondsSinceEpoch.toString(),
+          lastMessageTime: now,
         );
         await firestore.collection("rooms").doc(members.toString()).set(
               /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
@@ -49,6 +51,22 @@ class FireData {
         return Container();
       }
     }
+  }
+
+  Future creatGroup(String name,List members) async {
+    String gId = const Uuid().v6();
+    members.add(myUid);
+    GroupRoom groupRoom = GroupRoom(
+        id: gId,
+        name: name,
+        admin: [myUid],
+        image: "",
+        createdAt: now,
+        members: members,
+        lastMessage: "",
+        lastMessageTime: now);
+    await firestore.collection("groups").doc(gId).set(groupRoom.toJson());
+
   }
 
   Future creatContacts(String email) async {
@@ -76,7 +94,7 @@ class FireData {
         fromId: myUid,
         msg: msg,
         type: type ?? "text",
-        createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
+        createdAt: now,
         read: "");
     await firestore
         .collection("rooms")
@@ -90,7 +108,7 @@ class FireData {
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
     await firestore.collection("rooms").doc(roomId).update({
       "lastMessage": type ?? msg,
-      "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString()
+      "lastMessageTime": now
     });
   }
 
@@ -100,7 +118,7 @@ class FireData {
         .doc(roomId)
         .collection("messages")
         .doc(msgId)
-        .update({"read": DateTime.now().millisecondsSinceEpoch.toString()});
+        .update({"read": now});
   }
     deleteMsg(String roomId, List<String> msgs)async{
     for (var element in msgs){
