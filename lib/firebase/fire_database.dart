@@ -112,6 +112,33 @@ class FireData {
     });
   }
 
+  Future sendGMessage( String msg, String groupId,
+      {String? type}) async {
+    String msgId = const Uuid().v6();
+    Message message = Message(
+        id: msgId,
+        toId: "",
+        fromId: myUid,
+        msg: msg,
+        type: type ?? "text",
+        createdAt: now,
+        read: "");
+    await firestore
+        .collection("groups")
+        .doc(groupId)
+        .collection("messages")
+        .doc(msgId)
+        .set(
+          message.tojson(),
+        );
+
+    ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
+    await firestore.collection("groups").doc(groupId).update({
+      "lastMessage": type ?? msg,
+      "lastMessageTime": now
+    });
+  }
+
   Future readMessage(String roomId, String msgId) async {
     await firestore
         .collection("rooms")

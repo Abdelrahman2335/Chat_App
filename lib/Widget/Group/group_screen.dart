@@ -1,17 +1,24 @@
 import 'package:chat_app/Widget/Group/group_member.dart';
 import 'package:chat_app/Widget/Group/group_message_card.dart';
+import 'package:chat_app/firebase/fire_database.dart';
+import 'package:chat_app/models/group_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../models/message_model.dart';
 
 class GroupScreen extends StatefulWidget {
-  const GroupScreen({super.key});
+  final GroupRoom groupRoom;
+
+  const GroupScreen({super.key, required this.groupRoom});
 
   @override
   State<GroupScreen> createState() => _GroupScreenState();
 }
 
 class _GroupScreenState extends State<GroupScreen> {
+  TextEditingController msgCon = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +26,7 @@ class _GroupScreenState extends State<GroupScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Group name"),
+            Text(widget.groupRoom.name!),
             Text(
               "Abdelrahman, Ali, Ahmed",
               style: Theme.of(context).textTheme.labelMedium,
@@ -44,41 +51,69 @@ class _GroupScreenState extends State<GroupScreen> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                reverse: true,
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return  GroupMessageCard(index: index,);
-                },
-              ),
-
-              // child: Center(
-              //   child: GestureDetector(
-              //     onTap: () {
-              //       log("Taped!");
-              //     },
-              //     child: Card(
-              //       child: Padding(
-              //         padding: const EdgeInsets.all(12.0),
-              //         child: Column(
-              //           mainAxisSize: MainAxisSize.min,
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children: [
-              //             Text(
-              //               "👋",
-              //               style: Theme.of(context).textTheme.displayMedium,
-              //             ),
-              //             const SizedBox(height: 16,),
-              //             Text(
-              //               "Say Assalamu Alaikum",
-              //               style: Theme.of(context).textTheme.bodyMedium,
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("groups")
+                      .doc(widget.groupRoom.id!)
+                      .collection("messages")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final List<Message> msgs = snapshot.data!.docs
+                          .map((e) => Message.fromjson(e.data()))
+                          .toList()
+                        ..sort(
+                          (a, b) => b.createdAt!.compareTo(a.createdAt!),
+                        );
+                      if (msgs.isEmpty) {
+                        return Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              FireData().sendGMessage("Say Assalamu Alaikum👋", widget.groupRoom.id!);
+                            },
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "👋",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium,
+                                    ),
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    Text(
+                                      "Say Assalamu Alaikum",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          reverse: true,
+                          itemCount: msgs.length,
+                          itemBuilder: (context, index) {
+                            return GroupMessageCard(
+                              index: index, message: msgs[index],
+                            );
+                          },
+                        );
+                      }
+                    } else {
+                      return Container();
+                    }
+                  }),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -87,6 +122,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   Expanded(
                     child: Card(
                       child: TextField(
+                        controller: msgCon,
                         maxLines: 7,
                         minLines: 1,
                         decoration: InputDecoration(
@@ -116,7 +152,18 @@ class _GroupScreenState extends State<GroupScreen> {
                     width: 5,
                   ),
                   IconButton.filled(
-                      onPressed: () {}, icon: const Icon(Iconsax.send_1)),
+                      onPressed: () {
+                        if (msgCon.text.isNotEmpty) {
+                          FireData()
+                              .sendGMessage(msgCon.text, widget.groupRoom.id!)
+                              .then((value) {
+                            setState(() {
+                              msgCon.text = "";
+                            });
+                          });
+                        }
+                      },
+                      icon: const Icon(Iconsax.send_1)),
                 ],
               ),
             )

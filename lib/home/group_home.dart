@@ -1,6 +1,5 @@
 import 'package:chat_app/Widget/Group/create_group.dart';
 import 'package:chat_app/Widget/Group/group_card.dart';
-import 'package:chat_app/models/room_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,7 @@ class _GroupHomeScreenState extends State<GroupHomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(const CreateGroup());
+          Get.to(()=> const CreateGroup());
         },
         child: const Icon(Iconsax.message_add_1),
       ),

@@ -70,11 +70,11 @@ class _CreateGroupState extends State<CreateGroup> {
               padding: EdgeInsets.only(top: 16, bottom: 16),
               child: Divider(),
             ),
-            const Row(
+             Row(
               children: [
-                Text("Members"),
-                Spacer(),
-                Text("2"),
+                const Text("Members"),
+                const Spacer(),
+                Text(members.length.toString()),
               ],
             ),
             const SizedBox(

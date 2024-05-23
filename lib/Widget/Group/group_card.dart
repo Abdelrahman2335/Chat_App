@@ -22,7 +22,7 @@ class GroupCard extends StatelessWidget {
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const GroupScreen(),
+              builder: (context) =>  GroupScreen(groupRoom: groupRoom,),
             )),
         title: Text(groupRoom.name!),
         subtitle: Text(groupRoom.lastMessage!),
