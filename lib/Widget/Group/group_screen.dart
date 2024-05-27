@@ -11,6 +11,7 @@ import '../../models/message_model.dart';
 class GroupScreen extends StatefulWidget {
   final GroupRoom groupRoom;
 
+
   const GroupScreen({super.key, required this.groupRoom});
 
   @override
@@ -19,18 +20,40 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
   TextEditingController msgCon = TextEditingController();
+  List memberList = [];
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.groupRoom.name!),
-            Text(
-              "Abdelrahman, Ali, Ahmed",
-              style: Theme.of(context).textTheme.labelMedium,
-            ),
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .where("id", whereIn: widget.groupRoom.members)
+                    .snapshots(),
+                builder: (context, snapshot) {
+
+                  if (snapshot.hasData) {
+
+                    /// Here we are taking the Ids that are in the group only, and then we make a for loop,
+                    /// that loops on the data in the doc that = to users Id. and if you remember that in the collection users,
+                    /// we have doc that named with the Id of the user.
+                    for(var x in snapshot.data!.docs ){
+                      memberList.add(x.data()["name"]);
+                    }
+                    return Text(
+                      memberList.join(", "),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
           ],
         ),
         actions: [
@@ -39,7 +62,7 @@ class _GroupScreenState extends State<GroupScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const GroupMemberScreen(),
+                    builder: (context) =>  GroupMemberScreen(ChatMembers: widget.groupRoom, MemberList: memberList,),
                   ));
             },
             icon: const Icon(Iconsax.user),
@@ -69,7 +92,8 @@ class _GroupScreenState extends State<GroupScreen> {
                         return Center(
                           child: GestureDetector(
                             onTap: () {
-                              FireData().sendGMessage("Say Assalamu Alaikum👋", widget.groupRoom.id!);
+                              FireData().sendGMessage("Say Assalamu Alaikum👋",
+                                  widget.groupRoom.id!);
                             },
                             child: Card(
                               child: Padding(
@@ -105,7 +129,8 @@ class _GroupScreenState extends State<GroupScreen> {
                           itemCount: msgs.length,
                           itemBuilder: (context, index) {
                             return GroupMessageCard(
-                              index: index, message: msgs[index],
+                              index: index,
+                              message: msgs[index],
                             );
                           },
                         );
