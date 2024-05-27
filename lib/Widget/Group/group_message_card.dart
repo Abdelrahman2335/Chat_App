@@ -81,11 +81,13 @@ class GroupMessageCard extends StatelessWidget {
                                   const SizedBox(
                                     width: 6,
                                   ),
-                                  const Icon(
-                                    Iconsax.tick_circle,
+                                  isMe
+                                      ? const Icon(
+                                          Iconsax.tick_circle,
                                     size: 15,
                                     color: Colors.blueAccent,
-                                  )
+                                        )
+                                      : Container(),
                                 ],
                               ),
                             ],

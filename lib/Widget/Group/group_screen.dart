@@ -62,7 +62,7 @@ class _GroupScreenState extends State<GroupScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  GroupMemberScreen(ChatMembers: widget.groupRoom, MemberList: memberList,),
+                    builder: (context) =>  GroupMemberScreen(chatMembers: widget.groupRoom,),
                   ));
             },
             icon: const Icon(Iconsax.user),

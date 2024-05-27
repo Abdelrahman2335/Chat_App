@@ -153,4 +153,29 @@ class FireData {
       /// so we can't use msgs directly in the doc because this list and doc will not find list he will find only string
     }
   }
+
+  Future editGroup(String gId, String name, List members) async {
+    await firestore
+        .collection("groups")
+        .doc(gId)
+        .update({"name": name, "members": FieldValue.arrayUnion(members)});
+  }
+
+  Future removeMember(String gId, memberId) async {
+    await firestore.collection("groups").doc(gId).update({
+      "members": FieldValue.arrayRemove([memberId])
+    });
+  }
+
+  Future promptAdmin(String gId, memberId) async {
+    await firestore.collection("groups").doc(gId).update({
+      "admin": FieldValue.arrayUnion([memberId])
+    });
+  }
+
+  Future removeAdmin(String gId, memberId) async {
+    await firestore.collection("groups").doc(gId).update({
+      "admin": FieldValue.arrayRemove([memberId])
+    });
+  }
 }

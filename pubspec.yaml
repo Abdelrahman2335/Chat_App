@@ -53,6 +53,8 @@ dependencies:
   cached_network_image: ^3.3.1
   agora_rtc_engine: ^6.3.1
   permission_handler: ^11.3.1
+  provider: ^6.1.2
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

@@ -40,6 +40,7 @@ class GroupCard extends StatelessWidget {
                 return Text("Error: ${snapshot.error}");
               }
 
+
               if (!snapshot.hasData) {
                 return const CircularProgressIndicator();
               }

@@ -1,10 +1,12 @@
 import 'package:chat_app/Widget/Settings/profile.dart';
+import 'package:chat_app/provider/provider.dart';
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class SettingHomeScreen extends StatefulWidget {
@@ -15,10 +17,11 @@ class SettingHomeScreen extends StatefulWidget {
 }
 
 class _SettingHomeScreenState extends State<SettingHomeScreen> {
-  bool isSwitch = false;
-  final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.toString();
+
+final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.toString();
   @override
   Widget build(BuildContext context) {
+    final prov = Provider.of<ProviderApp>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
@@ -123,11 +126,9 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                   title: const Text("Dark Mode"),
                   leading: const Icon(Iconsax.user),
                   trailing: Switch(
-                      value: isSwitch,
+                      value: prov.themeMode == ThemeMode.dark,
                       onChanged: (value) {
-                        setState(() {
-                          isSwitch = value;
-                        });
+                        prov.changeMode(value);
                       }),
                 ),
               ),

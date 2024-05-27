@@ -1,12 +1,14 @@
 import 'package:chat_app/Widget/text_field.dart';
 import 'package:chat_app/layout.dart';
 import 'package:chat_app/main.dart';
+import 'package:chat_app/provider/provider.dart';
 import 'package:chat_app/screens/forget_password.dart';
 import 'package:chat_app/screens/info_screen.dart';
 import 'package:chat_app/screens/setup_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -16,7 +18,7 @@ class LoginScreen extends StatelessWidget {
     /// We have to use dispose with any Controller.
     TextEditingController emailCon = TextEditingController();
     TextEditingController passCon = TextEditingController();
-
+    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
     return Scaffold(
       appBar: AppBar(title: const Text("Chat")),
       body: SingleChildScrollView(
@@ -74,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                    backgroundColor: myColorScheme.primary,
+                    backgroundColor: isDark? myDarkColorScheme.primary : myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
 
