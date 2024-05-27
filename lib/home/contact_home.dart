@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:chat_app/Widget/floating_action_bottom.dart';
 import 'package:chat_app/firebase/fire_database.dart';
 import 'package:chat_app/models/user_model.dart';
@@ -24,11 +23,10 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
   bool isSearch = false;
   List myContact = [];
 
-  contactLogic() async{
-
+  contactLogic() async {
     if (emailCon.text != "" && emailCon.text != FireAuth.user.email) {
       await FireData().creatContacts(emailCon.text).then(
-            (value) {
+        (value) {
           setState(() {
             emailCon.text = "";
           });
@@ -39,10 +37,9 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          titleTextStyle:
-          Theme.of(context).textTheme.bodyMedium,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: 10, vertical: 10),
+          titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           alignment: Alignment.center,
           title: Text(
             "Invalid Email",
@@ -78,9 +75,9 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
                     child: TextField(
                       onChanged: (value) {
                         Timer(const Duration(seconds: 1), () {
-                        setState(() {
-                          searchCon.text = value;
-                        });
+                          setState(() {
+                            searchCon.text = value;
+                          });
                         });
                       },
                       autofocus: true,
