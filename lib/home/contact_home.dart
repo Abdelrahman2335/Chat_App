@@ -124,7 +124,7 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      myContact = snapshot.data!.data()!["my_users"];
+                      myContact = snapshot.data!.data()!["my_users"] ?? [];
 
                       /// Here we are taking the id from the firebase so we will use it later...
                       return StreamBuilder(

@@ -1,8 +1,12 @@
+import 'dart:io';
+
+import 'package:chat_app/firebase/fire_storage.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../main.dart';
 
@@ -16,11 +20,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController nameCon = TextEditingController();
   TextEditingController infoCon = TextEditingController();
+  String _image = "";
   bool changeName = false;
   bool info = false;
   final myId = FirebaseAuth.instance.currentUser!.uid;
   ChatUser? userInfo;
-
+  String me = "";
   getData() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -30,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .then((value) {
       infoCon.text = value.about.toString();
       nameCon.text = value.name.toString();
+      me = value.image.toString();
     });
   }
 
@@ -66,14 +72,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   /// hard to explain just remove this clipBehavior and you will see the difference
                   children: [
-                    const CircleAvatar(
-                      radius: 60,
-                    ),
+                    _image == ""
+                        ?  me == "" ?  const CircleAvatar(
+                            radius: 60,
+                          ) :  CircleAvatar(
+                      radius: 60, backgroundImage: NetworkImage(me),
+                    )
+                        : CircleAvatar(
+                            radius: 60,
+                            backgroundImage: FileImage(File(_image)),
+                          ),
                     Positioned(
                       bottom: -5,
                       right: 5,
                       child: IconButton.filled(
-                        onPressed: () {},
+                        onPressed: () async {
+                          XFile? image = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (image != null) {
+                            setState(() {
+                              _image = image.path;
+                            });
+                            FireStorage().profileImage(file: File(image.path));
+                          }
+                        },
                         icon: const Icon(Iconsax.edit),
                       ),
                     ),
@@ -151,7 +173,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         borderRadius: BorderRadius.circular(12)),
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
-                onPressed: () {},
+                onPressed: () {
+                  print(me);
+                },
                 child: const Center(
                   child: Text(
                     "SAVE",

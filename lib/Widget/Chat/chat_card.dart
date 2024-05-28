@@ -43,9 +43,13 @@ class ChatCard extends StatelessWidget {
                   subtitle: Text(item.lastMessage! == ""
                       ? chatUser.about!
                       : item.lastMessage!,maxLines: 1,overflow: TextOverflow.ellipsis,),
-                  leading:  CircleAvatar(
-                    child: Text(chatUser.name!.characters.first.toUpperCase()),
-                  ),
+                  leading: chatUser.image == ""
+                      ? CircleAvatar(
+                          child: Text(chatUser.name!.characters.first.toUpperCase()),
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(chatUser.image!),
+                        ),
                   trailing: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection("rooms")

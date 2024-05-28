@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/provider.dart';
 
 class ChatMessageCard extends StatefulWidget {
   final int index;
@@ -35,6 +38,8 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
   Widget build(BuildContext context) {
     bool isMe =
         widget.messageContent.fromId == FirebaseAuth.instance.currentUser!.uid;
+    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+    Color chatColor =  isDark? Colors.white:Colors.black;
     return Container(
       decoration: BoxDecoration(
           color:widget.selected? Colors.grey : Colors.transparent, borderRadius: BorderRadius.circular(12)),
@@ -46,7 +51,7 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
           isMe
               ? IconButton(
                   onPressed: () {},
-                  icon: const Icon(Iconsax.message_edit),
+                  icon:  Icon(Iconsax.message_edit,color: chatColor),
                 )
               : const SizedBox(),
           Card(
@@ -72,7 +77,11 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                             placeholder: (context, url) =>
                                 const CircularProgressIndicator(),
                           )
-                        : Text(widget.messageContent.msg!),
+                        : Text(
+                            widget.messageContent.msg!,
+                            style: TextStyle(
+                                color: chatColor ),
+                          ),
                     const SizedBox(
                       height: 6,
                     ),
@@ -80,13 +89,15 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Iconsax.tick_circle,
-                          size: 15,
-                          color: widget.messageContent.read == ""
-                              ? Colors.grey
+                        isMe
+                            ? Icon(
+                                Iconsax.tick_circle,
+                                size: 15,
+                                color: widget.messageContent.read == ""
+                                    ? Colors.grey
                               : Colors.blueAccent,
-                        ),
+                              )
+                            : Container(),
                         const SizedBox(
                           width: 10,
                         ),
@@ -98,7 +109,8 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                                 ),
                               )
                               .toString(),
-                          style: Theme.of(context).textTheme.labelSmall,
+                          style: TextStyle(
+                              color: chatColor),
                         ),
                         const SizedBox(
                           width: 6,

@@ -91,7 +91,7 @@ class _CreateGroupState extends State<CreateGroup> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      myContact = snapshot.data!.data()!["my_users"];
+                      myContact = snapshot.data!.data()!["my_users"]?? [];
 
                       /// Here we are taking the id from the firebase so we will use it later...
                       return StreamBuilder(
@@ -109,6 +109,7 @@ class _CreateGroupState extends State<CreateGroup> {
                                   .map((e) => ChatUser.fromjson(e.data()))
                                   .toList()
                                 ..sort((a, b) => a.name!.compareTo(b.name!));
+
                               return ListView.builder(
                                   itemCount: items.length,
                                   itemBuilder: (context, index) {
