@@ -18,6 +18,7 @@ class _LayOutAppState extends State<LayOutApp> {
   @override
   void initState() {
     Provider.of<ProviderApp>(context, listen: false).getValuesPref();
+    Provider.of<ProviderApp>(context, listen: false).getUserData();
     super.initState();
   }
   int currentIndex = 0;

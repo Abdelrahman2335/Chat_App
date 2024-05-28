@@ -219,7 +219,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 onTap: () => FireData().sendMessage(
                                     widget.friendData.id!,
                                     "Say Assalamu Alaikum 👋",
-                                    widget.roomId),
+                                    widget.roomId,
+                                    context,
+                                    widget.friendData),
                                 child: Card(
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
@@ -290,10 +292,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                     FireStorage().sendImage(
                                         file: File(image.path),
                                         roomId: widget.roomId,
-                                        uid: widget.friendData.id!);
+                                        uid: widget.friendData.id!,
+                                        chatUser: widget.friendData,
+                                        context: context);
                                   }
                                 },
-                                icon:  Icon(
+                                icon: Icon(
                                   Icons.camera_alt_outlined,
                                   color: isDark ? Colors.white : Colors.black,
                                 ),
@@ -318,7 +322,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (msgCon.text.isNotEmpty) {
                           FireData()
                               .sendMessage(widget.friendData.id!, msgCon.text,
-                                  widget.roomId)
+                                  widget.roomId, context, widget.friendData)
                               .then((value) => setState(() {
                                     msgCon.text = "";
                                   }));

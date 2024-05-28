@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat_app/firebase/fire_database.dart';
 import 'package:chat_app/firebase/fire_storage.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,8 +8,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../main.dart';
+import '../../provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,13 +22,14 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController nameCon = TextEditingController();
-  TextEditingController infoCon = TextEditingController();
+  TextEditingController aboutCon = TextEditingController();
   String _image = "";
   bool changeName = false;
-  bool info = false;
+  bool changeAbout = false;
   final myId = FirebaseAuth.instance.currentUser!.uid;
   ChatUser? userInfo;
-  String me = "";
+  String myImage = "";
+  String createdDate = "";
   getData() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -33,9 +37,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .get()
         .then((value) => userInfo = ChatUser.fromjson(value.data()!))
         .then((value) {
-      infoCon.text = value.about.toString();
+      createdDate = value.createdAt.toString();
+      aboutCon.text = value.about.toString();
       nameCon.text = value.name.toString();
-      me = value.image.toString();
+      myImage = value.image.toString();
     });
   }
 
@@ -43,20 +48,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       FirebaseAuth.instance.currentUser!.email.toString();
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     getData() ?? const Center(child: CircularProgressIndicator());
+    createdDate;
   }
 
   @override
   void dispose() {
     super.dispose();
     nameCon.dispose();
-    infoCon.dispose();
+    aboutCon.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+    Color colorTheme = isDark ? Colors.white : Colors.black;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
@@ -73,11 +81,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   /// hard to explain just remove this clipBehavior and you will see the difference
                   children: [
                     _image == ""
-                        ?  me == "" ?  const CircleAvatar(
-                            radius: 60,
-                          ) :  CircleAvatar(
-                      radius: 60, backgroundImage: NetworkImage(me),
-                    )
+                        ? myImage == ""
+                            ? const CircleAvatar(
+                                radius: 60,
+                              )
+                            : CircleAvatar(
+                                radius: 60,
+                                backgroundImage: NetworkImage(myImage),
+                              )
                         : CircleAvatar(
                             radius: 60,
                             backgroundImage: FileImage(File(_image)),
@@ -118,8 +129,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const Icon(Iconsax.user_octagon),
                   title: TextField(
                     controller: nameCon,
-                    style: TextStyle(
-                        color: changeName ? Colors.white : Colors.grey),
+                    style:
+                        TextStyle(color: changeName ? colorTheme : Colors.grey),
                     enabled: changeName,
                     decoration: const InputDecoration(
                       label: Text("Name"),
@@ -133,16 +144,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   trailing: IconButton(
                     onPressed: () {
                       setState(() {
-                        info = !info;
+                        changeAbout = !changeAbout;
                       });
                     },
                     icon: const Icon(Iconsax.edit),
                   ),
                   leading: const Icon(Iconsax.information),
                   title: TextField(
-                    controller: infoCon,
-                    style: TextStyle(color: info ? Colors.white : Colors.grey),
-                    enabled: info,
+                    controller: aboutCon,
+                    style: TextStyle(
+                        color: changeAbout ? colorTheme : Colors.grey),
+                    enabled: changeAbout,
                     decoration: const InputDecoration(
                       label: Text("About"),
                       border: InputBorder.none,
@@ -157,11 +169,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: const Text("Email"),
                 ),
               ),
-              const Card(
+               Card(
                 child: ListTile(
-                  leading: Icon(Iconsax.timer_1),
-                  title: Text("Joined on"),
-                  subtitle: Text("11/5/2024"),
+                  leading: const Icon(Iconsax.timer_1),
+                  title: const Text("Joined on"),
+                  subtitle: Text(createdDate),
                 ),
               ),
               const SizedBox(
@@ -174,7 +186,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () {
-                  print(me);
+                  if (nameCon.text != "" && aboutCon.text != "") {
+                    FireData().editProfile(nameCon.text, aboutCon.text).then(
+                      (value) {
+                        setState(() {
+                          changeAbout = false;
+                          changeName = false;
+                        });
+                      },
+                    );
+                  }
                 },
                 child: const Center(
                   child: Text(

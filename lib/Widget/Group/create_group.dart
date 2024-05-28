@@ -25,7 +25,17 @@ class _CreateGroupState extends State<CreateGroup> {
       floatingActionButton: members.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: () {
-                FireData().creatGroup(gName.text, members).then((value) => Navigator.pop(context));
+                if (gName.text.isNotEmpty) {
+                  FireData()
+                      .creatGroup(gName.text, members)
+                      .then((value) => Navigator.pop(context));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Give your group a name"),
+                    ),
+                  );
+                }
               },
               label: const Text("Done"),
               icon: const Icon(Iconsax.tick_circle),
@@ -70,7 +80,7 @@ class _CreateGroupState extends State<CreateGroup> {
               padding: EdgeInsets.only(top: 16, bottom: 16),
               child: Divider(),
             ),
-             Row(
+            Row(
               children: [
                 const Text("Members"),
                 const Spacer(),
@@ -91,7 +101,7 @@ class _CreateGroupState extends State<CreateGroup> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      myContact = snapshot.data!.data()!["my_users"]?? [];
+                      myContact = snapshot.data!.data()!["my_users"] ?? [];
 
                       /// Here we are taking the id from the firebase so we will use it later...
                       return StreamBuilder(

@@ -35,6 +35,7 @@ class LoginScreen extends StatelessWidget {
                 height: 16,
               ),
               CustomField(
+                isEmail: true,
                 controller: emailCon,
                 lable: 'Email',
                 icon: Iconsax.direct,
@@ -48,6 +49,7 @@ class LoginScreen extends StatelessWidget {
                 icon: Iconsax.password_check,
                 secure: true,
               ),
+
               const SizedBox(
                 height: 16,
               ),

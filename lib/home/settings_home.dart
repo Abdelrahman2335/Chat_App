@@ -1,6 +1,7 @@
 import 'package:chat_app/Widget/Settings/profile.dart';
 import 'package:chat_app/provider/provider.dart';
 import 'package:chat_app/screens/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -8,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../models/user_model.dart';
 
 class SettingHomeScreen extends StatefulWidget {
   const SettingHomeScreen({super.key});
@@ -17,11 +20,35 @@ class SettingHomeScreen extends StatefulWidget {
 }
 
 class _SettingHomeScreenState extends State<SettingHomeScreen> {
+  String currentUserName = "";
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
+  String myImage = "";
+  ChatUser? userInfo;
 
-final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.toString();
+  userinfo() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .get()
+        .then((value) => userInfo = ChatUser.fromjson(value.data()!))
+        .then(
+      (value) {
+        myImage = value.image!;
+        currentUserName = value.name!;
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userinfo() ?? const Center(child: CircularProgressIndicator());
+  }
+
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<ProviderApp>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
@@ -36,7 +63,7 @@ final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.to
                 leading: const CircleAvatar(
                   radius: 30,
                 ),
-                title:  Text(currentUserName),
+                title: Text(currentUserName),
                 trailing: IconButton(
                   onPressed: () {
                     // Navigator.push(

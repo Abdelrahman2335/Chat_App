@@ -1,12 +1,16 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/room_model.dart';
+import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 ///class named FireData
 class FireData {
@@ -53,7 +57,7 @@ class FireData {
     }
   }
 
-  Future creatGroup(String name,List members) async {
+  Future creatGroup(String name, List members) async {
     String gId = const Uuid().v6();
     members.add(myUid);
     GroupRoom groupRoom = GroupRoom(
@@ -66,7 +70,6 @@ class FireData {
         lastMessage: "",
         lastMessageTime: now);
     await firestore.collection("groups").doc(gId).set(groupRoom.toJson());
-
   }
 
   Future creatContacts(String email) async {
@@ -85,7 +88,7 @@ class FireData {
     }
   }
 
-  Future sendMessage(String uid, String msg, String roomId,
+  Future sendMessage(String uid, String msg, String roomId, BuildContext context, ChatUser chatUser,
       {String? type}) async {
     String msgId = const Uuid().v6();
     Message message = Message(
@@ -103,16 +106,18 @@ class FireData {
         .doc(msgId)
         .set(
           message.tojson(),
-        );
+        )
+        .then((value) =>
+        sendNotification(chatUser: chatUser, context: context, msg: type ?? msg));;
 
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
-    await firestore.collection("rooms").doc(roomId).update({
-      "lastMessage": type ?? msg,
-      "lastMessageTime": now
-    });
+    await firestore
+        .collection("rooms")
+        .doc(roomId)
+        .update({"lastMessage": type ?? msg, "lastMessageTime": now});
   }
 
-  Future sendGMessage( String msg, String groupId,
+  Future sendGMessage(String msg, String groupId,
       {String? type}) async {
     String msgId = const Uuid().v6();
     Message message = Message(
@@ -133,10 +138,10 @@ class FireData {
         );
 
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
-    await firestore.collection("groups").doc(groupId).update({
-      "lastMessage": type ?? msg,
-      "lastMessageTime": now
-    });
+    await firestore
+        .collection("groups")
+        .doc(groupId)
+        .update({"lastMessage": type ?? msg, "lastMessageTime": now});
   }
 
   Future readMessage(String roomId, String msgId) async {
@@ -147,9 +152,16 @@ class FireData {
         .doc(msgId)
         .update({"read": now});
   }
-    deleteMsg(String roomId, List<String> msgs)async{
-    for (var element in msgs){
-     await firestore.collection("rooms").doc(roomId).collection("messages").doc(element).delete();
+
+  deleteMsg(String roomId, List<String> msgs) async {
+    for (var element in msgs) {
+      await firestore
+          .collection("rooms")
+          .doc(roomId)
+          .collection("messages")
+          .doc(element)
+          .delete();
+
       /// so we can't use msgs directly in the doc because this list and doc will not find list he will find only string
     }
   }
@@ -177,5 +189,34 @@ class FireData {
     await firestore.collection("groups").doc(gId).update({
       "admin": FieldValue.arrayRemove([memberId])
     });
+  }
+
+  Future editProfile(String name, String about) async {
+    await firestore
+        .collection("users")
+        .doc(myUid)
+        .update({"name": name, "about": about});
+  }
+
+  sendNotification(
+      {required ChatUser chatUser,
+      required BuildContext context,
+      required String msg}) async {
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization":
+          "we have some problems so we will not write anything here for now..."
+    };
+    final body = {
+      "to": chatUser.pushToken,
+      "notification": {
+        "title": Provider.of(context)<ProviderApp>(context).me!.name,
+        "body": msg,
+      }
+    };
+    final request = await http.post(
+        Uri.parse("https://fcm.googleapis.com/send"),
+        body: jsonEncode(body),
+        headers: header);
   }
 }

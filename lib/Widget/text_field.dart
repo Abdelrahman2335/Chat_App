@@ -12,6 +12,7 @@ class CustomField extends StatefulWidget {
   final IconData icon;
   final TextEditingController controller;
   final bool secure;
+  final bool isEmail;
 
   const CustomField({
     super.key,
@@ -19,6 +20,7 @@ class CustomField extends StatefulWidget {
     required this.icon,
     required this.controller,
     this.secure = false,
+    this.isEmail = false,
   });
 
   @override
@@ -66,6 +68,7 @@ class _CustomFieldState extends State<CustomField> {
           color: color,
         ),
       ),
+      keyboardType: widget.isEmail ? TextInputType.emailAddress : null,
     );
   }
 }

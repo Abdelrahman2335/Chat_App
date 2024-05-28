@@ -8,21 +8,29 @@ class FireAuth {
 
   static User user = auth.currentUser!;
 
-
-  static Future createUser() async{
+  static Future createUser() async {
     ChatUser chatUser = ChatUser(
-        id: user.uid,
-        name: user.displayName,
-        email: user.email,
-        about: "Hi I'm ${user.displayName}",
-        image: "",
-        createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
-        lastSeen: DateTime.now().millisecondsSinceEpoch.toString(),
-        pushToken: "",
+      id: user.uid,
+      name: user.displayName,
+      email: user.email,
+      about: "Hi I'm ${user.displayName}",
+      image: "",
+      createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
+      lastSeen: DateTime.now().millisecondsSinceEpoch.toString(),
+      pushToken: "",
       online: false,
       myUsers: [],
     );
-    await firebaseFirestore.collection("users").doc(user.uid).set(chatUser.tojson());
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(chatUser.tojson());
   }
-  
+
+  Future updateToken(String token) async {
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .update({"push_token": token});
+  }
 }
