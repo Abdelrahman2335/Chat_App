@@ -1,3 +1,5 @@
+import 'package:chat_app/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -16,22 +18,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController infoCon = TextEditingController();
   bool changeName = false;
   bool info = false;
-  final String currentUserEmail = FirebaseAuth.instance.currentUser!.email.toString();
-  final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.toString();
+  final myId = FirebaseAuth.instance.currentUser!.uid;
+  ChatUser? userInfo;
+
+  getData() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(myId)
+        .get()
+        .then((value) => userInfo = ChatUser.fromjson(value.data()!))
+        .then((value) {
+      infoCon.text = value.about.toString();
+      nameCon.text = value.name.toString();
+    });
+  }
+
+  final String currentUserEmail =
+      FirebaseAuth.instance.currentUser!.email.toString();
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
-    nameCon.text = currentUserName;
-    infoCon.text = "Hi, I'm using chat app";
+    getData() ?? const Center(child: CircularProgressIndicator());
   }
+
   @override
   void dispose() {
     super.dispose();
     nameCon.dispose();
     infoCon.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const Icon(Iconsax.user_octagon),
                   title: TextField(
                     controller: nameCon,
+                    style: TextStyle(
+                        color: changeName ? Colors.white : Colors.grey),
                     enabled: changeName,
                     decoration: const InputDecoration(
                       label: Text("Name"),
@@ -101,6 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: const Icon(Iconsax.information),
                   title: TextField(
                     controller: infoCon,
+                    style: TextStyle(color: info ? Colors.white : Colors.grey),
                     enabled: info,
                     decoration: const InputDecoration(
                       label: Text("About"),
@@ -109,13 +128,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-               Card(
+              Card(
                 child: ListTile(
                   leading: const Icon(Iconsax.direct),
                   subtitle: Text(currentUserEmail),
                   title: const Text("Email"),
                 ),
-              ),const Card(
+              ),
+              const Card(
                 child: ListTile(
                   leading: Icon(Iconsax.timer_1),
                   title: Text("Joined on"),

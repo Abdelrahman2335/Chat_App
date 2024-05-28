@@ -103,8 +103,10 @@ final String currentUserName = FirebaseAuth.instance.currentUser!.displayName.to
                           return AlertDialog(
                             content: SingleChildScrollView(
                               child: BlockPicker(
-                                pickerColor: Colors.red,
-                                onColorChanged: (value) {},
+                                pickerColor: Color(prov.mainColor),
+                                onColorChanged: (value) {
+                                  prov.changeColor(value.value);
+                                },
                               ),
                             ),
                             actions: [

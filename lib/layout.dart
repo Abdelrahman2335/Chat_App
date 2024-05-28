@@ -2,8 +2,10 @@ import 'package:chat_app/home/chat_home.dart';
 import 'package:chat_app/home/contact_home.dart';
 import 'package:chat_app/home/group_home.dart';
 import 'package:chat_app/home/settings_home.dart';
+import 'package:chat_app/provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 class LayOutApp extends StatefulWidget {
   const LayOutApp({super.key});
@@ -13,6 +15,11 @@ class LayOutApp extends StatefulWidget {
 }
 
 class _LayOutAppState extends State<LayOutApp> {
+  @override
+  void initState() {
+    Provider.of<ProviderApp>(context, listen: false).getValuesPref();
+    super.initState();
+  }
   int currentIndex = 0;
   PageController pageController = PageController();
   /// you have to write this int here so we can setState.
