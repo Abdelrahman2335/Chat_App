@@ -46,9 +46,18 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.friendData.name!),
-            Text(
-              widget.friendData.lastSeen!,
-              style: Theme.of(context).textTheme.labelMedium,
+            StreamBuilder<Object>(
+              stream: FirebaseFirestore.instance.collection("users").doc(widget.friendData.id).snapshots(),
+              builder: (context, snapshot) {
+                if(snapshot.hasData){
+                  return Text(
+                    widget.friendData.online!
+                        ? "Online"
+                        : "Last seen ${widget.friendData.lastSeen!}",
+                    style: Theme.of(context).textTheme.labelMedium,
+                  );
+                }else{return Container();}
+              }
             ),
           ],
         ),

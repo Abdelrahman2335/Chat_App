@@ -1,10 +1,17 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/provider.dart';
+import '../../screens/photo_view.dart';
 
 class GroupMessageCard extends StatelessWidget {
   final Message message;
@@ -19,6 +26,8 @@ class GroupMessageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMe = message.fromId == FirebaseAuth.instance.currentUser!.uid;
+    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+    Color chatColor = isDark ? Colors.white : Colors.black;
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("users")
@@ -65,7 +74,61 @@ class GroupMessageCard extends StatelessWidget {
                                           .labelLarge,
                                     )
                                   : const SizedBox(),
-                              Text(message.msg!),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  message.type == "image"
+                                      ? GestureDetector(
+                                          onTap: () => Get.to(() =>
+                                              PhotoViewScreen(
+                                                  image: message.msg!)),
+                                          child: CachedNetworkImage(
+                                            imageUrl: message.msg!,
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                          ),
+                                        )
+                                      : Text(
+                                          message.msg!,
+                                          style: TextStyle(color: chatColor),
+                                        ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      isMe
+                                          ? Icon(
+                                              Iconsax.tick_circle,
+                                              size: 15,
+                                              color: message.read == ""
+                                                  ? Colors.grey
+                                                  : Colors.blueAccent,
+                                            )
+                                          : Container(),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        DateFormat.yMMMEd()
+                                            .format(
+                                              DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                int.parse(message.createdAt!),
+                                              ),
+                                            )
+                                            .toString(),
+                                        style: TextStyle(color: chatColor),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                               const SizedBox(
                                 height: 5,
                               ),
@@ -84,8 +147,8 @@ class GroupMessageCard extends StatelessWidget {
                                   isMe
                                       ? const Icon(
                                           Iconsax.tick_circle,
-                                    size: 15,
-                                    color: Colors.blueAccent,
+                                          size: 15,
+                                          color: Colors.blueAccent,
                                         )
                                       : Container(),
                                 ],

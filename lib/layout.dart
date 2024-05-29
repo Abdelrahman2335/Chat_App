@@ -1,9 +1,11 @@
+import 'package:chat_app/firebase/firebase_auth.dart';
 import 'package:chat_app/home/chat_home.dart';
 import 'package:chat_app/home/contact_home.dart';
 import 'package:chat_app/home/group_home.dart';
 import 'package:chat_app/home/settings_home.dart';
 import 'package:chat_app/provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +21,14 @@ class _LayOutAppState extends State<LayOutApp> {
   void initState() {
     Provider.of<ProviderApp>(context, listen: false).getValuesPref();
     Provider.of<ProviderApp>(context, listen: false).getUserData();
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      if(message.toString() == "AppLifecycleState.resumed"){
+        FireAuth().updateStatus(true);
+      }else{
+        FireAuth().updateStatus(false);
+      }
+      return Future.value(message);
+    });
     super.initState();
   }
   int currentIndex = 0;
