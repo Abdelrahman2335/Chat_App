@@ -93,7 +93,7 @@ class _GroupScreenState extends State<GroupScreen> {
                           child: GestureDetector(
                             onTap: () {
                               FireData().sendGMessage("Say Assalamu Alaikum👋",
-                                  widget.groupRoom.id!);
+                                  widget.groupRoom.id!,context, widget.groupRoom,);
                             },
                             child: Card(
                               child: Padding(
@@ -180,7 +180,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       onPressed: () {
                         if (msgCon.text.isNotEmpty) {
                           FireData()
-                              .sendGMessage(msgCon.text, widget.groupRoom.id!)
+                              .sendGMessage(msgCon.text, widget.groupRoom.id!,context,widget.groupRoom)
                               .then((value) {
                             setState(() {
                               msgCon.text = "";
