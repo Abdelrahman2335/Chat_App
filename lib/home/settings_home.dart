@@ -1,8 +1,10 @@
+
 import 'package:chat_app/Widget/Settings/profile.dart';
 import 'package:chat_app/provider/provider.dart';
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
@@ -22,9 +24,8 @@ class SettingHomeScreen extends StatefulWidget {
 class _SettingHomeScreenState extends State<SettingHomeScreen> {
   String currentUserName = "";
   final String uid = FirebaseAuth.instance.currentUser!.uid;
-  String myImage = "";
   ChatUser? userInfo;
-
+   var myImage;
   userinfo() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -33,8 +34,10 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
         .then((value) => userInfo = ChatUser.fromjson(value.data()!))
         .then(
       (value) {
-        myImage = value.image!;
-        currentUserName = value.name!;
+        setState(() {
+         myImage = NetworkImage(value.image!);
+          currentUserName = value.name!;
+        });
       },
     );
   }
@@ -60,7 +63,8 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
             children: [
               ListTile(
                 minVerticalPadding: 40,
-                leading: const CircleAvatar(
+                leading:  CircleAvatar(
+                  backgroundImage: myImage,
                   radius: 30,
                 ),
                 title: Text(currentUserName),

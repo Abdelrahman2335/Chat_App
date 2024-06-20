@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                    backgroundColor: myColorScheme.primary,
+                    backgroundColor: isDark? myDarkColorScheme.primary : myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () {
                   if (nameCon.text != "" && aboutCon.text != "") {
@@ -197,10 +197,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   }
                 },
-                child: const Center(
+                child:  Center(
                   child: Text(
                     "SAVE",
-                    style: TextStyle(color: Colors.white),
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
               ),
