@@ -6,6 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/provider.dart';
 
 class SetUpProfile extends StatelessWidget {
   const SetUpProfile({super.key});
@@ -14,6 +17,7 @@ class SetUpProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController emailCon = TextEditingController();
     TextEditingController passCon = TextEditingController();
+    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +70,7 @@ class SetUpProfile extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                    backgroundColor: myColorScheme.primary,
+                    backgroundColor: isDark? myDarkColorScheme.primary : myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
                   await FirebaseAuth.instance

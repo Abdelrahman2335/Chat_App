@@ -19,7 +19,8 @@ void main() async {
 
 ColorScheme myColorScheme = ColorScheme.fromSeed(
     seedColor: const Color.fromARGB(3, 252, 252, 250),
-    brightness: Brightness.light);
+  brightness: Brightness.light,
+);
 ColorScheme myDarkColorScheme = ColorScheme.fromSeed(
   seedColor: Colors.redAccent,
   brightness: Brightness.dark,
@@ -37,18 +38,26 @@ class MyApp extends StatelessWidget {
           themeMode: value.themeMode,
 
           /// Note that value = Provider.of<ProviderApp>(context).themeMode.
-          /// But we can't we if here so we used Consumer.
+          /// But we can't use if here so we used Consumer.
           debugShowCheckedModeBanner: false,
           theme: ThemeData().copyWith(
               colorScheme: ColorScheme.fromSeed(
                   seedColor: Color(value.mainColor),
-                  brightness: Brightness.light)),
+                brightness: Brightness.light),
+          ),
           darkTheme: ThemeData().copyWith(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: Color(value.mainColor),
                 brightness: Brightness.dark,
               ),
-              scaffoldBackgroundColor: myDarkColorScheme.background),
+            scaffoldBackgroundColor: myDarkColorScheme.surface,
+            textTheme: TextTheme(
+                headlineMedium: TextStyle(
+                  color: myDarkColorScheme.primary,
+                ),
+                bodyLarge:
+                    TextStyle(color: myDarkColorScheme.primary)),
+          ),
 
           home: StreamBuilder(
             stream: FirebaseAuth.instance.userChanges(),
