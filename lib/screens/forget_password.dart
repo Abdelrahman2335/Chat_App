@@ -1,4 +1,5 @@
 import 'package:chat_app/Widget/text_field.dart';
+import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class ForgetScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
                   await FirebaseAuth.instance

@@ -1,16 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/room_model.dart';
 import 'package:chat_app/models/user_model.dart';
-import 'package:chat_app/provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 
 ///class named FireData
 class FireData {
@@ -106,9 +102,7 @@ class FireData {
         .doc(msgId)
         .set(
           message.tojson(),
-        )
-        .then((value) =>
-        sendNotification(chatUser: chatUser, context: context, msg: type ?? msg));;
+        );
 
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
     await firestore
@@ -202,21 +196,5 @@ class FireData {
       {required ChatUser chatUser,
       required BuildContext context,
       required String msg}) async {
-    final header = {
-      "Content-Type": "application/json",
-      "Authorization":
-          "we have some problems so we will not write anything here for now..."
-    };
-    final body = {
-      "to": chatUser.pushToken,
-      "notification": {
-        "title": Provider.of(context)<ProviderApp>(context).me!.name,
-        "body": msg,
-      }
-    };
-    final request = await http.post(
-        Uri.parse("https://fcm.googleapis.com/send"),
-        body: jsonEncode(body),
-        headers: header);
   }
 }

@@ -2,10 +2,10 @@ import 'package:chat_app/Widget/chat/chat_screen.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/room_model.dart';
 import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/screens/date_time.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ChatCard extends StatelessWidget {
   final ChatRoom item;
@@ -79,10 +79,7 @@ class ChatCard extends StatelessWidget {
                                 label: Text(unReadList.length.toString()),
                                 largeSize: 30,
                               )
-                            : Text(DateFormat.yMMMEd()
-                                .format(DateTime.fromMillisecondsSinceEpoch(
-                                    int.parse(item.lastMessageTime.toString())))
-                                .toString());
+                            : Text(MyDateTime.timeByHour(item.lastMessageTime!).toString());
                       })),
             );
           } else {

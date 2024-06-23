@@ -3,9 +3,6 @@ import 'dart:ui';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:provider/provider.dart';
-
-import '../provider/provider.dart';
 
 class CustomField extends StatefulWidget {
   final String lable;
@@ -32,7 +29,7 @@ class _CustomFieldState extends State<CustomField> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     Color color = isDark ? Colors.white : Colors.black;
 
     return TextFormField(
@@ -43,7 +40,7 @@ class _CustomFieldState extends State<CustomField> {
         contentPadding: const EdgeInsets.all(17),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide(color: myColorScheme.primary)),
+            borderSide: BorderSide(color: myColorScheme.secondary)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -63,6 +60,7 @@ class _CustomFieldState extends State<CustomField> {
               )
             : const SizedBox(),
         labelText: widget.lable,
+        labelStyle: Theme.of(context).textTheme.labelLarge,
         prefix: Icon(
           widget.icon,
           color: color,

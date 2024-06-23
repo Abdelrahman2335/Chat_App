@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_app/firebase/fire_database.dart';
 import 'package:chat_app/firebase/fire_storage.dart';
 import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/screens/date_time.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ChatUser? userInfo;
   String myImage = "";
   String createdDate = "";
+  XFile? image;
   getData() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -37,10 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .get()
         .then((value) => userInfo = ChatUser.fromjson(value.data()!))
         .then((value) {
-      createdDate = value.createdAt.toString();
-      aboutCon.text = value.about.toString();
+      setState(() {
+        createdDate = value.createdAt.toString();
+        aboutCon.text = value.about.toString();
       nameCon.text = value.name.toString();
       myImage = value.image.toString();
+      });
     });
   }
 
@@ -51,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     getData() ?? const Center(child: CircularProgressIndicator());
-    createdDate;
+     createdDate;
   }
 
   @override
@@ -104,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             setState(() {
                               _image = image.path;
                             });
-                            FireStorage().profileImage(file: File(image.path));
+                            FireStorage().profileImage(file: File(_image));
                           }
                         },
                         icon: const Icon(Iconsax.edit),
@@ -173,7 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ListTile(
                   leading: const Icon(Iconsax.timer_1),
                   title: const Text("Joined on"),
-                  subtitle: Text(createdDate),
+                  subtitle: Text(MyDateTime.dateFormat(createdDate).toString()),
                 ),
               ),
               const SizedBox(
@@ -183,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
-                    backgroundColor: isDark? myDarkColorScheme.primary : myColorScheme.primary,
+                    backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () {
                   if (nameCon.text != "" && aboutCon.text != "") {
@@ -196,8 +200,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     );
                   }
+                  if (_image != "".trim()) {
+                    FireStorage().profileImage(file: File(_image));
+                  }
                 },
-                child:  Center(
+                child: Center(
                   child: Text(
                     "SAVE",
                     style: Theme.of(context).textTheme.bodyMedium,

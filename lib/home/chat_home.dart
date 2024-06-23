@@ -41,7 +41,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
           alignment: Alignment.center,
           title: Text(
             "Invalid Email",
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           actions: [
             TextButton(

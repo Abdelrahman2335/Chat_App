@@ -25,7 +25,7 @@ class GroupCard extends StatelessWidget {
               builder: (context) =>  GroupScreen(groupRoom: groupRoom,),
             )),
         title: Text(groupRoom.name!),
-        subtitle: Text(groupRoom.lastMessage!),
+        subtitle: Text(groupRoom.lastMessage!,maxLines: 1,overflow: TextOverflow.ellipsis,),
         leading: CircleAvatar(
           child: Text(groupRoom.name!.characters.first.toUpperCase()),
         ),

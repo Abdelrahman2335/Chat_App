@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,13 +21,17 @@ class FireAuth {
       lastSeen: DateTime.now().millisecondsSinceEpoch.toString(),
       pushToken: "",
       online: false,
-      myUsers: [],
+      myUsers: [""],
     );
+    try{
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)
         .set(chatUser.tojson());
-  }
+  }catch(e){
+      log(e.toString());
+    }
+    }
 
   Future updateToken(String token) async {
     await firebaseFirestore
