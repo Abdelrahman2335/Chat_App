@@ -6,10 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/provider.dart';
+import '../../screens/date_time.dart';
 
 class ChatMessageCard extends StatefulWidget {
   final int index;
@@ -109,16 +109,8 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          DateFormat.yMMMEd()
-                              .format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                  int.parse(widget.messageContent.createdAt!),
-                                ),
-                              )
-                              .toString(),
-                          style: TextStyle(color: chatColor),
-                        ),
+                        Text(MyDateTime.timeByHour(widget.messageContent.createdAt!).toString(),style: Theme.of(context).textTheme.labelSmall,),
+
                         const SizedBox(
                           width: 6,
                         ),

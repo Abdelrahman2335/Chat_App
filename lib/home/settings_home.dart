@@ -26,6 +26,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   ChatUser? userInfo;
    var myImage;
+  bool noImage = true;
   userinfo() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -35,7 +36,8 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
         .then(
       (value) {
         setState(() {
-         myImage = NetworkImage(value.image!);
+          noImage = value.image!.trim() == "".trim();
+          myImage = NetworkImage(value.image!);
           currentUserName = value.name!;
         });
       },
@@ -63,10 +65,12 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
             children: [
               ListTile(
                 minVerticalPadding: 40,
-                leading:  CircleAvatar(
-                  backgroundImage: myImage,
-                  radius: 30,
-                ),
+                leading: noImage
+                    ? const CircleAvatar()
+                    : CircleAvatar(
+                        backgroundImage: myImage,
+                        radius: 30,
+                      ),
                 title: Text(currentUserName),
                 trailing: IconButton(
                   onPressed: () {
@@ -175,8 +179,10 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                               content: Text("Error occur"),
                             ),
                           ),
-                        );
-                    Get.offAll(const LoginScreen());
+                        )
+                        .then((_) {
+                      Get.offAll(const LoginScreen());
+                    });
                   },
                   title: const Text("Sign out"),
                   trailing: const Icon(Iconsax.logout_1),

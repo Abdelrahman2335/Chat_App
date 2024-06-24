@@ -43,7 +43,7 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
           alignment: Alignment.center,
           title: Text(
             "Invalid Email",
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           actions: [
             TextButton(

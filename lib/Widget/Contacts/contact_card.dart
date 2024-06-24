@@ -19,11 +19,16 @@ class ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool noImage = user.image!.trim() == "".trim();
     return Card(
       child: ListTile(
-        leading:  CircleAvatar(
-          backgroundImage: NetworkImage(user.image!),
-        ),
+        leading: noImage
+            ? CircleAvatar(
+                child: Text(user.name!.characters.first.toUpperCase()),
+              )
+            : CircleAvatar(
+                backgroundImage: NetworkImage(user.image!),
+              ),
         title: Text(user.name!),
         subtitle: Text(
           user.about!,

@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import '../../firebase/fire_storage.dart';
 import '../../models/user_model.dart';
-import '../../provider/provider.dart';
+import '../../screens/date_time.dart';
 import 'chat_message_card.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -39,25 +38,19 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     bool msgOwner = !senderId.contains(widget.friendData.id);
-    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    Color color = isDark ? Colors.white : Colors.black;
     return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.friendData.name!),
-            StreamBuilder<Object>(
-              stream: FirebaseFirestore.instance.collection("users").doc(widget.friendData.id).snapshots(),
-              builder: (context, snapshot) {
-                if(snapshot.hasData){
-                  return Text(
-                    widget.friendData.online!
-                        ? "Online"
-                        : "Last seen ${widget.friendData.lastSeen!}",
-                    style: Theme.of(context).textTheme.labelMedium,
-                  );
-                }else{return Container();}
-              }
+            Text(
+                MyDateTime.timeByHour(widget.friendData.lastSeen!).toString(),
+              style: Theme.of(context).textTheme.labelMedium,
+
             ),
           ],
         ),
@@ -276,7 +269,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Card(
                       child: TextField(
                         style: TextStyle(
-                            color: isDark ? Colors.white : Colors.black),
+                            color: color),
                         controller: msgCon,
                         maxLines: 7,
                         minLines: 1,
@@ -313,12 +306,13 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             ],
                           ),
+
                           border: InputBorder.none,
                           hintText: "Message",
                           hintStyle: TextStyle(
-                              color: isDark ? Colors.white : Colors.black),
+                              color:color),
                           contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10.0),
+                              horizontal: 10.0, vertical: 7.0),
                         ),
                       ),
                     ),

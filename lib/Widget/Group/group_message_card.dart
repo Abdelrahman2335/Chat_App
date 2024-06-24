@@ -74,6 +74,8 @@ class GroupMessageCard extends StatelessWidget {
                                           .labelLarge,
                                     )
                                   : const SizedBox(),
+                              Text(message.msg!,style:
+                              Theme.of(context).textTheme.labelLarge),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[

@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
           /// But we can't use if here so we used Consumer.
           debugShowCheckedModeBanner: false,
           theme: ThemeData().copyWith(
-              colorScheme: ColorScheme.fromSeed(
+              colorScheme: myColorScheme = ColorScheme.fromSeed(
                   seedColor: Color(value.mainColor),
                 brightness: Brightness.light),
           ),
@@ -53,10 +53,13 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: myDarkColorScheme.surface,
             textTheme: TextTheme(
                 headlineMedium: TextStyle(
-                  color: myDarkColorScheme.primary,
+                  color: myColorScheme.primary,
                 ),
                 bodyLarge:
-                    TextStyle(color: myDarkColorScheme.primary)),
+                    TextStyle(color: myColorScheme.primary),
+            bodyMedium: TextStyle(color: myColorScheme.onPrimary),
+            labelSmall: const TextStyle(color: Colors.white60)
+            ),
           ),
 
           home: StreamBuilder(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/Widget/text_field.dart';
 import 'package:chat_app/firebase/firebase_auth.dart';
 import 'package:chat_app/layout.dart';
@@ -54,7 +56,9 @@ class InfoScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
                   if (nameCon.text != "".trim()) {
-                    await FirebaseAuth.instance.currentUser!
+                    User? user = FirebaseAuth.instance.currentUser!;
+                    try{
+                    await user
                         .updateDisplayName(nameCon.text)
                         .then(
                       (value) {
@@ -66,7 +70,9 @@ class InfoScreen extends StatelessWidget {
                             ),
                             (route) => false);
                       },
-                    );
+                    );}catch(e){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to create account or save data: $e")));
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
