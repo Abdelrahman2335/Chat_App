@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/firebase/fire_database.dart';
 import 'package:chat_app/models/message_model.dart';
+import 'package:chat_app/screens/photo_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 
@@ -14,11 +16,13 @@ class ChatMessageCard extends StatefulWidget {
   final Message messageContent;
   final String roomId;
   final bool selected;
+
   const ChatMessageCard({
     super.key,
     required this.index,
     required this.messageContent,
-    required this.roomId, required this.selected,
+    required this.roomId,
+    required this.selected,
   });
 
   @override
@@ -39,10 +43,11 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
     bool isMe =
         widget.messageContent.fromId == FirebaseAuth.instance.currentUser!.uid;
     bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
-    Color chatColor =  isDark? Colors.white:Colors.black;
+    Color chatColor = isDark ? Colors.white : Colors.black;
     return Container(
       decoration: BoxDecoration(
-          color:widget.selected? Colors.grey : Colors.transparent, borderRadius: BorderRadius.circular(12)),
+          color: widget.selected ? Colors.grey : Colors.transparent,
+          borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
         mainAxisAlignment:
@@ -51,7 +56,7 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
           isMe
               ? IconButton(
                   onPressed: () {},
-                  icon:  Icon(Iconsax.message_edit,color: chatColor),
+                  icon: Icon(Iconsax.message_edit, color: chatColor),
                 )
               : const SizedBox(),
           Card(
@@ -72,15 +77,18 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     widget.messageContent.type == "image"
-                        ? CachedNetworkImage(
-                            imageUrl: widget.messageContent.msg!,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
+                        ? GestureDetector(
+                            onTap: () => Get.to(() => PhotoViewScreen(
+                                image: widget.messageContent.msg!)),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.messageContent.msg!,
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                            ),
                           )
                         : Text(
                             widget.messageContent.msg!,
-                            style: TextStyle(
-                                color: chatColor ),
+                            style: TextStyle(color: chatColor),
                           ),
                     const SizedBox(
                       height: 6,
@@ -95,13 +103,14 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                                 size: 15,
                                 color: widget.messageContent.read == ""
                                     ? Colors.grey
-                              : Colors.blueAccent,
+                                    : Colors.blueAccent,
                               )
                             : Container(),
                         const SizedBox(
                           width: 10,
                         ),
                         Text(MyDateTime.timeByHour(widget.messageContent.createdAt!).toString(),style: Theme.of(context).textTheme.labelSmall,),
+
                         const SizedBox(
                           width: 6,
                         ),

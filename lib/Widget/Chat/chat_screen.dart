@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Text(
                 MyDateTime.timeByHour(widget.friendData.lastSeen!).toString(),
               style: Theme.of(context).textTheme.labelMedium,
+
             ),
           ],
         ),

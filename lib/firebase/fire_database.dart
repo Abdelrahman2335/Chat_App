@@ -84,7 +84,8 @@ class FireData {
     }
   }
 
-  Future sendMessage(String uid, String msg, String roomId, BuildContext context, ChatUser chatUser,
+  Future sendMessage(String uid, String msg, String roomId,
+      BuildContext context, ChatUser chatUser,
       {String? type}) async {
     String msgId = const Uuid().v6();
     Message message = Message(
@@ -111,8 +112,18 @@ class FireData {
         .update({"lastMessage": type ?? msg, "lastMessageTime": now});
   }
 
-  Future sendGMessage(String msg, String groupId,
+  Future sendGMessage(
+      String msg, String groupId, BuildContext context, GroupRoom chatGroup,
       {String? type}) async {
+    List<ChatUser> chatUser = [];
+    chatGroup.members =
+        chatGroup.members!.where((element) => element != myUid).toList();
+    firestore
+        .collection("users")
+        .where("id", whereIn: chatGroup.members)
+        .get()
+        .then((value) => chatUser
+            .addAll(value.docs.map((e) => ChatUser.fromjson(e.data()))));
     String msgId = const Uuid().v6();
     Message message = Message(
         id: msgId,
@@ -129,7 +140,12 @@ class FireData {
         .doc(msgId)
         .set(
           message.tojson(),
-        );
+        )
+        .then((value) {
+      for (var e in chatUser) {
+        sendNotification(chatUser: e, context: context, msg: type ?? msg,groupName: chatGroup.name);
+      }
+    });
 
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
     await firestore
