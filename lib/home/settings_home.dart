@@ -179,8 +179,10 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                               content: Text("Error occur"),
                             ),
                           ),
-                        );
-                    Get.offAll(const LoginScreen());
+                        )
+                        .then((_) {
+                      Get.offAll(const LoginScreen());
+                    });
                   },
                   title: const Text("Sign out"),
                   trailing: const Icon(Iconsax.logout_1),

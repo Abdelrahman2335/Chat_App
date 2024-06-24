@@ -1,11 +1,18 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MyDateTime {
   static dateFormat(String time) {
     String formatter = "";
-    var dt = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    try {
+      var dt = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     formatter = DateFormat("yyy-MM-dd").format(dt).toString();
     return formatter;
+  } catch (e) {
+      return const CircularProgressIndicator();
+    }
   }
 
   static String timeByHour(String time) {

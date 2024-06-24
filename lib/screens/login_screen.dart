@@ -82,6 +82,7 @@ class LoginScreen extends StatelessWidget {
                     backgroundColor: myColorScheme.primary,
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
+
                   await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: emailCon.text, password: passCon.text)
@@ -99,8 +100,8 @@ class LoginScreen extends StatelessWidget {
                   }).onError(
                         (error, stackTrace) =>
                             ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(error.toString()),
+                          const SnackBar(
+                            content: Text("Invalid Email or Password"),
                           ),
                         ),
                       );

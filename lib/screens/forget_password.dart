@@ -65,8 +65,8 @@ class ForgetScreen extends StatelessWidget {
                   ).onError(
                     (error, stackTrace) =>
                         ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(error.toString()),
+                      const SnackBar(
+                        content: Text("Invalid Email"),
                       ),
                     ),
                   );

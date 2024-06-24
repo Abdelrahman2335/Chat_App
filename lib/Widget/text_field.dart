@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:chat_app/firebase/firebase_auth.dart';
 import 'package:chat_app/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -25,7 +27,7 @@ class CustomField extends StatefulWidget {
 }
 
 class _CustomFieldState extends State<CustomField> {
-  bool hidepass = true;
+  bool hidePass = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class _CustomFieldState extends State<CustomField> {
 
     return TextFormField(
       controller: widget.controller,
-      obscureText: widget.secure ? hidepass : false,
+      obscureText: widget.secure ? hidePass : false,
       style: TextStyle(color: color),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(17),
@@ -48,10 +50,10 @@ class _CustomFieldState extends State<CustomField> {
             ? IconButton(
                 onPressed: () {
                   setState(() {
-                    hidepass = !hidepass;
+                    hidePass = !hidePass;
                   });
                 },
-                icon: hidepass
+                icon: hidePass
                     ? const Icon(
                         Iconsax.eye,
                       )

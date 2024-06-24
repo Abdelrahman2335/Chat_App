@@ -71,7 +71,7 @@ class InfoScreen extends StatelessWidget {
                             (route) => false);
                       },
                     );}catch(e){
-                      log(e.toString());
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to create account or save data: $e")));
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
