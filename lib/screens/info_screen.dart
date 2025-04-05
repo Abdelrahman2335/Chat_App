@@ -61,8 +61,8 @@ class InfoScreen extends StatelessWidget {
                     await user
                         .updateDisplayName(nameCon.text)
                         .then(
-                      (value) {
-                        FireAuth.createUser();
+                      (value) async {
+                      await  FireAuth.createUser();
                         return Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

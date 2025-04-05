@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/Widget/chat/chat_card.dart';
 import 'package:chat_app/models/room_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +24,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
  void chatLogic() async {
 
     if (emailCon.text != "" && emailCon.text != FireAuth.user.email) {
+      log("We have no problem till now");
       await FireData().createRoom(emailCon.text).then(
             (value) {
           setState(() {
@@ -31,6 +34,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
             },
       );
     } else {
+      log("We got a problem error: ${FireAuth.user.email}");
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -72,7 +76,6 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
           bottomName: "Create Chat", onPressedLogic: chatLogic,
         ),
 
-      /// Bro this is function don't forget.
       appBar: AppBar(
         title: const Text("Chats"),
       ),

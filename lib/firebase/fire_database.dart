@@ -143,7 +143,7 @@ class FireData {
         )
         .then((value) {
       for (var e in chatUser) {
-        sendNotification(chatUser: e, context: context, msg: type ?? msg,groupName: chatGroup.name);
+        sendNotification(chatUser: e, context: context, msg: type ?? msg,);
       }
     });
 

@@ -8,7 +8,7 @@ class FireAuth {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-  static User user = auth.currentUser!;
+  static final User user = auth.currentUser!;
 
   static Future createUser() async {
     ChatUser chatUser = ChatUser(

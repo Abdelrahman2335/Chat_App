@@ -18,7 +18,7 @@ class ProviderApp with ChangeNotifier {
         .collection("users")
         .doc(myId)
         .get()
-        .then((value) => me = ChatUser.fromjson(value.data()!));
+        .then((value) => me = ChatUser.fromjson(value.data()??{}));
     FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging.instance.getToken().then((value) {
       if (value != null) {

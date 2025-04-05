@@ -25,19 +25,19 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
   String currentUserName = "";
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   ChatUser? userInfo;
-   var myImage;
+  NetworkImage? myImage;
   bool noImage = true;
   userinfo() async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .get()
-        .then((value) => userInfo = ChatUser.fromjson(value.data()!))
+        .then((value) => userInfo = ChatUser.fromjson(value.data()?? {}))
         .then(
       (value) {
         setState(() {
-          noImage = value.image!.trim() == "".trim();
-          myImage = NetworkImage(value.image!);
+          noImage = value.image?.trim() == "".trim() ? true : false;
+          myImage = NetworkImage(value.image?? "");
           currentUserName = value.name!;
         });
       },
@@ -194,4 +194,5 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
       ),
     );
   }
+
 }

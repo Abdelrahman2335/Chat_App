@@ -95,7 +95,7 @@ class _GroupScreenState extends State<GroupScreen> {
                         return Center(
                           child: GestureDetector(
                             onTap: () {
-                              FireData().sendGMessage("Say Assalamu Alaikum👋",
+                              FireData().sendGMessage("Assalamu Alaikum👋",
                                   widget.groupRoom.id!,context, widget.groupRoom,);
                             },
                             child: Card(

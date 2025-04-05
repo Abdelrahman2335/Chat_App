@@ -41,19 +41,20 @@ class _ActionBottomState extends State<ActionBottom> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         "Enter Friend Email",
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                        const Spacer(),
-                        IconButton.filled(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Iconsax.scan_barcode,
-                            size: 22,
-                          ),
-                        )
+                        // const Spacer(),
+                        // IconButton.filled(
+                        //   onPressed: () {},
+                        //   icon: const Icon(
+                        //     Iconsax.scan_barcode,
+                        //     size: 22,
+                        //   ),
+                        // )
                       ],
                     ),
                     const SizedBox(
@@ -72,7 +73,7 @@ class _ActionBottomState extends State<ActionBottom> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           backgroundColor: Theme.of(context).colorScheme.primary),
-                    onPressed: ()  {widget.onPressedLogic();},
+                    onPressed: () async => await widget.onPressedLogic(),
                     child: Center(
                       child: Text(
                         widget.bottomName,

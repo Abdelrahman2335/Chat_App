@@ -220,7 +220,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: GestureDetector(
                                 onTap: () => FireData().sendMessage(
                                     widget.friendData.id!,
-                                    "Say Assalamu Alaikum 👋",
+                                    "Assalamu Alaikum 👋",
                                     widget.roomId,
                                     context,
                                     widget.friendData),
@@ -321,14 +321,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: 5,
                   ),
                   IconButton.filled(
-                      onPressed: () {
+                      onPressed: ()async {
                         if (msgCon.text.isNotEmpty) {
-                          FireData()
+
+                         await FireData()
                               .sendMessage(widget.friendData.id!, msgCon.text,
-                                  widget.roomId, context, widget.friendData)
-                              .then((value) => setState(() {
-                                    msgCon.text = "";
-                                  }));
+                                  widget.roomId, context, widget.friendData);
+
+                         setState(() {
+                           msgCon.text = "";
+                         });
                         }
                       },
                       icon: const Icon(Iconsax.send_1)),
