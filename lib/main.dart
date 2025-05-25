@@ -1,24 +1,24 @@
 import 'package:chat_app/firebase_options.dart';
-import 'package:chat_app/layout.dart';
-import 'package:chat_app/provider/provider.dart';
-import 'package:chat_app/screens/info_screen.dart';
-import 'package:chat_app/screens/login_screen.dart';
+import 'package:chat_app/app/presentation/layout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'app/presentation/pages/info_screen.dart';
+import 'app/presentation/pages/login_screen.dart';
+import 'app/presentation/provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 ColorScheme myColorScheme = ColorScheme.fromSeed(
-    seedColor: const Color.fromARGB(3, 252, 252, 250),
+  seedColor: const Color.fromARGB(3, 252, 252, 250),
   brightness: Brightness.light,
 );
 ColorScheme myDarkColorScheme = ColorScheme.fromSeed(
@@ -30,53 +30,47 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ProviderApp(),
-      child: Consumer<ProviderApp>(
-        builder: (context, value, child) => GetMaterialApp(
-          themeMode: value.themeMode,
+  Widget build(BuildContext context,) {
 
-          /// Note that value = Provider.of<ProviderApp>(context).themeMode.
-          /// But we can't use if here so we used Consumer.
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData().copyWith(
-              colorScheme: myColorScheme = ColorScheme.fromSeed(
-                  seedColor: Color(value.mainColor),
-                brightness: Brightness.light),
-          ),
-          darkTheme: ThemeData().copyWith(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Color(value.mainColor),
-                brightness: Brightness.dark,
-              ),
-            scaffoldBackgroundColor: myDarkColorScheme.surface,
-            textTheme: TextTheme(
-                headlineMedium: TextStyle(
-                  color: myColorScheme.primary,
-                ),
-                bodyLarge:
-                    TextStyle(color: myColorScheme.primary),
-            bodyMedium: TextStyle(color: myColorScheme.onPrimary),
-            labelSmall: const TextStyle(color: Colors.white60)
-            ),
-          ),
+    final value = ProviderApp();
+    return MaterialApp(
+      themeMode: value.themeMode,
 
-          home: StreamBuilder(
-            stream: FirebaseAuth.instance.userChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                if (FirebaseAuth.instance.currentUser!.displayName == null) {
-                  return const InfoScreen();
-                } else {
-                  return const LayOutApp();
-                }
-              } else {
-                return const LoginScreen();
-              }
-            },
-          ),
+      /// Note that value = Provider.of<ProviderApp>(context).themeMode.
+      /// But we can't use if here so we used Consumer.
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData().copyWith(
+        colorScheme: myColorScheme = ColorScheme.fromSeed(
+            seedColor: Color(value.mainColor), brightness: Brightness.light),
+      ),
+      darkTheme: ThemeData().copyWith(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color(value.mainColor),
+          brightness: Brightness.dark,
         ),
+        scaffoldBackgroundColor: myDarkColorScheme.surface,
+        textTheme: TextTheme(
+            headlineMedium: TextStyle(
+              color: myColorScheme.primary,
+            ),
+            bodyLarge: TextStyle(color: myColorScheme.primary),
+            bodyMedium: TextStyle(color: myColorScheme.onPrimary),
+            labelSmall: const TextStyle(color: Colors.white60)),
+      ),
+
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.userChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (FirebaseAuth.instance.currentUser!.displayName == null) {
+              return const InfoScreen();
+            } else {
+              return const LayOutApp();
+            }
+          } else {
+            return const LoginScreen();
+          }
+        },
       ),
     );
   }
