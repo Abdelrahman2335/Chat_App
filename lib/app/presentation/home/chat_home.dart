@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:chat_app/Widget/chat/chat_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../data/firebase/fire_database.dart';
 import '../../data/firebase/firebase_auth.dart';
 import '../../data/models/room_model.dart';
+import '../widgets/Chat/chat_card.dart';
 import '../widgets/floating_action_bottom.dart';
 
 class ChatHomeScreen extends StatefulWidget {
@@ -94,7 +93,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                   if (snapshot.hasData) {
                     List<ChatRoom> items = snapshot.data!.docs
                         .map(
-                          (e) => ChatRoom.fromjson(
+                          (e) => ChatRoom.fromJson(
                             e.data(),
                           ),
                         )

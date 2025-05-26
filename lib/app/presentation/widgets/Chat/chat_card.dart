@@ -1,4 +1,3 @@
-import 'package:chat_app/Widget/chat/chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import '../../../data/models/message_model.dart';
 import '../../../data/models/room_model.dart';
 import '../../../data/models/user_model.dart';
 import '../../pages/date_time.dart';
+import 'chat_screen.dart';
 
 class ChatCard extends StatelessWidget {
   final ChatRoom item;

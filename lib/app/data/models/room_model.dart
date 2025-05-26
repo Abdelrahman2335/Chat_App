@@ -14,7 +14,7 @@ class ChatRoom {
     required this.lastMessageTime,
   });
 
-  factory ChatRoom.fromjson(Map<String, dynamic> json) {
+  factory ChatRoom.fromJson(Map<String, dynamic> json) {
     return ChatRoom(
       id: json["id"] ?? "",
       createdAt: json["created_at"],
@@ -24,7 +24,7 @@ class ChatRoom {
     );
   }
 
-  Map<String, dynamic> tojson() {
+  Map<String, dynamic> toJson() {
     return {
       "id": id,
       "created_at": createdAt,

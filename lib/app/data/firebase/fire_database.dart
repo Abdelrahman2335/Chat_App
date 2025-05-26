@@ -46,7 +46,7 @@ class FireData {
         );
         await firestore.collection("rooms").doc(members.toString()).set(
               /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
-              chatData.tojson(),
+              chatData.toJson(),
             );
       } else {
         return Container();

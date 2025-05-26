@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../Widget/chat/chat_screen.dart';
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/user_model.dart';
+import '../Chat/chat_screen.dart';
 
 class ContactCard extends StatelessWidget {
   final ChatUser user;

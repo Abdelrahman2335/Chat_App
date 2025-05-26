@@ -9,9 +9,13 @@ class LoginRepoImpl implements LoginRepo {
 
   @override
   Future<void> createUser(String email, String password) async {
+    try{
     await _firebaseService.auth.createUserWithEmailAndPassword(
         email: email.trim(), password: password.trim());
-  }
+  }catch (error){
+    log("cached error while creating user: $error");
+    rethrow;
+  }}
 
   @override
   Future<void> login(String email, String password) async {
@@ -19,11 +23,21 @@ class LoginRepoImpl implements LoginRepo {
       await _firebaseService.auth
           .signInWithEmailAndPassword(email: email, password: password);
     } catch (error) {
-      log(error.toString());
+      log("cached error while logging in: $error");
       rethrow;
     }
   }
 
   @override
-  Future<void> logout() async {}
+  Future<void> logout() async {
+    try {
+      await _firebaseService.auth.signOut().onError((error, stackTrace) {
+        log("Error while logging out: $error");
+        return;
+      });
+    } catch (error) {
+      log("cached error while logging out: $error");
+      rethrow;
+    }
+  }
 }
