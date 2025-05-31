@@ -12,7 +12,7 @@ class FireAuth {
   static final User user = auth.currentUser!;
 
   static Future createUser() async {
-    ChatUser chatUser = ChatUser(
+    UserModel chatUser = UserModel(
       id: user.uid,
       name: user.displayName,
       email: user.email,

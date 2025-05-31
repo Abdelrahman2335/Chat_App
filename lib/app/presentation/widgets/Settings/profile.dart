@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool changeName = false;
   bool changeAbout = false;
   final myId = FirebaseAuth.instance.currentUser!.uid;
-  ChatUser? userInfo;
+  UserModel? userInfo;
   String myImage = "";
   String createdDate = "";
   XFile? image;
@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection("users")
         .doc(myId)
         .get()
-        .then((value) => userInfo = ChatUser.fromjson(value.data()!))
+        .then((value) => userInfo = UserModel.fromJson(value.data()!))
         .then((value) {
       setState(() {
         createdDate = value.createdAt.toString();

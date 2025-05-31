@@ -1,5 +1,5 @@
 
-class ChatUser {
+class UserModel {
   String? id;
   String? name;
   String? email;
@@ -11,7 +11,7 @@ class ChatUser {
   bool? online;
   List? myUsers;
 
-  ChatUser({
+  UserModel({
     required this.id,
     required this.name,
     required this.email,
@@ -24,8 +24,8 @@ class ChatUser {
     required this.myUsers,
   });
 
-  factory ChatUser.fromjson(Map<String, dynamic> json) {
-    return ChatUser(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
         id: json["id"] ?? "",
         name: json["name"],
         email: json["email"],

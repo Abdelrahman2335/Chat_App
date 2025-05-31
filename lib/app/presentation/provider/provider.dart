@@ -13,7 +13,7 @@ class ProviderApp extends StateNotifier<String> {
   ProviderApp() : super("");
   ThemeMode themeMode = ThemeMode.system;
   int mainColor = 0xff4050B5;
-  ChatUser? me;
+  UserModel? me;
 
   getUserData() async {
     String myId = FirebaseAuth.instance.currentUser!.uid;
@@ -21,7 +21,7 @@ class ProviderApp extends StateNotifier<String> {
         .collection("users")
         .doc(myId)
         .get()
-        .then((value) => me = ChatUser.fromjson(value.data()??{}));
+        .then((value) => me = UserModel.fromJson(value.data()??{}));
     FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging.instance.getToken().then((value) {
       if (value != null) {

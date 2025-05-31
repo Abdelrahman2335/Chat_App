@@ -1,36 +1,36 @@
-import 'dart:developer';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/app/domain/repositories/auth/login_repo.dart';
 
-class LoginViewModel {
-  final LoginRepo _loginRepo;
+import '../../../data/repositories/auth/login_repo_impl.dart';
 
-  LoginViewModel(this._loginRepo);
+class LoginController extends AsyncNotifier<void> {
+  late final LoginRepo _loginRepo;
+
+
+  final loginRepoProvider = Provider<LoginRepo>((ref) {
+    return LoginRepoImpl();
+  });
+
+  @override
+  Future<void> build() async {
+    _loginRepo = ref.watch(loginRepoProvider);
+
+  }
 
   Future<void> createUser(String email, String password) async {
-    /// Add loading state
-    try {
-      await _loginRepo.createUser(email, password);
-    } catch (error) {
-      log("cached error while creating user viewmodel: $error");
-    }
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _loginRepo.createUser(email, password));
   }
 
   Future<void> login(String email, String password) async {
-    /// Add loading state
-    try {
-      await _loginRepo.login(email, password);
-    } catch (error) {
-      log("cached error while logging in viewmodel: $error");
-    }
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _loginRepo.login(email, password));
   }
 
   Future<void> logout() async {
-    /// Add loading state
-    try {
-      await _loginRepo.logout();
-    } catch (error) {
-      log("cached error while logging out viewmodel: $error");
-    }
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _loginRepo.logout());
   }
+
+
 }

@@ -126,8 +126,8 @@ class _EditGroupState extends State<EditGroup> {
                           /// than we went to firebase and told him to give us the information about this id
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              final List<ChatUser> items = snapshot.data!.docs
-                                  .map((e) => ChatUser.fromjson(e.data()))
+                              final List<UserModel> items = snapshot.data!.docs
+                                  .map((e) => UserModel.fromJson(e.data()))
                                   .where((element) => !widget.groupRoom.members!
                                       .contains(element.id))
                                   .toList()

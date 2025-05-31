@@ -1,62 +1,21 @@
-import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../data/firebase/fire_database.dart';
-import '../../data/firebase/firebase_auth.dart';
-import '../../data/models/room_model.dart';
+import '../provider/chat/chat_home_provider.dart';
 import '../widgets/Chat/chat_card.dart';
 import '../widgets/floating_action_bottom.dart';
 
-class ChatHomeScreen extends StatefulWidget {
+class ChatHomeScreen extends ConsumerStatefulWidget {
   const ChatHomeScreen({super.key});
 
   @override
-  State<ChatHomeScreen> createState() => _ChatHomeScreenState();
+  ConsumerState<ChatHomeScreen> createState() => _ChatHomeScreenState();
 }
 
-class _ChatHomeScreenState extends State<ChatHomeScreen> {
+class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
   TextEditingController emailCon = TextEditingController();
- void chatLogic() async {
-
-    if (emailCon.text != "" && emailCon.text != FireAuth.user.email) {
-      log("We have no problem till now");
-      await FireData().createRoom(emailCon.text).then(
-            (value) {
-          setState(() {
-            emailCon.text = "";
-          });
-          Navigator.pop(context);
-            },
-      );
-    } else {
-      log("We got a problem error: ${FireAuth.user.email}");
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          titleTextStyle:
-          Theme.of(context).textTheme.bodyMedium,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: 10, vertical: 10),
-          alignment: Alignment.center,
-          title: Text(
-            "Invalid Email",
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Done"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
 
   @override
   void dispose() {
@@ -66,61 +25,50 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final chatRoomsAsync = ref.watch(chatRoomsProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       floatingActionButton: ActionBottom(
-          emailCon: emailCon,
-          icon: Iconsax.message_add,
-          bottomName: "Create Chat", onPressedLogic: chatLogic,
-        ),
+        emailCon: emailCon,
+        icon: Iconsax.message_add,
+        bottomName: "Create Chat",
+        onPressedLogic: () {
+          // invalid email
+          // room already exist
+          // room created successfully
+          ref.read(createRoomProvider(emailCon.text).future)
+              .then((_) {
+                // TODO: navigate to the chat.
+                emailCon.clear();
+                Navigator.pop(context);
+          })
+              .catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.toString())),
+            );
+            Navigator.pop(context);
+          });
 
+        },
+      ),
       appBar: AppBar(
         title: const Text("Chats"),
       ),
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection("rooms")
-                    .where("members",
-                        arrayContains: FirebaseAuth.instance.currentUser!.uid)
-                    .snapshots(),
-
-                ///here we are making sure that the current user can see ONLY his chat and not others chat
-                ///why here we use snapshots cuz the stream need this check stream
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<ChatRoom> items = snapshot.data!.docs
-                        .map(
-                          (e) => ChatRoom.fromJson(
-                            e.data(),
-                          ),
-                        )
-                        .toList()
-                      ..sort(
-                        (item1, item2) => item2.lastMessageTime!
-                            .compareTo(item1.lastMessageTime!),
-                      );
-
-                    ///Simple we did just as follow [Hi snapshot I need the data, what data?
-                    /// the doc man, which one? all of it! but how? I will use a map, Okay that's fine]
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        return  ChatCard(item: items[index],);
-                      },
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
+            child: chatRoomsAsync.when(
+              data: (rooms) => ListView.builder(
+                itemCount: rooms.length,
+                itemBuilder: (context, index) => ChatCard(item: rooms[index]),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text("Error: $e")),
+            ),
           )
         ],
       ),
     );
   }
 }
-

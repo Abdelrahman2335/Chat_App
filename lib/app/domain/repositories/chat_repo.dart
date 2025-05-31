@@ -4,6 +4,6 @@ import '../../data/models/room_model.dart';
 /// Too many functions and requests to the database, so check if we can use the same repo for both
 abstract class ChatRepo {
   Future<void> createRoom(String email);
-  Stream<List<ChatRoom>> getUserChatRooms(String userId);
+  Stream<List<ChatRoom>> getUserChatRooms();
 
 }

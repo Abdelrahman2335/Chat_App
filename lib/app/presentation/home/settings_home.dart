@@ -22,7 +22,7 @@ class SettingHomeScreen extends StatefulWidget {
 class _SettingHomeScreenState extends State<SettingHomeScreen> {
   String currentUserName = "";
   final String uid = FirebaseAuth.instance.currentUser!.uid;
-  ChatUser? userInfo;
+  UserModel? userInfo;
   NetworkImage? myImage;
   bool noImage = true;
 
@@ -31,7 +31,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
         .collection("users")
         .doc(uid)
         .get()
-        .then((value) => userInfo = ChatUser.fromjson(value.data() ?? {}))
+        .then((value) => userInfo = UserModel.fromJson(value.data() ?? {}))
         .then(
       (value) {
         setState(() {

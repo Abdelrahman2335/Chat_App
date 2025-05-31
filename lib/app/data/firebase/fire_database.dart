@@ -6,55 +6,53 @@ import 'package:uuid/uuid.dart';
 
 import '../models/group_model.dart';
 import '../models/message_model.dart';
-import '../models/room_model.dart';
 import '../models/user_model.dart';
 
 ///class named FireData
 class FireData {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
   final String now = DateTime.now().millisecondsSinceEpoch.toString();
 
   ///anythings in this class named method
-  Future createRoom(String email) async {
-    QuerySnapshot userEmail = await firestore
-        .collection("users")
-        .where("email", isEqualTo: email)
-        .get();
-    if (userEmail.docs.isNotEmpty) {
-      String userId = userEmail.docs.first.id;
-      List<String> members = [
-        myUid,
-        userId,
-      ]..sort(
-          (user1, user2) => user1.compareTo(user2),
-
-          /// Here we are sorting the users ID
-        );
-      QuerySnapshot roomExist = await firestore
-          .collection("rooms")
-          .where("members", isEqualTo: members)
-          .get();
-      if (roomExist.docs.isEmpty) {
-        /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat or the room
-        ChatRoom chatData = ChatRoom(
-          id: members.toString(),
-          createdAt: now,
-          lastMessage: "",
-          members: members,
-          lastMessageTime: now,
-        );
-        await firestore.collection("rooms").doc(members.toString()).set(
-              /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
-              chatData.toJson(),
-            );
-      } else {
-        return Container();
-      }
-    }
-  }
-
-  Future creatGroup(String name, List members) async {
+  // Future createRoom(String email) async {
+  //   QuerySnapshot userEmail = await fireStore
+  //       .collection("users")
+  //       .where("email", isEqualTo: email)
+  //       .get();
+  //   if (userEmail.docs.isNotEmpty) {
+  //     String userId = userEmail.docs.first.id;
+  //     List<String> members = [
+  //       myUid,
+  //       userId,
+  //     ]..sort(
+  //         (user1, user2) => user1.compareTo(user2),
+  //
+  //         /// Here we are sorting the users ID
+  //       );
+  //     QuerySnapshot roomExist = await fireStore
+  //         .collection("rooms")
+  //         .where("members", isEqualTo: members)
+  //         .get();
+  //     if (roomExist.docs.isEmpty) {
+  //       /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat or the room
+  //       ChatRoom chatData = ChatRoom(
+  //         id: members.toString(),
+  //         createdAt: now,
+  //         lastMessage: "",
+  //         members: members,
+  //         lastMessageTime: now,
+  //       );
+  //       await fireStore.collection("rooms").doc(members.toString()).set(
+  //             /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
+  //             chatData.toJson(),
+  //           );
+  //     } else {
+  //       return Container();
+  //     }
+  //   }
+  // }
+  Future createGroup(String name, List members) async {
     String gId = const Uuid().v6();
     members.add(myUid);
     GroupRoom groupRoom = GroupRoom(
@@ -66,17 +64,17 @@ class FireData {
         members: members,
         lastMessage: "",
         lastMessageTime: now);
-    await firestore.collection("groups").doc(gId).set(groupRoom.toJson());
+    await fireStore.collection("groups").doc(gId).set(groupRoom.toJson());
   }
 
   Future creatContacts(String email) async {
-    QuerySnapshot userEmail = await firestore
+    QuerySnapshot userEmail = await fireStore
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
     if (userEmail.docs.isNotEmpty) {
       String userId = userEmail.docs.first.id;
-      firestore.collection("users").doc(myUid).update({
+      fireStore.collection("users").doc(myUid).update({
         "my_users": FieldValue.arrayUnion([userId])
 
         ///note that my_users is exist and you can add contacts normally,
@@ -86,7 +84,7 @@ class FireData {
   }
 
   Future sendMessage(String uid, String msg, String roomId,
-      BuildContext context, ChatUser chatUser,
+      BuildContext context, UserModel chatUser,
       {String? type}) async {
     String msgId = const Uuid().v6();
     Message message = Message(
@@ -97,7 +95,7 @@ class FireData {
         type: type ?? "text",
         createdAt: now,
         read: "");
-    await firestore
+    await fireStore
         .collection("rooms")
         .doc(roomId)
         .collection("messages")
@@ -107,7 +105,7 @@ class FireData {
         );
 
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
-    await firestore
+    await fireStore
         .collection("rooms")
         .doc(roomId)
         .update({"lastMessage": type ?? msg, "lastMessageTime": now});
@@ -116,15 +114,15 @@ class FireData {
   Future sendGMessage(
       String msg, String groupId, BuildContext context, GroupRoom chatGroup,
       {String? type}) async {
-    List<ChatUser> chatUser = [];
+    List<UserModel> chatUser = [];
     chatGroup.members =
         chatGroup.members!.where((element) => element != myUid).toList();
-    firestore
+    fireStore
         .collection("users")
         .where("id", whereIn: chatGroup.members)
         .get()
         .then((value) => chatUser
-            .addAll(value.docs.map((e) => ChatUser.fromjson(e.data()))));
+            .addAll(value.docs.map((e) => UserModel.fromJson(e.data()))));
     String msgId = const Uuid().v6();
     Message message = Message(
         id: msgId,
@@ -134,7 +132,7 @@ class FireData {
         type: type ?? "text",
         createdAt: now,
         read: "");
-    await firestore
+    await fireStore
         .collection("groups")
         .doc(groupId)
         .collection("messages")
@@ -149,14 +147,14 @@ class FireData {
     });
 
     ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
-    await firestore
+    await fireStore
         .collection("groups")
         .doc(groupId)
         .update({"lastMessage": type ?? msg, "lastMessageTime": now});
   }
 
   Future readMessage(String roomId, String msgId) async {
-    await firestore
+    await fireStore
         .collection("rooms")
         .doc(roomId)
         .collection("messages")
@@ -166,7 +164,7 @@ class FireData {
 
   deleteMsg(String roomId, List<String> msgs) async {
     for (var element in msgs) {
-      await firestore
+      await fireStore
           .collection("rooms")
           .doc(roomId)
           .collection("messages")
@@ -178,39 +176,39 @@ class FireData {
   }
 
   Future editGroup(String gId, String name, List members) async {
-    await firestore
+    await fireStore
         .collection("groups")
         .doc(gId)
         .update({"name": name, "members": FieldValue.arrayUnion(members)});
   }
 
   Future removeMember(String gId, memberId) async {
-    await firestore.collection("groups").doc(gId).update({
+    await fireStore.collection("groups").doc(gId).update({
       "members": FieldValue.arrayRemove([memberId])
     });
   }
 
   Future promptAdmin(String gId, memberId) async {
-    await firestore.collection("groups").doc(gId).update({
+    await fireStore.collection("groups").doc(gId).update({
       "admin": FieldValue.arrayUnion([memberId])
     });
   }
 
   Future removeAdmin(String gId, memberId) async {
-    await firestore.collection("groups").doc(gId).update({
+    await fireStore.collection("groups").doc(gId).update({
       "admin": FieldValue.arrayRemove([memberId])
     });
   }
 
   Future editProfile(String name, String about) async {
-    await firestore
+    await fireStore
         .collection("users")
         .doc(myUid)
         .update({"name": name, "about": about});
   }
 
   sendNotification(
-      {required ChatUser chatUser,
+      {required UserModel chatUser,
       required BuildContext context,
       required String msg}) async {
   }

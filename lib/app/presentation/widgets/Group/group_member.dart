@@ -56,8 +56,8 @@ class _GroupMemberScreenState extends State<GroupMemberScreen> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    List<ChatUser> userList = snapshot.data!.docs
-                        .map((e) => ChatUser.fromjson(e.data()))
+                    List<UserModel> userList = snapshot.data!.docs
+                        .map((e) => UserModel.fromJson(e.data()))
                         .toList();
                     return ListView.builder(
                       itemCount: userList.length,

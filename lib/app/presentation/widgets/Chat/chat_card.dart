@@ -29,7 +29,7 @@ class ChatCard extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            ChatUser chatUser = ChatUser.fromjson(snapshot.data!.data()!);
+            UserModel chatUser = UserModel.fromJson(snapshot.data!.data()!);
             return Card(
               child: ListTile(
                   onTap: () => Navigator.push(

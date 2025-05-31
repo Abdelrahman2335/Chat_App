@@ -18,7 +18,7 @@ class FireStorage {
       {required File file,
       required String roomId,
       required String uid,
-      required ChatUser chatUser,
+      required UserModel chatUser,
       required BuildContext context}) async {
     String ext = file.path.split(".").last;
 

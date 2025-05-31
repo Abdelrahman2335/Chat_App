@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';

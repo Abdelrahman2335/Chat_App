@@ -28,7 +28,7 @@ class _CreateGroupState extends State<CreateGroup> {
               onPressed: () {
                 if (gName.text.isNotEmpty) {
                   FireData()
-                      .creatGroup(gName.text, members)
+                      .createGroup(gName.text, members)
                       .then((value) => Navigator.pop(context));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -116,8 +116,8 @@ class _CreateGroupState extends State<CreateGroup> {
                           /// than we went to firebase and told him to give us the information about this id
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              final List<ChatUser> items = snapshot.data!.docs
-                                  .map((e) => ChatUser.fromjson(e.data()))
+                              final List<UserModel> items = snapshot.data!.docs
+                                  .map((e) => UserModel.fromJson(e.data()))
                                   .toList()
                                 ..sort((a, b) => a.name!.compareTo(b.name!));
 

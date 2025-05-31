@@ -12,7 +12,7 @@ import '../../pages/date_time.dart';
 import 'chat_message_card.dart';
 
 class ChatScreen extends StatefulWidget {
-  final ChatUser friendData;
+  final UserModel friendData;
 
   /// on the course he use chatUser not friendData
   final String roomId;
