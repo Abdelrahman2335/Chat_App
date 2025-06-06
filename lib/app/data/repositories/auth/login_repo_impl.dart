@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:chat_app/app/core/services/firebase_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../domain/repositories/auth/login_repo.dart';
 
 class LoginRepoImpl implements LoginRepo {
+
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
@@ -41,3 +43,8 @@ class LoginRepoImpl implements LoginRepo {
     }
   }
 }
+
+
+final loginRepoProvider = Provider<LoginRepo>((ref) {
+  return LoginRepoImpl();
+});

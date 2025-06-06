@@ -1,28 +1,30 @@
 
+import 'package:chat_app/app/presentation/provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:provider/provider.dart';
 
 import '../data/firebase/firebase_auth.dart';
 import 'home/chat_home.dart';
 import 'home/contact_home.dart';
 import 'home/group_home.dart';
 import 'home/settings_home.dart';
-import 'provider/provider.dart';
 
-class LayOutApp extends StatefulWidget {
+class LayOutApp extends ConsumerStatefulWidget {
   const LayOutApp({super.key});
 
   @override
-  State<LayOutApp> createState() => _LayOutAppState();
+  ConsumerState<LayOutApp> createState() => _LayOutAppState();
 }
 
-class _LayOutAppState extends State<LayOutApp> {
+class _LayOutAppState extends ConsumerState<LayOutApp> {
   @override
   void initState() {
-    Provider.of<ProviderApp>(context, listen: false).getValuesPref();
-    Provider.of<ProviderApp>(context, listen: false).getUserData();
+
+    final providerAppNotifier = ref.read(providerApp.notifier);
+    providerAppNotifier.getValuesPref();
+    providerAppNotifier.getUserData();
     SystemChannels.lifecycle.setMessageHandler((message) {
       if(message.toString() == "AppLifecycleState.resumed"){
         FireAuth().updateStatus(true);

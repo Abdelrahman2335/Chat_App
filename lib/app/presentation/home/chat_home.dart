@@ -34,12 +34,13 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
         icon: Iconsax.message_add,
         bottomName: "Create Chat",
         onPressedLogic: () {
+          // TODO: Scenarios
           // invalid email
           // room already exist
           // room created successfully
           ref.read(createRoomProvider(emailCon.text).future)
               .then((_) {
-                // TODO: navigate to the chat.
+                // TODO: navigate to the chat, and try to remove context
                 emailCon.clear();
                 Navigator.pop(context);
           })

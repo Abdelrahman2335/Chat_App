@@ -34,7 +34,7 @@ class ChatHomeRepoImpl implements ChatRepo {
             .collection("rooms").doc(roomId).get();
         if (!roomExist.exists) {
           /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat.
-          ChatRoom chatData = ChatRoom(
+          ChatRoom createChat = ChatRoom(
             id: roomId,
             createdAt: currentDate,
             lastMessage: "",
@@ -47,7 +47,7 @@ class ChatHomeRepoImpl implements ChatRepo {
               .set(
 
             /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
-            chatData.toJson(),
+            createChat.toJson(),
           );
         } else {
           throw Exception("Room already exist");
@@ -56,7 +56,7 @@ class ChatHomeRepoImpl implements ChatRepo {
         throw Exception("Email not exist");
       }
     } catch (error) {
-      log("Error in the createRoom method $error");
+      log("Error in the createChat method $error");
     }
   }
 

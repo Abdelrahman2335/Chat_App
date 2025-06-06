@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../provider/auth/login_viewmodel.dart';
+import '../provider/auth/login_provider.dart';
 import '../widgets/text_field.dart';
 import 'forget_password.dart';
 
@@ -16,8 +16,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final LoginController _loginController = LoginController();
-
   /// We have to use dispose with any Controller.
   TextEditingController emailCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
@@ -96,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
                   await ref
-                      .read(_loginController.loginRepoProvider)
+                      .read(loginControllerProvider.notifier)
                       .login(emailCon.text, passCon.text);
 
                   // .then((value) {

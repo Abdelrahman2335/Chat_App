@@ -6,20 +6,15 @@ import '../../../data/repositories/auth/login_repo_impl.dart';
 class LoginController extends AsyncNotifier<void> {
   late final LoginRepo _loginRepo;
 
-
-  final loginRepoProvider = Provider<LoginRepo>((ref) {
-    return LoginRepoImpl();
-  });
-
   @override
   Future<void> build() async {
     _loginRepo = ref.watch(loginRepoProvider);
-
   }
 
   Future<void> createUser(String email, String password) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _loginRepo.createUser(email, password));
+    state =
+        await AsyncValue.guard(() => _loginRepo.createUser(email, password));
   }
 
   Future<void> login(String email, String password) async {
@@ -31,6 +26,6 @@ class LoginController extends AsyncNotifier<void> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => _loginRepo.logout());
   }
-
-
 }
+final loginControllerProvider =
+AsyncNotifierProvider<LoginController, void>(() => LoginController());
