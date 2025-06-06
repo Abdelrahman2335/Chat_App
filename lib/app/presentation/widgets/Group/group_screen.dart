@@ -88,7 +88,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final List<Message> msgs = snapshot.data!.docs
-                          .map((e) => Message.fromjson(e.data()))
+                          .map((e) => Message.fromJson(e.data()))
                           .toList()
                         ..sort(
                           (a, b) => b.createdAt!.compareTo(a.createdAt!),

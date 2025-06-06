@@ -127,7 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Message> messageContent = snapshot.data!.docs
-                          .map((e) => Message.fromjson(e.data()))
+                          .map((e) => Message.fromJson(e.data()))
                           .toList()
                         ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
@@ -321,7 +321,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: 5,
                   ),
                   IconButton.filled(
-                      onPressed: ()async {
+                      onPressed: () async {
                         if (msgCon.text.isNotEmpty) {
 
                          await FireData()

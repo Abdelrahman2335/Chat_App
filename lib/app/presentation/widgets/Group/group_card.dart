@@ -50,7 +50,7 @@ class GroupCard extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               final unReadList = (snapshot.data!.docs)
-                  .map((e) => Message.fromjson(e.data()))
+                  .map((e) => Message.fromJson(e.data()))
                   .where((element) => element.read == "")
                   .where((element) =>
                       element.fromId != FirebaseAuth.instance.currentUser!.uid);

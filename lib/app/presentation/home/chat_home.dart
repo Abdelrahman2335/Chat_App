@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,7 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final chatRoomsAsync = ref.watch(chatRoomsProvider);
+    final chatRooms = ref.watch(chatRoomsProvider);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -34,23 +35,41 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
         icon: Iconsax.message_add,
         bottomName: "Create Chat",
         onPressedLogic: () {
-          // TODO: Scenarios
-          // invalid email
-          // room already exist
-          // room created successfully
-          ref.read(createRoomProvider(emailCon.text).future)
-              .then((_) {
-                // TODO: navigate to the chat, and try to remove context
-                emailCon.clear();
-                Navigator.pop(context);
-          })
-              .catchError((error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error.toString())),
-            );
-            Navigator.pop(context);
-          });
 
+          ref.read(createRoomProvider(emailCon.text).future).then((_) {
+            // TODO: navigate to the chat, and try to remove context
+            // emailCon.clear();
+            // Navigator.pop(context);
+          }).catchError((error) {
+            log("Error when create room $error");
+            String errorMessage = "";
+            if (error.toString().contains("Room already exist")) {
+
+              errorMessage = "Room already exist";
+            }
+            if (error.toString().contains("Email not exist")) {
+              errorMessage = "Email not exist";
+            }
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Error'),
+                  content: Text(errorMessage == ""
+                      ? "Something went wrong"
+                      : errorMessage),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          });
         },
       ),
       appBar: AppBar(
@@ -59,13 +78,17 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: chatRoomsAsync.when(
+            child: chatRooms.when(
               data: (rooms) => ListView.builder(
                 itemCount: rooms.length,
-                itemBuilder: (context, index) => ChatCard(item: rooms[index]),
+                itemBuilder: (context, index) => ChatCard(room: rooms[index]),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text("Error: $e")),
+              error: (error, _) {
+                log("Error in the UI $error");
+
+                return const Center(child: Text("Something went wrong"));
+              },
             ),
           )
         ],

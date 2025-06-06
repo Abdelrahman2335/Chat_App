@@ -19,7 +19,7 @@ class Message {
 
   });
 
-  factory Message.fromjson(Map<String, dynamic> json) {
+  factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
         id: json["id"] ?? "",
         toId: json["to_id"],
