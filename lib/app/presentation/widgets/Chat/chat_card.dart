@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +23,6 @@ class ChatCard extends ConsumerWidget {
     final  chatCard = ref.watch(chatCardProvider(room));
     return chatCard.when(
       data: (chatUser) {
-        log("Chat User is: ${chatUser.name}");
         return Card(
           child: ListTile(
               onTap: () => Navigator.push(

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:chat_app/app/core/services/firebase_service.dart';
 import 'package:chat_app/app/data/models/room_model.dart';
 import 'package:chat_app/app/data/models/user_model.dart';
-import 'package:chat_app/app/domain/repositories/chat_home_repo.dart';
+import 'package:chat_app/app/domain/repositories/chat_room/chat_home_repo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_home_repo_impl.g.dart';

@@ -83,34 +83,6 @@ class FireData {
     }
   }
 
-  Future sendMessage(String uid, String msg, String roomId,
-      BuildContext context, UserModel chatUser,
-      {String? type}) async {
-    String msgId = const Uuid().v6();
-    Message message = Message(
-        id: msgId,
-        toId: uid,
-        fromId: myUid,
-        msg: msg,
-        type: type ?? "text",
-        createdAt: now,
-        read: "");
-    await fireStore
-        .collection("rooms")
-        .doc(roomId)
-        .collection("messages")
-        .doc(msgId)
-        .set(
-          message.tojson(),
-        );
-
-    ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
-    await fireStore
-        .collection("rooms")
-        .doc(roomId)
-        .update({"lastMessage": type ?? msg, "lastMessageTime": now});
-  }
-
   Future sendGMessage(
       String msg, String groupId, BuildContext context, GroupRoom chatGroup,
       {String? type}) async {
@@ -138,7 +110,7 @@ class FireData {
         .collection("messages")
         .doc(msgId)
         .set(
-          message.tojson(),
+          message.toJson(),
         )
         .then((value) {
       for (var e in chatUser) {

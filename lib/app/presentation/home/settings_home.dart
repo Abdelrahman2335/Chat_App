@@ -2,24 +2,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../data/models/user_model.dart';
 import '../pages/login_screen.dart';
-import '../provider/provider.dart';
 import '../widgets/Settings/profile.dart';
 
-class SettingHomeScreen extends StatefulWidget {
+class SettingHomeScreen extends ConsumerStatefulWidget {
   const SettingHomeScreen({super.key});
 
   @override
-  State<SettingHomeScreen> createState() => _SettingHomeScreenState();
+  ConsumerState<SettingHomeScreen> createState() => _SettingHomeScreenState();
 }
 
-class _SettingHomeScreenState extends State<SettingHomeScreen> {
+class _SettingHomeScreenState extends ConsumerState<SettingHomeScreen> {
   String currentUserName = "";
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   UserModel? userInfo;
@@ -51,7 +49,7 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<ProviderApp>(context);
+    // final prov = Provider.of<ProviderApp>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -128,46 +126,47 @@ class _SettingHomeScreenState extends State<SettingHomeScreen> {
                   trailing: const Icon(Iconsax.arrow_right_3),
                 ),
               ),
-              Card(
-                child: ListTile(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: SingleChildScrollView(
-                              child: BlockPicker(
-                                pickerColor: Color(prov.mainColor),
-                                onColorChanged: (value) {
-                                  prov.changeColor(value.value);
-                                },
-                              ),
-                            ),
-                            actions: [
-                              ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Done"))
-                            ],
-                          );
-                        });
-                  },
-                  title: const Text("Theme"),
-                  leading: const Icon(Iconsax.color_swatch),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  title: const Text("Dark Mode"),
-                  leading: const Icon(Iconsax.user),
-                  trailing: Switch(
-                      value: prov.themeMode == ThemeMode.dark,
-                      onChanged: (value) {
-                        prov.changeMode(value);
-                      }),
-                ),
-              ),
+              // TODO: Remove the provider when managing the theme
+              // Card(
+              //   child: ListTile(
+              //     onTap: () {
+              //       showDialog(
+              //           context: context,
+              //           builder: (context) {
+              //             return AlertDialog(
+              //               content: SingleChildScrollView(
+              //                 child: BlockPicker(
+              //                   pickerColor: Color(prov.mainColor),
+              //                   onColorChanged: (value) {
+              //                     // prov.changeColor(value.value);
+              //                   },
+              //                 ),
+              //               ),
+              //               actions: [
+              //                 ElevatedButton(
+              //                     onPressed: () {
+              //                       Navigator.pop(context);
+              //                     },
+              //                     child: const Text("Done"))
+              //               ],
+              //             );
+              //           });
+              //     },
+              //     title: const Text("Theme"),
+              //     leading: const Icon(Iconsax.color_swatch),
+              //   ),
+              // ),
+              // Card(
+                // child: ListTile(
+                //   title: const Text("Dark Mode"),
+                //   leading: const Icon(Iconsax.user),
+                //   trailing: Switch(
+                //       value: prov.themeMode == ThemeMode.dark,
+                //       onChanged: (value) {
+                //         prov.changeMode(value);
+                //       }),
+                // ),
+              // ),
               Card(
                 child: ListTile(
                   onTap: () async {

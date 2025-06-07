@@ -49,6 +49,8 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
             }
             if (error.toString().contains("Email not exist")) {
               errorMessage = "Email not exist";
+            }if (error.toString().contains("You can't chat with yourself")) {
+              errorMessage = "You can't chat with yourself";
             }
             showDialog(
               context: context,

@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../data/firebase/fire_database.dart';
-import '../../../data/firebase/fire_storage.dart';
 import '../../../data/models/message_model.dart';
 import '../../../data/models/user_model.dart';
 import '../../pages/date_time.dart';
+import '../../provider/chat/chat_room_provider.dart';
 import 'chat_message_card.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   final UserModel friendData;
 
   /// on the course he use chatUser not friendData
@@ -20,10 +20,10 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.roomId, required this.friendData});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends ConsumerState<ChatScreen> {
   TextEditingController msgCon = TextEditingController();
   List<String> selectedMsg = [];
   List<String> copyMsg = [];
@@ -38,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     bool msgOwner = !senderId.contains(widget.friendData.id);
-
+    final getMessages = ref.watch(getMessagesProvider(widget.roomId));
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     Color color = isDark ? Colors.white : Colors.black;
     return Scaffold(
@@ -48,9 +48,8 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Text(widget.friendData.name!),
             Text(
-                MyDateTime.timeByHour(widget.friendData.lastSeen!).toString(),
+              MyDateTime.timeByHour(widget.friendData.lastSeen!).toString(),
               style: Theme.of(context).textTheme.labelMedium,
-
             ),
           ],
         ),
@@ -118,148 +117,144 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("rooms")
-                      .doc(widget.roomId)
-                      .collection("messages")
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Message> messageContent = snapshot.data!.docs
-                          .map((e) => Message.fromJson(e.data()))
-                          .toList()
-                        ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+              child: getMessages.when(
+                data: (data) {
+                  List<Message> messageContent = data
+                    ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
-                      return messageContent.isNotEmpty
-                          ? ListView.builder(
-                              reverse: true,
-                              itemCount: messageContent.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (selectedMsg.isNotEmpty) {
-                                        if (selectedMsg.contains(
-                                            messageContent[index].id)) {
-                                          selectedMsg
-                                              .remove(messageContent[index].id);
-                                          senderId.remove(
-                                              messageContent[index].fromId!);
+                  return messageContent.isNotEmpty
+                      ? ListView.builder(
+                          reverse: true,
+                          itemCount: messageContent.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (selectedMsg.isNotEmpty) {
+                                    if (selectedMsg
+                                        .contains(messageContent[index].id)) {
+                                      selectedMsg
+                                          .remove(messageContent[index].id);
+                                      senderId.remove(
+                                          messageContent[index].fromId!);
 
-                                          ///if we have content remove it
-                                        } else {
-                                          selectedMsg
-                                              .add(messageContent[index].id!);
-                                          senderId.add(
-                                              messageContent[index].fromId!);
+                                      ///if we have content remove it
+                                    } else {
+                                      selectedMsg
+                                          .add(messageContent[index].id!);
+                                      senderId
+                                          .add(messageContent[index].fromId!);
 
-                                          ///if we don't have content add this one
-                                        }
-                                      }
+                                      ///if we don't have content add this one
+                                    }
+                                  }
 
-                                      ///if selectedMsg is empty
+                                  ///if selectedMsg is empty
 
-                                      ///Copy messages
-                                      copyMsg.isNotEmpty
-                                          ? messageContent[index].type == "text"
-                                              ? copyMsg.contains(
-                                                      messageContent[index].id)
-                                                  ? copyMsg.remove(
-                                                      messageContent[index]
-                                                          .msg!)
-                                                  : copyMsg.add(
-                                                      messageContent[index]
-                                                          .msg!)
-                                              : null
-
-                                          ///if the type is not text
-                                          : null;
-
-                                      ///if copyMsg is empty
-                                    });
-                                  },
-                                  onLongPress: () {
-                                    setState(() {
-                                      ///Select the id of the messages
-                                      if (selectedMsg
-                                          .contains(messageContent[index].id)) {
-                                        selectedMsg
-                                            .remove(messageContent[index].id);
-                                        senderId.remove(
-                                            messageContent[index].fromId!);
-                                      } else {
-                                        selectedMsg
-                                            .add(messageContent[index].id!);
-                                        senderId
-                                            .add(messageContent[index].fromId!);
-                                      }
-
-                                      ///Copy the messages
-                                      messageContent[index].type == "text"
+                                  ///Copy messages
+                                  copyMsg.isNotEmpty
+                                      ? messageContent[index].type == "text"
                                           ? copyMsg.contains(
                                                   messageContent[index].id)
                                               ? copyMsg.remove(
                                                   messageContent[index].msg!)
                                               : copyMsg.add(
                                                   messageContent[index].msg!)
-                                          : null;
-                                    });
-                                  },
-                                  child: ChatMessageCard(
-                                    messageContent: messageContent[index],
-                                    index: index,
-                                    roomId: widget.roomId,
-                                    selected: selectedMsg
-                                        .contains(messageContent[index].id),
-                                  ),
-                                );
+                                          : null
+
+                                      ///if the type is not text
+                                      : null;
+
+                                  ///if copyMsg is empty
+                                });
                               },
-                            )
-                          : Center(
-                              child: GestureDetector(
-                                onTap: () => FireData().sendMessage(
-                                    widget.friendData.id!,
-                                    "Assalamu Alaikum 👋",
-                                    widget.roomId,
-                                    context,
-                                    widget.friendData),
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "👋",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .displayMedium,
-                                        ),
-                                        const SizedBox(
-                                          height: 16,
-                                        ),
-                                        Text(
-                                          "Say Assalamu Alaikum",
-                                          style: TextStyle(
-                                              color: isDark
-                                                  ? Colors.white
-                                                  : Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                              onLongPress: () {
+                                setState(() {
+                                  ///Select the id of the messages
+                                  if (selectedMsg
+                                      .contains(messageContent[index].id)) {
+                                    selectedMsg
+                                        .remove(messageContent[index].id);
+                                    senderId
+                                        .remove(messageContent[index].fromId!);
+                                  } else {
+                                    selectedMsg.add(messageContent[index].id!);
+                                    senderId.add(messageContent[index].fromId!);
+                                  }
+
+                                  ///Copy the messages
+                                  messageContent[index].type == "text"
+                                      ? copyMsg.contains(
+                                              messageContent[index].id)
+                                          ? copyMsg.remove(
+                                              messageContent[index].msg!)
+                                          : copyMsg
+                                              .add(messageContent[index].msg!)
+                                      : null;
+                                });
+                              },
+                              child: ChatMessageCard(
+                                messageContent: messageContent[index],
+                                index: index,
+                                roomId: widget.roomId,
+                                selected: selectedMsg
+                                    .contains(messageContent[index].id),
                               ),
                             );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
+                          },
+                        )
+                      : Center(
+                          child: GestureDetector(
+                            onTap: () async {
+                              await ref.read(sendMessageProvider(
+                                      Message(
+                                          toId: widget.friendData.id!,
+                                          fromId: null,
+                                          msg: "Assalamu Alaikum 👋",
+                                          type: null,
+                                          createdAt: DateTime.now()
+                                              .millisecondsSinceEpoch
+                                              .toString(),
+                                          read: ""),
+                                      widget.roomId)
+                                  .future);
+                            },
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "👋",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium,
+                                    ),
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    Text(
+                                      "Say Assalamu Alaikum",
+                                      style: TextStyle(
+                                          color: isDark
+                                              ? Colors.white
+                                              : Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                },
+                error: (error, stackTrace) =>
+                    Center(child: Text(error.toString())),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -268,8 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: Card(
                       child: TextField(
-                        style: TextStyle(
-                            color: color),
+                        style: TextStyle(color: color),
                         controller: msgCon,
                         maxLines: 7,
                         minLines: 1,
@@ -291,12 +285,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                   XFile? image = await picker.pickImage(
                                       source: ImageSource.gallery);
                                   if (image != null) {
-                                    FireStorage().sendImage(
-                                        file: File(image.path),
-                                        roomId: widget.roomId,
-                                        uid: widget.friendData.id!,
-                                        chatUser: widget.friendData,
-                                        context: context);
+                                    await ref.read(sendImageProvider(
+                                            File(image.path),
+                                            widget.roomId,
+                                            null,
+                                            widget.friendData.id!)
+                                        .future);
                                   }
                                 },
                                 icon: Icon(
@@ -306,11 +300,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             ],
                           ),
-
                           border: InputBorder.none,
                           hintText: "Message",
-                          hintStyle: TextStyle(
-                              color:color),
+                          hintStyle: TextStyle(color: color),
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 10.0, vertical: 7.0),
                         ),
@@ -323,14 +315,22 @@ class _ChatScreenState extends State<ChatScreen> {
                   IconButton.filled(
                       onPressed: () async {
                         if (msgCon.text.isNotEmpty) {
-
-                         await FireData()
-                              .sendMessage(widget.friendData.id!, msgCon.text,
-                                  widget.roomId, context, widget.friendData);
-
-                         setState(() {
-                           msgCon.text = "";
-                         });
+                          await ref
+                              .read(sendMessageProvider(
+                                      Message(
+                                          toId: widget.friendData.id!,
+                                          fromId: null,
+                                          msg: msgCon.text,
+                                          type: null,
+                                          createdAt: DateTime.now()
+                                              .millisecondsSinceEpoch
+                                              .toString(),
+                                          read: ""),
+                                      widget.roomId)
+                                  .future)
+                              .then((_) {
+                            msgCon.clear();
+                          });
                         }
                       },
                       icon: const Icon(Iconsax.send_1)),

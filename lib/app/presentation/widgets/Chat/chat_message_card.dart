@@ -1,16 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:provider/provider.dart';
 
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/message_model.dart';
 import '../../pages/date_time.dart';
 import '../../pages/photo_view.dart';
-import '../../provider/provider.dart';
 
-class ChatMessageCard extends StatefulWidget {
+class ChatMessageCard extends ConsumerStatefulWidget {
   final int index;
   final Message messageContent;
   final String roomId;
@@ -25,10 +24,10 @@ class ChatMessageCard extends StatefulWidget {
   });
 
   @override
-  State<ChatMessageCard> createState() => _ChatMessageCardState();
+  ConsumerState<ChatMessageCard> createState() => _ChatMessageCardState();
 }
 
-class _ChatMessageCardState extends State<ChatMessageCard> {
+class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   @override
   void initState() {
     if (widget.messageContent.toId == FirebaseAuth.instance.currentUser!.uid) {
@@ -41,8 +40,7 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
   Widget build(BuildContext context) {
     bool isMe =
         widget.messageContent.fromId == FirebaseAuth.instance.currentUser!.uid;
-    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
-    Color chatColor = isDark ? Colors.white : Colors.black;
+    // Color chatColor = isDark ? Colors.white : Colors.black;
     return Container(
       decoration: BoxDecoration(
           color: widget.selected ? Colors.grey : Colors.transparent,
@@ -55,7 +53,7 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
           isMe
               ? IconButton(
                   onPressed: () {},
-                  icon: Icon(Iconsax.message_edit, color: chatColor),
+                  icon: const Icon(Iconsax.message_edit,),
                 )
               : const SizedBox(),
           Card(
@@ -90,7 +88,6 @@ class _ChatMessageCardState extends State<ChatMessageCard> {
                           )
                         : Text(
                             widget.messageContent.msg!,
-                            style: TextStyle(color: chatColor),
                           ),
                     const SizedBox(
                       height: 6,
