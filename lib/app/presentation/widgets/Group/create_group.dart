@@ -1,11 +1,11 @@
+import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../data/models/user_model.dart';
+import '../../provider/contact/contact_home_provider.dart';
 import '../../provider/group/group_home_provider.dart';
 import '../text_field.dart';
 
@@ -26,14 +26,17 @@ class _CreateGroupState extends ConsumerState<CreateGroup> {
     gName.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    final contactInfo = ref.watch(getContactProvider);
     return Scaffold(
       floatingActionButton: members.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: () {
                 if (gName.text.isNotEmpty) {
-                  ref.read(createGroupProvider(gName: gName.text, members: members));
+                  ref.read(
+                      createGroupProvider(gName: gName.text, members: members));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -98,61 +101,37 @@ class _CreateGroupState extends ConsumerState<CreateGroup> {
 
             Expanded(
               // TODO: Remove the StreamBuilder we don't need live data
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
+              child: contactInfo.when(
+                  data: (data) {
+                    final List<UserModel> items = data
+                      ..sort((a, b) => a.name!.compareTo(b.name!));
 
-                      /// don't forget that this line is the reason for give us only the current user info only
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      myContact = snapshot.data!.data()!["my_users"] ?? [];
-
-                      /// Here we are taking the id from the firebase so we will use it later...
-                      return StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection("users")
-                              .where("id",
-                                  whereIn: myContact.isEmpty ? [""] : myContact)
-                              .snapshots(),
-
-                          /// Here we start using the id that we just taken from the firebase and,
-                          /// than we went to firebase and told him to give us the information about this id
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              final List<UserModel> items = snapshot.data!.docs
-                                  .map((e) => UserModel.fromJson(e.data()))
-                                  .toList()
-                                ..sort((a, b) => a.name!.compareTo(b.name!));
-
-                              return ListView.builder(
-                                  itemCount: items.length,
-                                  itemBuilder: (context, index) {
-                                    return CheckboxListTile(
-                                        value:
-                                            members.contains(items[index].id),
-                                        checkboxShape: const CircleBorder(),
-                                        title: Text(items[index].name!),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            if (value! /* this equal to value == true */) {
-                                              members.add(items[index].id!);
-                                            } else {
-                                              members.remove(items[index].id!);
-                                            }
-                                          });
-                                        });
-                                  });
-                            } else {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                          });
-                    } else {
-                      return Container();
-                    }
-                  }),
+                    return ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return CheckboxListTile(
+                              value: members.contains(items[index].id),
+                              checkboxShape: const CircleBorder(),
+                              title: Text(items[index].name!),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value! /* this equal to value == true */) {
+                                    members.add(items[index].id!);
+                                  } else {
+                                    members.remove(items[index].id!);
+                                  }
+                                });
+                              });
+                        });
+                  },
+                  error: (err, stackTrace) {
+                    log("Error in the create group widget $err");
+                    log("Stack trace: $stackTrace");
+                    return const Center(child: Text("Something went wrong"));
+                  },
+                  loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      )),
             )
             // Expanded(
             //     child: ListView.builder(

@@ -1,19 +1,19 @@
+import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/group_model.dart';
 import '../../../data/models/message_model.dart';
 
+import '../../../data/repositories/group_room/group_room_repo_impl.dart';
+import '../../provider/group/group_room_provider.dart';
 import 'group_member.dart';
 import 'group_message_card.dart';
 
 class GroupScreen extends ConsumerStatefulWidget {
   final GroupRoom groupRoom;
-
 
   const GroupScreen({super.key, required this.groupRoom});
 
@@ -23,41 +23,36 @@ class GroupScreen extends ConsumerStatefulWidget {
 
 class _GroupScreenState extends ConsumerState<GroupScreen> {
   TextEditingController msgCon = TextEditingController();
-  List memberList = [];
 
   @override
   Widget build(BuildContext context) {
     // bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+
+    final groupMembers =
+    ref.read(getGroupMembersProvider(widget.groupRoom.members));
+    final messages = ref.watch(getGroupMessagesProvider(widget.groupRoom.id));
 
     return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.groupRoom.name!),
-            StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection("users")
-                    .where("id", whereIn: widget.groupRoom.members)
-                    .snapshots(),
-                builder: (context, snapshot) {
-
-                  if (snapshot.hasData) {
-
-                    /// Here we are taking the Ids that are in the group only, and then we make a for loop,
-                    /// that loops on the data in the doc that = to users Id. and if you remember that in the collection users,
-                    /// we have doc that named with the Id of the user.
-                    for(var x in snapshot.data!.docs ){
-                      memberList.add(x.data()["name"]);
-                    }
-                    return Text(
-                      memberList.join(", "),
-                      style: Theme.of(context).textTheme.labelMedium,
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
+            Text(widget.groupRoom.name),
+            groupMembers.when(
+              data: (groupMembers) {
+                return Text(
+                  groupMembers.join(", "),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .labelMedium,
+                );
+              },
+              error: (error, stackTrace) {
+                return const Text("0 Members");
+              },
+              loading: () => const Text("loading..."),
+            ),
           ],
         ),
         actions: [
@@ -66,7 +61,10 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  GroupMemberScreen(chatMembers: widget.groupRoom,),
+                    builder: (context) =>
+                        GroupMemberScreen(
+                          chatMembers: widget.groupRoom,
+                        ),
                   ));
             },
             icon: const Icon(Iconsax.user),
@@ -78,71 +76,84 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         child: Column(
           children: [
             Expanded(
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("groups")
-                      .doc(widget.groupRoom.id!)
-                      .collection("messages")
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final List<Message> msgs = snapshot.data!.docs
-                          .map((e) => Message.fromJson(e.data()))
-                          .toList()
-                        ..sort(
-                          (a, b) => b.createdAt!.compareTo(a.createdAt!),
-                        );
-                      if (msgs.isEmpty) {
-                        return Center(
-                          child: GestureDetector(
-                            onTap: () {
-                              FireData().sendGMessage("Assalamu Alaikum👋",
-                                  widget.groupRoom.id!,context, widget.groupRoom,);
-                            },
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "👋",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium,
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    Text(
-                                      "Say Assalamu Alaikum",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
-                                  ],
-                                ),
+              child: messages.when(
+                  data: (msgs) {
+                    if (msgs.isEmpty) {
+                      return Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            ref.read(groupRoomRepoProvider).sendGroupMessage(
+                                Message(toId: "",
+                                    fromId: null,
+                                    msg: "Assalamu Alaikum👋",
+                                    type: "text",
+                                    createdAt: null,
+                                    read: ""),
+
+                                widget.groupRoom.id,);
+
+                            // FireData().sendGMessage(
+                            //   "Assalamu Alaikum👋",
+                            //   widget.groupRoom.id!,
+                            //   context,
+                            //   widget.groupRoom,
+                            // );
+                          },
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "👋",
+                                    style: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .displayMedium,
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  Text(
+                                    "Say Assalamu Alaikum",
+                                    style:
+                                    Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyMedium,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      } else {
-                        return ListView.builder(
-                          reverse: true,
-                          itemCount: msgs.length,
-                          itemBuilder: (context, index) {
-                            return GroupMessageCard(
-                              index: index,
-                              message: msgs[index],
-                            );
-                          },
-                        );
-                      }
+                        ),
+                      );
                     } else {
-                      return Container();
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: msgs.length,
+                        itemBuilder: (context, index) {
+                          return GroupMessageCard(
+                            index: index,
+                            message: msgs[index],
+                          );
+                        },
+                      );
                     }
-                  }),
+                  },
+                  error: (error, stackTrace) {
+                    log(
+                        "Error in the group screen while getting messages: $error");
+                    return const Center(
+                      child: Text("Something went wrong"),
+                    );
+                  },
+                  loading: () =>
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  )),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -185,13 +196,24 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                   IconButton.filled(
                       onPressed: () {
                         if (msgCon.text.isNotEmpty) {
-                          FireData()
-                              .sendGMessage(msgCon.text, widget.groupRoom.id!,context,widget.groupRoom)
-                              .then((value) {
-                            setState(() {
-                              msgCon.text = "";
-                            });
-                          });
+                          ref.read(groupRoomRepoProvider).sendGroupMessage(
+                              Message(toId: "",
+                                  fromId: null,
+                                  msg: msgCon.text,
+                                  type: "text",
+                                  createdAt: null,
+                                  read: ""),
+                              widget.groupRoom.id,);
+
+                          //TODO: Update the messages
+                          // FireData()
+                          //     .sendGMessage(msgCon.text, widget.groupRoom.id!,
+                          //     context, widget.groupRoom)
+                          //     .then((value) {
+                          //   setState(() {
+                          //     msgCon.text = "";
+                          //   });
+                          // });
                         }
                       },
                       icon: const Icon(Iconsax.send_1)),

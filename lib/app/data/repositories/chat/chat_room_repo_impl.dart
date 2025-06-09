@@ -5,7 +5,7 @@ import 'package:chat_app/app/core/services/firebase_service.dart';
 import 'package:chat_app/app/data/models/message_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../domain/repositories/chat_room/chat_room_repo.dart';
+import '../../../domain/repositories/chat/chat_room_repo.dart';
 
 part 'chat_room_repo_impl.g.dart';
 
@@ -79,7 +79,7 @@ class ChatRoomImpl implements ChatRoomRepo {
       await sendMessage(
           Message(msg: imageUrl,
               type: "image",
-              toId: toId,
+              toId: toId, // we can don't need this, but check it later
               fromId: currentId, createdAt: dateTime, read: ''),
           roomId);
     } catch (error) {

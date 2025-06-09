@@ -1,40 +1,32 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app/app/core/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../data/firebase/fire_database.dart';
-import '../../data/firebase/firebase_auth.dart';
-import '../../data/models/user_model.dart';
+import '../provider/contact/contact_home_provider.dart';
 import '../widgets/Contacts/contact_card.dart';
 import '../widgets/floating_action_bottom.dart';
 
-class ContactHomeScreen extends StatefulWidget {
+class ContactHomeScreen extends ConsumerStatefulWidget {
   const ContactHomeScreen({super.key});
 
   @override
-  State<ContactHomeScreen> createState() => _ContactHomeScreenState();
+  ConsumerState<ContactHomeScreen> createState() => _ContactHomeScreenState();
 }
 
-class _ContactHomeScreenState extends State<ContactHomeScreen> {
+class _ContactHomeScreenState extends ConsumerState<ContactHomeScreen> {
   TextEditingController emailCon = TextEditingController();
   TextEditingController searchCon = TextEditingController();
+  final FirebaseService _firebaseService = FirebaseService();
   bool isSearch = false;
   List myContact = [];
 
   Future<void> contactLogic() async {
-    log("Started");
-    if (emailCon.text != "" && emailCon.text != FireAuth.user.email) {
-      await FireData().creatContacts(emailCon.text).then(
-        (value) {
-          setState(() {
-            emailCon.text = "";
-          });
-          Navigator.pop(context);
-        },
-      );
+    if (emailCon.text != "" &&
+        emailCon.text != _firebaseService.auth.currentUser!.email) {
+      ref.read(addContactProvider(emailCon.text));
     } else {
       showDialog(
         context: context,
@@ -62,6 +54,8 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final getContacts = ref.watch(getContactProvider);
+
     return Scaffold(
       floatingActionButton: ActionBottom(
         emailCon: emailCon,
@@ -117,55 +111,31 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
         child: Column(
           children: [
             Expanded(
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-
-                      /// don't forget that this line is the reason for give us only the current user info only
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      myContact = snapshot.data!.data()?["my_users"] ?? [];
-
-                      /// Here we are taking the id from the firebase so we will use it later...
-                      return StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection("users")
-                              .where("id",
-                                  whereIn: myContact.isEmpty ? [""] : myContact)
-                              .snapshots(),
-
-                          /// Here we start using the id that we just taken from the firebase and,
-                          /// than we went to firebase and told him to give us the information about this id
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              final List<UserModel> items = snapshot.data!.docs
-                                  .map((e) => UserModel.fromJson(e.data()))
-                                  .where(
-                                    (element) => element.name!
-                                        .toLowerCase()
-                                        .startsWith(
-                                            searchCon.text.toLowerCase()),
-                                  )
-                                  .toList()
-                                ..sort((a, b) => a.name!.compareTo(b.name!));
-                              return ListView.builder(
-                                  itemCount: items.length,
-                                  itemBuilder: (context, index) {
-                                    return ContactCard(
-                                      user: items[index],
-                                    );
-                                  });
-                            } else {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                          });
-                    } else {
-                      return Container();
-                    }
-                  }),
+              child: getContacts.when(
+                  data: (data) {
+                    final items = data
+                        .where(
+                          (element) => element.name!
+                              .toLowerCase()
+                              .startsWith(searchCon.text.toLowerCase()),
+                        )
+                        .toList()
+                      ..sort((a, b) => a.name!.compareTo(b.name!));
+                    return ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return ContactCard(
+                            user: items[index],
+                          );
+                        });
+                  },
+                  error: (error, stackTrace) {
+                    log("Error in the getContacts method UI: $error");
+                    return const Text("Something went wrong");
+                  },
+                  loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      )),
             ),
           ],
         ),

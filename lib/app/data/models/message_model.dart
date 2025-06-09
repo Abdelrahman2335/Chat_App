@@ -19,7 +19,7 @@ class Message {
     required this.type,
     required this.createdAt,
     required this.read,
-  }) : id = id ?? uuid.v6();
+  }) : id = id ?? uuid.v6() ;
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(

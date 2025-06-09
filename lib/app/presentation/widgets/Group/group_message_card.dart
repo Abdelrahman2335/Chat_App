@@ -3,15 +3,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../../../data/models/message_model.dart';
 import '../../pages/photo_view.dart';
-import '../../provider/provider.dart';
 
-class GroupMessageCard extends StatelessWidget {
+class GroupMessageCard extends ConsumerWidget {
   final Message message;
   final int index;
 
@@ -22,10 +21,10 @@ class GroupMessageCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool isMe = message.fromId == FirebaseAuth.instance.currentUser!.uid;
-    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
-    Color chatColor = isDark ? Colors.white : Colors.black;
+    // bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+    // Color chatColor = isDark ? Colors.white : Colors.black;
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("users")
@@ -92,7 +91,7 @@ class GroupMessageCard extends StatelessWidget {
                                         )
                                       : Text(
                                           message.msg!,
-                                          style: TextStyle(color: chatColor),
+                                          // style: TextStyle(color: chatColor),
                                         ),
                                   const SizedBox(
                                     height: 6,
@@ -122,7 +121,7 @@ class GroupMessageCard extends StatelessWidget {
                                               ),
                                             )
                                             .toString(),
-                                        style: TextStyle(color: chatColor),
+                                        // style: TextStyle(color: chatColor),
                                       ),
                                       const SizedBox(
                                         width: 6,

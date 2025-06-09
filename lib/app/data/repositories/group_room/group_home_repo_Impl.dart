@@ -12,11 +12,9 @@ class GroupHomeRepoImpl implements GroupHomeRepo {
   final FirebaseService _firebaseService = FirebaseService();
   final String currentDate = DateTime.now().millisecondsSinceEpoch.toString();
 
-
   @override
-  Future<void> createGroup(String name, List members) async {
+  Future<void> createGroup(String name, List<String> members) async {
     try {
-
       members.add(_firebaseService.auth.currentUser!.uid);
       GroupRoom groupRoom = GroupRoom(
           name: name,
@@ -26,14 +24,15 @@ class GroupHomeRepoImpl implements GroupHomeRepo {
           members: members,
           lastMessage: "",
           lastMessageTime: currentDate);
-      await _firebaseService.firestore.collection("groups").doc(groupRoom.id).set(groupRoom.toJson());
-
+      await _firebaseService.firestore
+          .collection("groups")
+          .doc(groupRoom.id)
+          .set(groupRoom.toJson());
     } catch (error) {
       log("Error in the createGroup method $error");
       rethrow;
     }
   }
-
 
   @override
   Stream<List<GroupRoom>> getUserGroups() {
@@ -57,6 +56,11 @@ class GroupHomeRepoImpl implements GroupHomeRepo {
     }
   }
 }
+
+//TODO: implement unread messages
+//   @override
+//   Stream<List<Message>> groupCard(GroupRoom room) {
+// }
 
 @riverpod
 GroupHomeRepo groupHomeRepoImpl(ref) {

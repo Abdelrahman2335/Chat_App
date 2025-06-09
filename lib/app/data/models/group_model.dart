@@ -4,12 +4,12 @@ import 'package:uuid/uuid.dart';
 String id = const Uuid().v6();
 
 class GroupRoom {
-  String? id;
-  String? name;
+  String id;
+  String name;
   List? admin;
-  List? members;
+  List members;
   String? image;
-  String? createdAt;
+  String createdAt;
   String? lastMessage;
   String? lastMessageTime;
 

@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:uuid/uuid.dart';
 
-import '../models/group_model.dart';
-import '../models/message_model.dart';
 import '../models/user_model.dart';
 
 ///class named FireData
@@ -16,70 +12,6 @@ class FireData {
   final String now = DateTime.now().millisecondsSinceEpoch.toString();
 
 
-  Future creatContacts(String email) async {
-    QuerySnapshot userEmail = await fireStore
-        .collection("users")
-        .where("email", isEqualTo: email)
-        .get();
-    log(userEmail.docs.isNotEmpty.toString());
-    log(email);
-    if (userEmail.docs.isNotEmpty) {
-      log("${userEmail.docs.isNotEmpty}");
-      String userId = userEmail.docs.first.id;
-    await  fireStore.collection("users").doc(myUid).update({
-        "my_users": FieldValue.arrayUnion([userId])
-
-        ///note that my_users is exist and you can add contacts normally,
-        /// but if it was empty(have no data) you will not see it on the firebase
-      });
-    }
-  }
-
-  Future sendGMessage(
-      String msg, String groupId, BuildContext context, GroupRoom chatGroup,
-      {String? type}) async {
-    List<UserModel> chatUser = [];
-    chatGroup.members =
-        chatGroup.members!.where((element) => element != myUid).toList();
-    fireStore
-        .collection("users")
-        .where("id", whereIn: chatGroup.members)
-        .get()
-        .then((value) => chatUser
-            .addAll(value.docs.map((e) => UserModel.fromJson(e.data()))));
-    String msgId = const Uuid().v6();
-    Message message = Message(
-        id: msgId,
-        toId: "",
-        fromId: myUid,
-        msg: msg,
-        type: type ?? "text",
-        createdAt: now,
-        read: "");
-    await fireStore
-        .collection("groups")
-        .doc(groupId)
-        .collection("messages")
-        .doc(msgId)
-        .set(
-          message.toJson(),
-        )
-        .then((value) {
-      for (var e in chatUser) {
-        sendNotification(
-          chatUser: e,
-          context: context,
-          msg: type ?? msg,
-        );
-      }
-    });
-
-    ///this set is Future so we have to await so we have to use async and also we will make sendMessage Future
-    await fireStore
-        .collection("groups")
-        .doc(groupId)
-        .update({"lastMessage": type ?? msg, "lastMessageTime": now});
-  }
 
   Future readMessage(String roomId, List<String> msgId) async {
     for (String element in msgId) {
