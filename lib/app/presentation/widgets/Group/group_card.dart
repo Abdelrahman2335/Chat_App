@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/models/group_model.dart';
 import '../../../data/models/message_model.dart';
 import 'group_screen.dart';
 
-class GroupCard extends StatelessWidget {
+class GroupCard extends ConsumerWidget {
   final GroupRoom groupRoom;
 
   const GroupCard({
@@ -16,7 +17,7 @@ class GroupCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
         onTap: () => Navigator.push(

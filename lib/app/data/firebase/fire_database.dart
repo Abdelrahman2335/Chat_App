@@ -15,58 +15,6 @@ class FireData {
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
   final String now = DateTime.now().millisecondsSinceEpoch.toString();
 
-  ///anythings in this class named method
-  // Future createRoom(String email) async {
-  //   QuerySnapshot userEmail = await fireStore
-  //       .collection("users")
-  //       .where("email", isEqualTo: email)
-  //       .get();
-  //   if (userEmail.docs.isNotEmpty) {
-  //     String userId = userEmail.docs.first.id;
-  //     List<String> members = [
-  //       myUid,
-  //       userId,
-  //     ]..sort(
-  //         (user1, user2) => user1.compareTo(user2),
-  //
-  //         /// Here we are sorting the users ID
-  //       );
-  //     QuerySnapshot roomExist = await fireStore
-  //         .collection("rooms")
-  //         .where("members", isEqualTo: members)
-  //         .get();
-  //     if (roomExist.docs.isEmpty) {
-  //       /// Check if the room is exist or not if not we will do the follow if yes we will let the user go to the chat or the room
-  //       ChatRoom chatData = ChatRoom(
-  //         id: members.toString(),
-  //         createdAt: now,
-  //         lastMessage: "",
-  //         members: members,
-  //         lastMessageTime: now,
-  //       );
-  //       await fireStore.collection("rooms").doc(members.toString()).set(
-  //             /// we write this peace of code to create collection named "rooms" and inside it we have doc inside it (members).
-  //             chatData.toJson(),
-  //           );
-  //     } else {
-  //       return Container();
-  //     }
-  //   }
-  // }
-  Future createGroup(String name, List members) async {
-    String gId = const Uuid().v6();
-    members.add(myUid);
-    GroupRoom groupRoom = GroupRoom(
-        id: gId,
-        name: name,
-        admin: [myUid],
-        image: "",
-        createdAt: now,
-        members: members,
-        lastMessage: "",
-        lastMessageTime: now);
-    await fireStore.collection("groups").doc(gId).set(groupRoom.toJson());
-  }
 
   Future creatContacts(String email) async {
     QuerySnapshot userEmail = await fireStore
@@ -76,9 +24,9 @@ class FireData {
     log(userEmail.docs.isNotEmpty.toString());
     log(email);
     if (userEmail.docs.isNotEmpty) {
-      log("userEmail.docs.isNotEmpty");
+      log("${userEmail.docs.isNotEmpty}");
       String userId = userEmail.docs.first.id;
-      fireStore.collection("users").doc(myUid).update({
+    await  fireStore.collection("users").doc(myUid).update({
         "my_users": FieldValue.arrayUnion([userId])
 
         ///note that my_users is exist and you can add contacts normally,

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:chat_app/app/data/models/room_model.dart';
 import 'package:chat_app/app/domain/repositories/group/group_home_repo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,17 +12,28 @@ class GroupHomeRepoImpl implements GroupHomeRepo {
   final FirebaseService _firebaseService = FirebaseService();
   final String currentDate = DateTime.now().millisecondsSinceEpoch.toString();
 
-  @override
-  Stream<GroupRoom> groupCard(ChatRoom room) {
-    // TODO: implement chatCard
-    throw UnimplementedError();
-  }
 
   @override
-  Future<void> createGroup(String email) {
-    // TODO: implement createRoom
-    throw UnimplementedError();
+  Future<void> createGroup(String name, List members) async {
+    try {
+
+      members.add(_firebaseService.auth.currentUser!.uid);
+      GroupRoom groupRoom = GroupRoom(
+          name: name,
+          admin: [_firebaseService.auth.currentUser!.uid],
+          image: "",
+          createdAt: currentDate,
+          members: members,
+          lastMessage: "",
+          lastMessageTime: currentDate);
+      await _firebaseService.firestore.collection("groups").doc(groupRoom.id).set(groupRoom.toJson());
+
+    } catch (error) {
+      log("Error in the createGroup method $error");
+      rethrow;
+    }
   }
+
 
   @override
   Stream<List<GroupRoom>> getUserGroups() {

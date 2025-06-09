@@ -1,3 +1,8 @@
+
+import 'package:uuid/uuid.dart';
+
+String id = const Uuid().v6();
+
 class GroupRoom {
   String? id;
   String? name;
@@ -9,7 +14,7 @@ class GroupRoom {
   String? lastMessageTime;
 
   GroupRoom({
-    required this.id,
+    String? id,
     required this.name,
     required this.admin,
     required this.createdAt,
@@ -17,7 +22,7 @@ class GroupRoom {
     required this.image,
     required this.lastMessage,
     required this.lastMessageTime,
-  });
+  }): id = id ?? const Uuid().v6();
 
   factory GroupRoom.fromJson(Map<String, dynamic> json) {
     return GroupRoom(

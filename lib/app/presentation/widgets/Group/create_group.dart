@@ -2,24 +2,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/user_model.dart';
+import '../../provider/group/group_home_provider.dart';
 import '../text_field.dart';
 
-class CreateGroup extends StatefulWidget {
+class CreateGroup extends ConsumerStatefulWidget {
   const CreateGroup({super.key});
 
   @override
-  State<CreateGroup> createState() => _CreateGroupState();
+  ConsumerState<CreateGroup> createState() => _CreateGroupState();
 }
 
-class _CreateGroupState extends State<CreateGroup> {
+class _CreateGroupState extends ConsumerState<CreateGroup> {
   TextEditingController gName = TextEditingController();
   List members = [];
   List myContact = [];
 
+  @override
+  dispose() {
+    gName.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +33,7 @@ class _CreateGroupState extends State<CreateGroup> {
           ? FloatingActionButton.extended(
               onPressed: () {
                 if (gName.text.isNotEmpty) {
-                  FireData()
-                      .createGroup(gName.text, members)
-                      .then((value) => Navigator.pop(context));
+                  ref.read(createGroupProvider(gName: gName.text, members: members));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -93,6 +97,7 @@ class _CreateGroupState extends State<CreateGroup> {
             ),
 
             Expanded(
+              // TODO: Remove the StreamBuilder we don't need live data
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection("users")

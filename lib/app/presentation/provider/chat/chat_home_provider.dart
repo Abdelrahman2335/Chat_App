@@ -21,7 +21,7 @@ Stream<List<ChatRoom>> chatRooms(ref) {
 
 @riverpod
 Future<void> createRoom(ref, String email) async {
-  final repository = ref.watch(chatRepoProvider);
+  final repository = ref.read(chatRepoProvider);
   await repository.createRoom(email);
 }
 
