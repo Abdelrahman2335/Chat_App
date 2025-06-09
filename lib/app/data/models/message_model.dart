@@ -1,7 +1,7 @@
-
 import 'package:uuid/uuid.dart';
 
- Uuid uuid = const Uuid();
+Uuid uuid = const Uuid();
+
 class Message {
   String? id;
   String? toId;
@@ -12,25 +12,24 @@ class Message {
   String? read;
 
   Message({
-     id,
+    String? id,
     required this.toId,
     required this.fromId,
     required this.msg,
     required this.type,
     required this.createdAt,
     required this.read,
-
-  } ): id = uuid.v6();
+  }) : id = id ?? uuid.v6();
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-        id: json["id"] ?? "",
-        toId: json["to_id"],
-        fromId: json["from_id"],
-        msg: json["msg"],
-        type: json["type"],
-        createdAt: json["created_at"],
-        read: json["read"],
+      id: json["id"],
+      toId: json["to_id"],
+      fromId: json["from_id"],
+      msg: json["msg"],
+      type: json["type"],
+      createdAt: json["created_at"],
+      read: json["read"],
     );
   }
 

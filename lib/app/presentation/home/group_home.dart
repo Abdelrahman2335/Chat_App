@@ -1,24 +1,24 @@
+import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../data/models/group_model.dart';
+import '../provider/group/group_home_provider.dart';
 import '../widgets/Group/create_group.dart';
 import '../widgets/Group/group_card.dart';
 
-
-class GroupHomeScreen extends StatefulWidget {
+class GroupHomeScreen extends ConsumerStatefulWidget {
   const GroupHomeScreen({super.key});
 
   @override
-  State<GroupHomeScreen> createState() => _GroupHomeScreenState();
+  ConsumerState<GroupHomeScreen> createState() => _GroupHomeScreenState();
 }
 
-class _GroupHomeScreenState extends State<GroupHomeScreen> {
+class _GroupHomeScreenState extends ConsumerState<GroupHomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final groupRooms = ref.watch(groupRoomsProvider);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -37,30 +37,24 @@ class _GroupHomeScreenState extends State<GroupHomeScreen> {
         child: Column(
           children: [
             Expanded(
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("groups")
-                      .where("members",
-                          arrayContains: FirebaseAuth.instance.currentUser!.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<GroupRoom> items = snapshot.data!.docs.map((e) => GroupRoom.fromJson(e.data())).toList();
-                      return ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          return  GroupCard(groupRoom: items[index],);
-                        },
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }),
-            )
+              child: groupRooms.when(
+                  data: (groupRooms) {
+                    return ListView.builder(
+                      itemCount: groupRooms.length,
+                      itemBuilder: (context, index) => GroupCard(
+                        groupRoom: groupRooms[index],
+                      ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    log("Error in the groupRooms: $error");
+                    return const Center(child: Text("Something went wrong"));
+                  },
+                  loading: () => const Card()),
+            ),
           ],
         ),
       ),
     );
   }
-
 }

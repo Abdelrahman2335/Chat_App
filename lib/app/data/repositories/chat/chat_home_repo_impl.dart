@@ -6,9 +6,10 @@ import 'package:chat_app/app/data/models/user_model.dart';
 import 'package:chat_app/app/domain/repositories/chat_room/chat_home_repo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+
 part 'chat_home_repo_impl.g.dart';
 
-class ChatHomeRepoImpl implements ChatRepo {
+class ChatHomeRepoImpl implements ChatHomeRepo {
   final FirebaseService _firebaseService = FirebaseService();
   final String currentDate = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -71,7 +72,7 @@ class ChatHomeRepoImpl implements ChatRepo {
           .where("members", arrayContains: uid)
           .snapshots()
           .map((snapshot) {
-        final rooms =
+        final List<ChatRoom> rooms =
             snapshot.docs.map((doc) => ChatRoom.fromJson(doc.data())).toList();
         rooms.sort(
           (a, b) => b.lastMessageTime!.compareTo(a.lastMessageTime!),
@@ -91,23 +92,24 @@ class ChatHomeRepoImpl implements ChatRepo {
       String friendId = room.members!
           .where((element) => element != _firebaseService.auth.currentUser!.uid)
           .first;
-     return _firebaseService.firestore
+      return _firebaseService.firestore
           .collection("users")
           .doc(friendId)
-          .snapshots().map((snapshot){
-            final data = UserModel.fromJson(snapshot.data()!);
-            return data;
+          .snapshots()
+          .map((snapshot) {
+        final data = UserModel.fromJson(snapshot.data()!);
+        return data;
       });
-
-
     } catch (error) {
       log("Error in the chatCard method $error");
       rethrow;
     }
   }
+
+
 }
 
 @riverpod
-ChatRepo chatRepo(ref) {
+ChatHomeRepo chatRepo(ref) {
   return ChatHomeRepoImpl();
 }

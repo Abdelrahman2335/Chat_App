@@ -28,6 +28,7 @@ class ChatRoomImpl implements ChatRoomRepo {
       }
       );
 
+
     } catch (error) {
       log("Error in the chat room Impl while getting messages: $error");
       rethrow;

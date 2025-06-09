@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -72,7 +73,10 @@ class FireData {
         .collection("users")
         .where("email", isEqualTo: email)
         .get();
+    log(userEmail.docs.isNotEmpty.toString());
+    log(email);
     if (userEmail.docs.isNotEmpty) {
+      log("userEmail.docs.isNotEmpty");
       String userId = userEmail.docs.first.id;
       fireStore.collection("users").doc(myUid).update({
         "my_users": FieldValue.arrayUnion([userId])
@@ -114,7 +118,11 @@ class FireData {
         )
         .then((value) {
       for (var e in chatUser) {
-        sendNotification(chatUser: e, context: context, msg: type ?? msg,);
+        sendNotification(
+          chatUser: e,
+          context: context,
+          msg: type ?? msg,
+        );
       }
     });
 
@@ -125,13 +133,15 @@ class FireData {
         .update({"lastMessage": type ?? msg, "lastMessageTime": now});
   }
 
-  Future readMessage(String roomId, String msgId) async {
-    await fireStore
-        .collection("rooms")
-        .doc(roomId)
-        .collection("messages")
-        .doc(msgId)
-        .update({"read": now});
+  Future readMessage(String roomId, List<String> msgId) async {
+    for (String element in msgId) {
+      await fireStore
+          .collection("rooms")
+          .doc(roomId)
+          .collection("messages")
+          .doc(element)
+          .update({"read": now});
+    }
   }
 
   deleteMsg(String roomId, List<String> msgs) async {
@@ -182,6 +192,5 @@ class FireData {
   sendNotification(
       {required UserModel chatUser,
       required BuildContext context,
-      required String msg}) async {
-  }
+      required String msg}) async {}
 }

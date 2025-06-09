@@ -12,7 +12,7 @@ import '../../../../main.dart';
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/firebase/fire_storage.dart';
 import '../../../data/models/user_model.dart';
-import '../../pages/date_time.dart';
+import '../../../core/date_time.dart';
 import '../../provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {

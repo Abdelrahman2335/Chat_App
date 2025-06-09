@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class _ContactHomeScreenState extends State<ContactHomeScreen> {
   bool isSearch = false;
   List myContact = [];
 
-  contactLogic() async {
+  Future<void> contactLogic() async {
+    log("Started");
     if (emailCon.text != "" && emailCon.text != FireAuth.user.email) {
       await FireData().creatContacts(emailCon.text).then(
         (value) {

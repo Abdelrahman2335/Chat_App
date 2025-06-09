@@ -28,7 +28,7 @@ class FireAuth {
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)
-        .set(chatUser.tojson());
+        .set(chatUser.toJson());
   }catch(e){
       log(e.toString());
     }

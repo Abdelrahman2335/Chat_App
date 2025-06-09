@@ -39,7 +39,7 @@ class UserModel {
     );
   }
 
-  Map<String, dynamic> tojson() {
+  Map<String, dynamic> toJson() {
     return {
       "id": id,
       "name": name,

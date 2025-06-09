@@ -1,34 +1,33 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:provider/provider.dart';
 
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/group_model.dart';
 import '../../../data/models/message_model.dart';
 
-import '../../provider/provider.dart';
 import 'group_member.dart';
 import 'group_message_card.dart';
 
-class GroupScreen extends StatefulWidget {
+class GroupScreen extends ConsumerStatefulWidget {
   final GroupRoom groupRoom;
 
 
   const GroupScreen({super.key, required this.groupRoom});
 
   @override
-  State<GroupScreen> createState() => _GroupScreenState();
+  ConsumerState<GroupScreen> createState() => _GroupScreenState();
 }
 
-class _GroupScreenState extends State<GroupScreen> {
+class _GroupScreenState extends ConsumerState<GroupScreen> {
   TextEditingController msgCon = TextEditingController();
   List memberList = [];
 
   @override
   Widget build(BuildContext context) {
-    bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
+    // bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -172,10 +171,10 @@ class _GroupScreenState extends State<GroupScreen> {
                           ),
                           border: InputBorder.none,
                           hintText: "Message",
-                          hintStyle: TextStyle(
-                              color: isDark ? Colors.white : Colors.black),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
+                          // hintStyle: TextStyle(
+                          //     color: isDark ? Colors.white : Colors.black),
+                          // contentPadding: const EdgeInsets.symmetric(
+                          //     horizontal: 10, vertical: 10),
                         ),
                       ),
                     ),

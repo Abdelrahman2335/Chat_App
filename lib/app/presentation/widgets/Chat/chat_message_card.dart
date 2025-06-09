@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +8,12 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/message_model.dart';
-import '../../pages/date_time.dart';
+import '../../../core/date_time.dart';
 import '../../pages/photo_view.dart';
 
 class ChatMessageCard extends ConsumerStatefulWidget {
   final int index;
-  final Message messageContent;
+  final List<Message> messageContent;
   final String roomId;
   final bool selected;
 
@@ -30,8 +32,14 @@ class ChatMessageCard extends ConsumerStatefulWidget {
 class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   @override
   void initState() {
-    if (widget.messageContent.toId == FirebaseAuth.instance.currentUser!.uid) {
-      FireData().readMessage(widget.roomId, widget.messageContent.id!);
+
+    if (widget.messageContent[widget.index].toId == FirebaseAuth.instance.currentUser!.uid) {
+      log("read message");
+      log("Message id: ${widget.messageContent.map((e)=> e.id)}");
+      log("Room id: ${widget.roomId}");
+      FireData().readMessage(widget.roomId, widget.messageContent.map((e){
+        return e.id!;
+      }).toList());
     }
     super.initState();
   }
@@ -39,7 +47,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   @override
   Widget build(BuildContext context) {
     bool isMe =
-        widget.messageContent.fromId == FirebaseAuth.instance.currentUser!.uid;
+        widget.messageContent[widget.index].fromId == FirebaseAuth.instance.currentUser!.uid;
     // Color chatColor = isDark ? Colors.white : Colors.black;
     return Container(
       decoration: BoxDecoration(
@@ -73,21 +81,21 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    widget.messageContent.type == "image"
+                    widget.messageContent[widget.index].type == "image"
                         ? GestureDetector(
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PhotoViewScreen(
-                                        image: widget.messageContent.msg!))),
+                                        image: widget.messageContent[widget.index].msg!))),
                             child: CachedNetworkImage(
-                              imageUrl: widget.messageContent.msg!,
+                              imageUrl: widget.messageContent[widget.index].msg!,
                               placeholder: (context, url) =>
                                   const CircularProgressIndicator(),
                             ),
                           )
                         : Text(
-                            widget.messageContent.msg!,
+                            widget.messageContent[widget.index].msg!,
                           ),
                     const SizedBox(
                       height: 6,
@@ -100,7 +108,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
                             ? Icon(
                                 Iconsax.tick_circle,
                                 size: 15,
-                                color: widget.messageContent.read == ""
+                                color: widget.messageContent[widget.index].read == ""
                                     ? Colors.grey
                                     : Colors.blueAccent,
                               )
@@ -108,7 +116,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(MyDateTime.timeByHour(widget.messageContent.createdAt!).toString(),style: Theme.of(context).textTheme.labelSmall,),
+                        Text(MyDateTime.timeByHour(widget.messageContent[widget.index].createdAt!).toString(),style: Theme.of(context).textTheme.labelSmall,),
 
                         const SizedBox(
                           width: 6,

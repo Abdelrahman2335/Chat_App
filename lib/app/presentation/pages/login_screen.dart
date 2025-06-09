@@ -1,12 +1,15 @@
+import 'package:chat_app/app/core/services/firebase_service.dart';
 import 'package:chat_app/app/presentation/pages/setup_profile.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../layout.dart';
 import '../provider/auth/login_provider.dart';
 import '../widgets/text_field.dart';
 import 'forget_password.dart';
+import 'info_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -19,7 +22,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   /// We have to use dispose with any Controller.
   TextEditingController emailCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
-
+  final FirebaseService _firebaseService = FirebaseService();
   @override
   void dispose() {
     emailCon.dispose();
@@ -95,20 +98,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onPressed: () async {
                   await ref
                       .read(loginControllerProvider.notifier)
-                      .login(emailCon.text, passCon.text);
+                      .login(emailCon.text, passCon.text).then((value){
+                    if (_firebaseService.auth.currentUser?.displayName ==
+                        null) {
+                      return const InfoScreen();
+                    } else {
+                      return Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LayOutApp(),
+                          ),
+                              (route) => false);
+                    }
+                  });
 
                   // .then((value) {
-                  // if (FirebaseAuth.instance.currentUser!.displayName ==
-                  // null) {
-                  // return const InfoScreen();
-                  // } else {
-                  // return Navigator.pushAndRemoveUntil(
-                  // context,
-                  // MaterialPageRoute(
-                  // builder: (context) => const LayOutApp(),
-                  // ),
-                  // (route) => false);
-                  // }
+
                   // })
                 },
                 child: const Center(
