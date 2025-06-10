@@ -8,7 +8,7 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/message_model.dart';
-import '../../../core/date_time.dart';
+import '../../../core/custom_data_time.dart';
 import '../../pages/photo_view.dart';
 
 class ChatMessageCard extends ConsumerStatefulWidget {
@@ -116,7 +116,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(MyDateTime.timeByHour(widget.messageContent[widget.index].createdAt!).toString(),style: Theme.of(context).textTheme.labelSmall,),
+                        Text(CustomDateTime.timeByHour(widget.messageContent[widget.index].createdAt!).toString(),style: Theme.of(context).textTheme.labelSmall,),
 
                         const SizedBox(
                           width: 6,

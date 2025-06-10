@@ -12,7 +12,7 @@ import '../../../../main.dart';
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/firebase/fire_storage.dart';
 import '../../../data/models/user_model.dart';
-import '../../../core/date_time.dart';
+import '../../../core/custom_data_time.dart';
 import '../../provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -178,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ListTile(
                   leading: const Icon(Iconsax.timer_1),
                   title: const Text("Joined on"),
-                  subtitle: Text(MyDateTime.dateFormat(createdDate).toString()),
+                  subtitle: Text(CustomDateTime.dateFormat(createdDate).toString()),
                 ),
               ),
               const SizedBox(

@@ -83,14 +83,14 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                         child: GestureDetector(
                           onTap: () {
                             ref.read(groupRoomRepoProvider).sendGroupMessage(
-                                Message(toId: "",
-                                    fromId: null,
-                                    msg: "Assalamu Alaikum👋",
-                                    type: "text",
-                                    createdAt: null,
-                                    read: ""),
+                              Message(toId: "",
+                                  fromId: null,
+                                  msg: "Assalamu Alaikum👋",
+                                  type: "text",
+                                  createdAt: null,
+                                  read: ""),
 
-                                widget.groupRoom.id,);
+                              widget.groupRoom.id,);
 
                             // FireData().sendGMessage(
                             //   "Assalamu Alaikum👋",
@@ -131,16 +131,18 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                         ),
                       );
                     } else {
-                      return ListView.builder(
-                        reverse: true,
-                        itemCount: msgs.length,
-                        itemBuilder: (context, index) {
-                          return GroupMessageCard(
-                            index: index,
-                            message: msgs[index],
-                          );
-                        },
-                      );
+                      return
+                        ListView.builder(
+                          reverse: true,
+                          itemCount: msgs.length,
+                          itemBuilder: (context, index) {
+                            return GroupMessageCard(
+                              index: index,
+                              message: msgs[index], members: widget.groupRoom
+                                .members,
+                            );
+                          },
+                        );
                     }
                   },
                   error: (error, stackTrace) {
@@ -197,13 +199,13 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                       onPressed: () {
                         if (msgCon.text.isNotEmpty) {
                           ref.read(groupRoomRepoProvider).sendGroupMessage(
-                              Message(toId: "",
-                                  fromId: null,
-                                  msg: msgCon.text,
-                                  type: "text",
-                                  createdAt: null,
-                                  read: ""),
-                              widget.groupRoom.id,);
+                            Message(toId: "",
+                                fromId: null,
+                                msg: msgCon.text,
+                                type: "text",
+                                createdAt: null,
+                                read: ""),
+                            widget.groupRoom.id,);
 
                           //TODO: Update the messages
                           // FireData()

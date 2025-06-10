@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/message_model.dart';
 import '../../../data/models/user_model.dart';
-import '../../../core/date_time.dart';
+import '../../../core/custom_data_time.dart';
 import '../../provider/chat/chat_room_provider.dart';
 import 'chat_message_card.dart';
 
@@ -48,7 +48,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             Text(widget.friendData.name!),
             Text(
-              MyDateTime.timeByHour(widget.friendData.lastSeen!).toString(),
+              CustomDateTime.timeByHour(widget.friendData.lastSeen!).toString(),
               style: Theme.of(context).textTheme.labelMedium,
             ),
           ],

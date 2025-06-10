@@ -37,7 +37,7 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
   }
 
   @override
-  Future<List<UserModel>> getGroupMembers(List<String> members) async {
+  Future<List<UserModel>> getGroupMembers(List members) async {
     try {
       if (members.isEmpty) return [];
 
@@ -67,7 +67,7 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
     }
   }
 
-  Future<List<UserModel>> _fetchUserBatch(List<String> ids) async {
+  Future<List<UserModel>> _fetchUserBatch(List ids) async {
     final snapshot = await _firebaseService.firestore
         .collection("users")
         .where("id", whereIn: ids)

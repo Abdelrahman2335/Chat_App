@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/models/room_model.dart';
-import '../../../core/date_time.dart';
+import '../../../core/custom_data_time.dart';
 import '../../provider/chat/chat_home_provider.dart';
 import 'chat_screen.dart';
 
@@ -60,7 +60,7 @@ class ChatCard extends ConsumerWidget {
                               label: Text(counter.toString()),
                               largeSize: 30,
                             )
-                          : Text(MyDateTime.timeByHour(room.lastMessageTime!)
+                          : Text(CustomDateTime.timeByHour(room.lastMessageTime!)
                               .toString());
                 },
                 error: (error, stackTrace) => const Card(),
