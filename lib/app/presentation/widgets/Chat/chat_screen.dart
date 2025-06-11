@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data/firebase/fire_database.dart';
 import '../../../data/models/message_model.dart';
 import '../../../data/models/user_model.dart';
 import '../../../core/custom_data_time.dart';
@@ -69,12 +68,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     if (msgOwner) {
                       return [
                         PopupMenuItem(
+                          // TODO: This function is not working
                           onTap: () {
-                            FireData().deleteMsg(widget.roomId, selectedMsg);
-                            setState(() {
-                              selectedMsg.clear();
-                              copyMsg.clear();
-                            });
+                           ref.read(deleteMessageProvider(widget.roomId, selectedMsg));
+
                           },
                           value: "itemOne",
                           child: const Text("Trash"),

@@ -86,6 +86,54 @@ class ChatRoomImpl implements ChatRoomRepo {
       log("Error in the chat room Impl while sending image: $error");
     }
   }
+
+  @override
+  Future<void> readMessage(String roomId, List<Message> messages) async {
+    if (messages.isEmpty) return;
+
+    final msgIds = messages
+        .where((e) => e.toId == _firebaseService.auth.currentUser!.uid)
+        .map((e) => e.id)
+        .toList();    try {
+      final batch = _firebaseService.firestore.batch();
+      final messagesRef = _firebaseService.firestore
+          .collection("rooms")
+          .doc(roomId)
+          .collection("messages");
+
+      for (final msgId in msgIds) {
+        batch.update(messagesRef.doc(msgId), {"read": dateTime});
+      }
+
+      await batch.commit();
+    } catch (error) {
+      log("[readMessage] Error: $error");
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteMsg(String roomId, List<String> msgIds) async {
+    if (msgIds.isEmpty) return;
+    log("Room id: $roomId");
+    log("Message id: $msgIds");
+    try {
+      final batch = _firebaseService.firestore.batch();
+      final messagesRef = _firebaseService.firestore
+          .collection("rooms")
+          .doc(roomId)
+          .collection("messages");
+
+      for (final msgId in msgIds) {
+        batch.delete(messagesRef.doc(msgId));
+      }
+
+      await batch.commit();
+    } catch (error) {
+      log("[deleteMsg] Error: $error");
+      rethrow;
+    }
+  }
 }
 
 @riverpod

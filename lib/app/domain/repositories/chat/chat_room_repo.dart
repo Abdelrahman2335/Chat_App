@@ -14,4 +14,8 @@ abstract class ChatRoomRepo {
      String? currentId,
      String toId,
   );
+
+  Future<void> readMessage(String roomId, List<Message> messages);
+
+  deleteMsg(String roomId, List<String> msgs) ;
 }

@@ -26,3 +26,15 @@ Future<void> sendImage(ref, File file, String roomId, String? currentId, String 
   final response = ref.watch(chatRoomRepoProvider);
   return response.sendImage(file, roomId, currentId, toId);
 }
+
+@riverpod
+Future<void> readMessage(ref, String roomId, List<Message> msgId) async {
+  final repository = ref.watch(chatRoomRepoProvider);
+  await repository.readMessage(roomId, msgId);
+}
+
+@riverpod
+Future<void> deleteMessage(ref, String roomId, List<String> messageId) async {
+  final repository = ref.watch(chatRoomRepoProvider);
+  await repository.deleteMessage(roomId, messageId);
+}

@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app/app/presentation/provider/chat/chat_room_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../data/firebase/fire_database.dart';
+import '../../../core/services/firebase_service.dart';
 import '../../../data/models/message_model.dart';
 import '../../../core/custom_data_time.dart';
 import '../../pages/photo_view.dart';
@@ -32,22 +32,20 @@ class ChatMessageCard extends ConsumerStatefulWidget {
 class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   @override
   void initState() {
-
-    if (widget.messageContent[widget.index].toId == FirebaseAuth.instance.currentUser!.uid) {
+    ref.read(readMessageProvider(widget.roomId, widget.messageContent));
       log("read message");
       log("Message id: ${widget.messageContent.map((e)=> e.id)}");
       log("Room id: ${widget.roomId}");
-      FireData().readMessage(widget.roomId, widget.messageContent.map((e){
-        return e.id!;
-      }).toList());
-    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
+  final  FirebaseService firebaseService = FirebaseService();
     bool isMe =
-        widget.messageContent[widget.index].fromId == FirebaseAuth.instance.currentUser!.uid;
+        widget.messageContent[widget.index].fromId == firebaseService.auth.currentUser!.uid;
     // Color chatColor = isDark ? Colors.white : Colors.black;
     return Container(
       decoration: BoxDecoration(

@@ -12,31 +12,6 @@ class FireData {
   final String now = DateTime.now().millisecondsSinceEpoch.toString();
 
 
-
-  Future readMessage(String roomId, List<String> msgId) async {
-    for (String element in msgId) {
-      await fireStore
-          .collection("rooms")
-          .doc(roomId)
-          .collection("messages")
-          .doc(element)
-          .update({"read": now});
-    }
-  }
-
-  deleteMsg(String roomId, List<String> msgs) async {
-    for (var element in msgs) {
-      await fireStore
-          .collection("rooms")
-          .doc(roomId)
-          .collection("messages")
-          .doc(element)
-          .delete();
-
-      /// so we can't use msgs directly in the doc because this list and doc will not find list he will find only string
-    }
-  }
-
   Future editGroup(String gId, String name, List members) async {
     await fireStore
         .collection("groups")

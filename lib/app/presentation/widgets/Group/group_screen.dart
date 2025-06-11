@@ -29,7 +29,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
     // bool isDark = Provider.of<ProviderApp>(context).themeMode == ThemeMode.dark;
 
     final groupMembers =
-    ref.read(getGroupMembersProvider(widget.groupRoom.members));
+        ref.read(getGroupMembersProvider(widget.groupRoom.members));
     final messages = ref.watch(getGroupMessagesProvider(widget.groupRoom.id));
 
     return Scaffold(
@@ -41,11 +41,8 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
             groupMembers.when(
               data: (groupMembers) {
                 return Text(
-                  groupMembers.join(", "),
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .labelMedium,
+                  groupMembers.map((e) => e.name).join(', '),
+                  style: Theme.of(context).textTheme.labelMedium,
                 );
               },
               error: (error, stackTrace) {
@@ -61,10 +58,9 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        GroupMemberScreen(
-                          chatMembers: widget.groupRoom,
-                        ),
+                    builder: (context) => GroupMemberScreen(
+                      chatMembers: widget.groupRoom,
+                    ),
                   ));
             },
             icon: const Icon(Iconsax.user),
@@ -77,20 +73,23 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
           children: [
             Expanded(
               child: messages.when(
-                  data: (msgs) {
-                    if (msgs.isEmpty) {
+                  data: (data) {
+                    List<Message> messageContent = data
+                      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+                    if (messageContent.isEmpty) {
                       return Center(
                         child: GestureDetector(
                           onTap: () {
                             ref.read(groupRoomRepoProvider).sendGroupMessage(
-                              Message(toId: "",
-                                  fromId: null,
-                                  msg: "Assalamu Alaikum👋",
-                                  type: "text",
-                                  createdAt: null,
-                                  read: ""),
-
-                              widget.groupRoom.id,);
+                                  Message(
+                                      toId: "",
+                                      fromId: null,
+                                      msg: "Assalamu Alaikum👋",
+                                      type: "text",
+                                      createdAt: null,
+                                      read: ""),
+                                  widget.groupRoom.id,
+                                );
 
                             // FireData().sendGMessage(
                             //   "Assalamu Alaikum👋",
@@ -108,8 +107,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                                 children: [
                                   Text(
                                     "👋",
-                                    style: Theme
-                                        .of(context)
+                                    style: Theme.of(context)
                                         .textTheme
                                         .displayMedium,
                                   ),
@@ -119,10 +117,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                                   Text(
                                     "Say Assalamu Alaikum",
                                     style:
-                                    Theme
-                                        .of(context)
-                                        .textTheme
-                                        .bodyMedium,
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
@@ -131,31 +126,28 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                         ),
                       );
                     } else {
-                      return
-                        ListView.builder(
-                          reverse: true,
-                          itemCount: msgs.length,
-                          itemBuilder: (context, index) {
-                            return GroupMessageCard(
-                              index: index,
-                              message: msgs[index], members: widget.groupRoom
-                                .members,
-                            );
-                          },
-                        );
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: messageContent.length,
+                        itemBuilder: (context, index) {
+                          return GroupMessageCard(
+                            index: index,
+                            message: messageContent[index],
+                            members: widget.groupRoom.members,
+                          );
+                        },
+                      );
                     }
                   },
                   error: (error, stackTrace) {
-                    log(
-                        "Error in the group screen while getting messages: $error");
+                    log("Error in the group screen while getting messages: $error");
                     return const Center(
                       child: Text("Something went wrong"),
                     );
                   },
-                  loading: () =>
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  )),
+                  loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      )),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -199,13 +191,15 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                       onPressed: () {
                         if (msgCon.text.isNotEmpty) {
                           ref.read(groupRoomRepoProvider).sendGroupMessage(
-                            Message(toId: "",
-                                fromId: null,
-                                msg: msgCon.text,
-                                type: "text",
-                                createdAt: null,
-                                read: ""),
-                            widget.groupRoom.id,);
+                                Message(
+                                    toId: "",
+                                    fromId: null,
+                                    msg: msgCon.text,
+                                    type: "text",
+                                    createdAt: null,
+                                    read: ""),
+                                widget.groupRoom.id,
+                              );
 
                           //TODO: Update the messages
                           // FireData()
