@@ -23,7 +23,7 @@ class GroupHomeRepoImpl implements GroupHomeRepo {
           createdAt: currentDate,
           members: members,
           lastMessage: "",
-          lastMessageTime: currentDate);
+          lastMessageTime: "");
       await _firebaseService.firestore
           .collection("groups")
           .doc(groupRoom.id)

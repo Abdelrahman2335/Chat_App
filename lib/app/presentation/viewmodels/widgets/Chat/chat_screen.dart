@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data/models/message_model.dart';
-import '../../../data/models/user_model.dart';
-import '../../../core/custom_data_time.dart';
-import '../../provider/chat/chat_room_provider.dart';
+import '../../../../core/custom_data_time.dart';
+import '../../../../data/models/message_model.dart';
+import '../../../../data/models/user_model.dart';
+import '../../../provider/chat/chat_room_provider.dart';
 import 'chat_message_card.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -28,6 +28,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   List<String> copyMsg = [];
   List<String> senderId = [];
 
+@override
+  initState() {
+
+    ref.read(readMessageProvider(widget.roomId ));
+  super.initState();
+
+}
   @override
   void dispose() {
     super.dispose();
@@ -36,8 +43,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+  final getMessages = ref.watch(getMessagesProvider(widget.roomId));
     bool msgOwner = !senderId.contains(widget.friendData.id);
-    final getMessages = ref.watch(getMessagesProvider(widget.roomId));
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     Color color = isDark ? Colors.white : Colors.black;
     return Scaffold(
@@ -85,7 +92,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               selectedMsg.clear();
                             });
                           },
-                          value: "itemTow",
+                          value: "itemTwo",
                           child: const Text("Copy"),
                         ),
                       ];
@@ -114,7 +121,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: getMessages.when(
+              child:
+              getMessages.when(
                 data: (data) {
                   List<Message> messageContent = data
                     ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
@@ -154,9 +162,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                           ? copyMsg.contains(
                                                   messageContent[index].id)
                                               ? copyMsg.remove(
-                                                  messageContent[index].msg!)
+                                                  messageContent[index].msg)
                                               : copyMsg.add(
-                                                  messageContent[index].msg!)
+                                                  messageContent[index].msg)
                                           : null
 
                                       ///if the type is not text
@@ -184,14 +192,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                       ? copyMsg.contains(
                                               messageContent[index].id)
                                           ? copyMsg.remove(
-                                              messageContent[index].msg!)
+                                              messageContent[index].msg)
                                           : copyMsg
-                                              .add(messageContent[index].msg!)
+                                              .add(messageContent[index].msg)
                                       : null;
                                 });
                               },
                               child: ChatMessageCard(
-                                messageContent: messageContent,
+                                messageContent: messageContent[index],
                                 index: index,
                                 roomId: widget.roomId,
                                 selected: selectedMsg
@@ -206,6 +214,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               await ref.read(sendMessageProvider(
                                       Message(
                                           toId: widget.friendData.id!,
+                                          senderName: null,
                                           fromId: null,
                                           msg: "Assalamu Alaikum 👋",
                                           type: null,
@@ -316,6 +325,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               .read(sendMessageProvider(
                                       Message(
                                           toId: widget.friendData.id!,
+                                          senderName: null,
                                           fromId: null,
                                           msg: msgCon.text,
                                           type: null,

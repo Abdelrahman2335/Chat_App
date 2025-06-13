@@ -1,11 +1,11 @@
 
-import 'package:chat_app/app/presentation/layout.dart';
+import 'package:chat_app/app/presentation/viewmodels/layout.dart';
 import 'package:chat_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../data/firebase/firebase_auth.dart';
+import '../../../data/firebase/firebase_auth.dart';
 import '../widgets/text_field.dart';
 
 class InfoScreen extends StatelessWidget {

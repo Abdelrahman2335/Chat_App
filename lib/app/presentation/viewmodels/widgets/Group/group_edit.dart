@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../data/firebase/fire_database.dart';
-import '../../../data/models/group_model.dart';
-import '../../../data/models/user_model.dart';
+import '../../../../data/firebase/fire_database.dart';
+import '../../../../data/models/group_model.dart';
+import '../../../../data/models/user_model.dart';
 import '../text_field.dart';
 
 
@@ -25,7 +25,7 @@ class _EditGroupState extends State<EditGroup> {
   void initState() {
     super.initState();
     setState(() {
-      gName.text = widget.groupRoom.name!;
+      gName.text = widget.groupRoom.name;
     });
   }
 
@@ -44,7 +44,7 @@ class _EditGroupState extends State<EditGroup> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           FireData()
-              .editGroup(widget.groupRoom.id!, gName.text, members)
+              .editGroup(widget.groupRoom.id, gName.text, members)
               .then((value) => Navigator.pop(context));
         },
         label: const Text("Done"),
@@ -128,7 +128,7 @@ class _EditGroupState extends State<EditGroup> {
                             if (snapshot.hasData) {
                               final List<UserModel> items = snapshot.data!.docs
                                   .map((e) => UserModel.fromJson(e.data()))
-                                  .where((element) => !widget.groupRoom.members!
+                                  .where((element) => !widget.groupRoom.members
                                       .contains(element.id))
                                   .toList()
                                 ..sort((a, b) => a.name!.compareTo(b.name!));

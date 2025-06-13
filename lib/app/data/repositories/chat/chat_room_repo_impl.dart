@@ -39,6 +39,7 @@ class ChatRoomImpl implements ChatRoomRepo {
   @override
   Future<void> sendMessage(Message message, String roomId) async {
     message.fromId ??= _firebaseService.auth.currentUser!.uid;
+    message.senderName ??= _firebaseService.auth.currentUser!.displayName;
     try {
       await _firebaseService.firestore
           .collection("rooms")
@@ -50,7 +51,7 @@ class ChatRoomImpl implements ChatRoomRepo {
           );
 
       await _firebaseService.firestore.collection("rooms").doc(roomId).update({
-        "lastMessage": message.type ?? message.msg,
+        "lastMessage": message.type == "image" ? "image" : message.msg,
         "lastMessageTime": dateTime
       });
     } catch (error) {
@@ -78,6 +79,7 @@ class ChatRoomImpl implements ChatRoomRepo {
 
       await sendMessage(
           Message(msg: imageUrl,
+              senderName: _firebaseService.auth.currentUser!.displayName!,
               type: "image",
               toId: toId, // we can don't need this, but check it later
               fromId: currentId, createdAt: dateTime, read: ''),

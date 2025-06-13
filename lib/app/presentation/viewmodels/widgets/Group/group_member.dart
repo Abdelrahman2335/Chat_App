@@ -2,14 +2,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../data/firebase/fire_database.dart';
-import '../../../data/models/group_model.dart';
-import '../../../data/models/user_model.dart';
+import '../../../../data/firebase/fire_database.dart';
+import '../../../../data/models/group_model.dart';
+import '../../../../data/models/user_model.dart';
 import 'group_edit.dart';
 
-class GroupMemberScreen extends StatefulWidget {
+class GroupMemberScreen extends ConsumerStatefulWidget {
   final GroupRoom chatMembers;
 
   const GroupMemberScreen({
@@ -18,10 +19,10 @@ class GroupMemberScreen extends StatefulWidget {
   });
 
   @override
-  State<GroupMemberScreen> createState() => _GroupMemberScreenState();
+  ConsumerState<GroupMemberScreen> createState() => _GroupMemberScreenState();
 }
 
-class _GroupMemberScreenState extends State<GroupMemberScreen> {
+class _GroupMemberScreenState extends ConsumerState<GroupMemberScreen> {
   @override
   Widget build(BuildContext context) {
     bool isAdmin = widget.chatMembers.admin!
@@ -52,7 +53,7 @@ class _GroupMemberScreenState extends State<GroupMemberScreen> {
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection("users")
-                    .where("id", whereIn: widget.chatMembers.members!)
+                    .where("id", whereIn: widget.chatMembers.members)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -80,12 +81,12 @@ class _GroupMemberScreenState extends State<GroupMemberScreen> {
                                       onPressed: () {
                                         admin
                                             ? FireData().removeAdmin(
-                                                widget.chatMembers.id!,
+                                                widget.chatMembers.id,
                                                 userList[index].id).then((value) => {setState(() {
                                                   widget.chatMembers.admin!.remove(userList[index].id);
                                                 }),})
                                             : FireData().promptAdmin(
-                                                widget.chatMembers.id!,
+                                                widget.chatMembers.id,
                                                 userList[index].id).then((value) => {setState(() {
                                           widget.chatMembers.admin!.add(userList[index].id);
                                         }),});
@@ -98,12 +99,12 @@ class _GroupMemberScreenState extends State<GroupMemberScreen> {
                                       onPressed: () {
                                         FireData()
                                             .removeMember(
-                                                widget.chatMembers.id!,
+                                                widget.chatMembers.id,
                                                 userList[index].id)
                                             .then(
                                               (value) => setState(
                                                 () {
-                                                  widget.chatMembers.members!
+                                                  widget.chatMembers.members
                                                       .remove(
                                                           userList[index].id);
                                                 },

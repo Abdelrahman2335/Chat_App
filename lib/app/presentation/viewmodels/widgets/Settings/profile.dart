@@ -8,12 +8,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../main.dart';
-import '../../../data/firebase/fire_database.dart';
-import '../../../data/firebase/fire_storage.dart';
-import '../../../data/models/user_model.dart';
-import '../../../core/custom_data_time.dart';
-import '../../provider/provider.dart';
+import '../../../../../main.dart';
+import '../../../../core/custom_data_time.dart';
+import '../../../../data/firebase/fire_database.dart';
+import '../../../../data/firebase/fire_storage.dart';
+import '../../../../data/models/user_model.dart';
+import '../../../provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

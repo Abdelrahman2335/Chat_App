@@ -79,8 +79,7 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
   Future<void> sendGroupMessage(Message message, String groupId) async {
     try {
       if (groupId.isEmpty ||
-          message.msg == null ||
-          message.msg!.trim().isEmpty) {
+          message.msg.trim().isEmpty) {
         log("[sendGMessage] Skipped: empty groupId or message");
         log("groupId: $groupId");
         log("message: ${message.msg}");
@@ -90,6 +89,7 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
       message.fromId ??= _firebaseService.auth.currentUser!.uid;
 
       message.createdAt ??= DateTime.now().millisecondsSinceEpoch.toString();
+      message.senderName ??= _firebaseService.auth.currentUser!.displayName!;
       await _firebaseService.firestore
           .collection("groups")
           .doc(groupId)
@@ -101,7 +101,7 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
           .collection("groups")
           .doc(groupId)
           .update({
-        "lastMessage": message.type ?? message.msg,
+        "lastMessage":  message.type == "image" ? "image" : message.msg,
         "lastMessageTime": dateTime
       });
     } catch (error) {
@@ -131,6 +131,7 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
       await sendGroupMessage(
           Message(
               msg: imageUrl,
+              senderName: _firebaseService.auth.currentUser!.displayName!,
               type: "image",
               toId: toId,
               // we can don't need this, but check it later

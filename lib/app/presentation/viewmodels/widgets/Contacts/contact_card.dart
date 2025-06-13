@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../data/models/user_model.dart';
+import '../../../../data/models/user_model.dart';
 
 
 class ContactCard extends StatelessWidget {

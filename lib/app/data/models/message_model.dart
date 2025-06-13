@@ -4,9 +4,10 @@ Uuid uuid = const Uuid();
 
 class Message {
   String? id;
+  String? senderName;
   String? toId;
   String? fromId;
-  String? msg;
+  String msg;
   String? type;
   String? createdAt;
   String? read;
@@ -14,6 +15,7 @@ class Message {
   Message({
     String? id,
     required this.toId,
+    required this.senderName,
     required this.fromId,
     required this.msg,
     required this.type,
@@ -25,6 +27,7 @@ class Message {
     return Message(
       id: json["id"],
       toId: json["to_id"],
+      senderName: json["sender_name"],
       fromId: json["from_id"],
       msg: json["msg"],
       type: json["type"],
@@ -36,6 +39,7 @@ class Message {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
+      "sender_name": senderName,
       "to_id": toId,
       "from_id": fromId,
       "msg": msg,

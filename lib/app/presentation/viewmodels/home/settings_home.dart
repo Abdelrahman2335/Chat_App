@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../data/models/user_model.dart';
+import '../../../data/models/user_model.dart';
 import '../pages/login_screen.dart';
 import '../widgets/Settings/profile.dart';
 

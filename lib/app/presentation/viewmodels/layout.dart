@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../data/firebase/firebase_auth.dart';
+import '../../data/firebase/firebase_auth.dart';
 import 'home/chat_home.dart';
 import 'home/contact_home.dart';
 import 'home/group_home.dart';

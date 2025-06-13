@@ -1,13 +1,13 @@
 import 'package:chat_app/firebase_options.dart';
-import 'package:chat_app/app/presentation/layout.dart';
+import 'package:chat_app/app/presentation/viewmodels/layout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'app/presentation/pages/info_screen.dart';
-import 'app/presentation/pages/login_screen.dart';
 import 'app/presentation/provider/provider.dart';
+import 'app/presentation/viewmodels/pages/info_screen.dart';
+import 'app/presentation/viewmodels/pages/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

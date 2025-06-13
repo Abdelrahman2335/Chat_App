@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../provider/contact/contact_home_provider.dart';
+import '../../provider/contact/contact_home_provider.dart';
 import '../widgets/Contacts/contact_card.dart';
 import '../widgets/floating_action_bottom.dart';
 

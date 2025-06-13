@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../provider/group/group_home_provider.dart';
+import '../../provider/group/group_home_provider.dart';
 import '../widgets/Group/create_group.dart';
 import '../widgets/Group/group_card.dart';
 

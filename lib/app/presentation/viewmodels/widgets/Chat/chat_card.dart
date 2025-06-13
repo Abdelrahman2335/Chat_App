@@ -3,9 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/models/room_model.dart';
-import '../../../core/custom_data_time.dart';
-import '../../provider/chat/chat_home_provider.dart';
+import '../../../../core/custom_data_time.dart';
+import '../../../../data/models/room_model.dart';
+import '../../../provider/chat/chat_home_provider.dart';
 import 'chat_screen.dart';
 
 class ChatCard extends ConsumerWidget {

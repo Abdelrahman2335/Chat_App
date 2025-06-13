@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../provider/chat/chat_home_provider.dart';
+import '../../provider/chat/chat_home_provider.dart';
 import '../widgets/Chat/chat_card.dart';
 import '../widgets/floating_action_bottom.dart';
 

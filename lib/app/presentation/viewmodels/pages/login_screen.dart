@@ -1,12 +1,12 @@
 import 'package:chat_app/app/core/services/firebase_service.dart';
-import 'package:chat_app/app/presentation/pages/setup_profile.dart';
+import 'package:chat_app/app/presentation/viewmodels/pages/setup_profile.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../provider/auth/login_provider.dart';
 import '../layout.dart';
-import '../provider/auth/login_provider.dart';
 import '../widgets/text_field.dart';
 import 'forget_password.dart';
 import 'info_screen.dart';
