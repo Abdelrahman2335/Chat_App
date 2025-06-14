@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../provider/auth/login_provider.dart';
-import '../widgets/text_field.dart';
+import '../widgets/custom_field.dart';
 import 'info_screen.dart';
 import 'login_screen.dart';
 

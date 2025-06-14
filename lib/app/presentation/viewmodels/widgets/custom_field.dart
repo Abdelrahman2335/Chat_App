@@ -6,7 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../provider/ui_state_provider.dart';
 
 
-class CustomField extends ConsumerStatefulWidget {
+class CustomField extends ConsumerWidget {
   const CustomField({
     super.key,
     required this.label,
@@ -23,19 +23,12 @@ class CustomField extends ConsumerStatefulWidget {
   final bool isEmail;
 
   @override
-  ConsumerState<CustomField> createState() => _CustomFieldState();
+  Widget build(BuildContext context,WidgetRef ref) {
+    final hidePass = ref.watch(uiStateNotifier).hidePassword;
 
-
-}
-
-class _CustomFieldState extends ConsumerState<CustomField> {
-
-  @override
-  Widget build(BuildContext context, ) {
-    final hidePass = ref.watch(hidePassProvider);
     return TextFormField(
-      controller: widget.controller,
-      obscureText: widget.secure ? hidePass : false,
+      controller: controller,
+      obscureText: secure ? hidePass : false,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(17),
         focusedBorder: OutlineInputBorder(
@@ -44,21 +37,24 @@ class _CustomFieldState extends ConsumerState<CustomField> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        suffixIcon: widget.secure
+        suffixIcon: secure
             ? IconButton(
-                onPressed: () {
-                  ref.read(hidePassProvider.notifier).toggle();
-                },
-                icon: hidePass
-                    ? const Icon(Iconsax.eye)
-                    : const Icon(Iconsax.eye_slash),
-              )
+          onPressed: () {
+            ref.read(uiStateNotifier.notifier).togglePassword();
+          },
+          icon: hidePass
+              ? const Icon(Iconsax.eye)
+              : const Icon(Iconsax.eye_slash),
+        )
             : const SizedBox(),
-        labelText: widget.label,
-        labelStyle: Theme.of(context).textTheme.labelLarge,
-        prefix: Icon(widget.icon),
+        labelText: label,
+        labelStyle: Theme
+            .of(context)
+            .textTheme
+            .labelLarge,
+        prefix: Icon(icon),
       ),
-      keyboardType: widget.isEmail ? TextInputType.emailAddress : null,
+      keyboardType: isEmail ? TextInputType.emailAddress : null,
     );
   }
 }

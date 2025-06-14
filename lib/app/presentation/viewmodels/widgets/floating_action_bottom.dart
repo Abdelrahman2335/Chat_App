@@ -1,93 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import 'text_field.dart';
+import 'custom_field.dart'; // Renamed for clarity
 
-class ActionBottom extends StatefulWidget {
+class ActionBottom extends StatelessWidget {
   const ActionBottom({
     super.key,
-    required this.emailCon,
+    required this.emailController,
     required this.icon,
-    required this.bottomName,
-    required this.onPressedLogic,
+    required this.buttonLabel,
+    required this.onPressed,
   });
 
-  final TextEditingController emailCon;
+  final TextEditingController emailController;
   final IconData icon;
-  final String bottomName;
-  final Function onPressedLogic;
+  final String buttonLabel;
+  final VoidCallback? onPressed;
 
-  @override
-  State<ActionBottom> createState() => _ActionBottomState();
-}
-
-class _ActionBottomState extends State<ActionBottom> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () {
-        showModalBottomSheet(
-          isScrollControlled: true,
-          context: context,
-          builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.all(20).add(
-                EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
+      onPressed: () => _showBottomSheet(context),
+      child: Icon(icon),
+    );
+  }
 
-                /// Here we are using MediaQuery to push the BottomSheet to the top
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Enter Friend Email",
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        // const Spacer(),
-                        // IconButton.filled(
-                        //   onPressed: () {},
-                        //   icon: const Icon(
-                        //     Iconsax.scan_barcode,
-                        //     size: 22,
-                        //   ),
-                        // )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomField(
-                        label: "Email",
-                        icon: Iconsax.direct,
-                        controller: widget.emailCon),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          backgroundColor: Theme.of(context).colorScheme.primary),
-                    onPressed: () async => await widget.onPressedLogic(),
-                    child: Center(
-                      child: Text(
-                        widget.bottomName,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      ),
-                    ),
-                  ],
-                ),
-            );
-          },
-        );
-      },
-      child: Icon(widget.icon),
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20).add(
+          EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(ctx),
+            const SizedBox(height: 10),
+            CustomField(
+              label: "Email",
+              icon: Iconsax.direct,
+              controller: emailController,
+            ),
+            const SizedBox(height: 16),
+            _buildSubmitButton(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          "Enter Friend Email",
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      onPressed: onPressed,
+      child: Center(
+        child: Text(
+          buttonLabel,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../core/custom_data_time.dart';
+import '../../../../core/utils/custom_data_time.dart';
 import '../../../../data/models/message_model.dart';
 import '../../../../data/models/user_model.dart';
 import '../../../provider/chat/chat_room_provider.dart';

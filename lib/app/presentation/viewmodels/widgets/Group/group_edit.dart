@@ -7,7 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../data/firebase/fire_database.dart';
 import '../../../../data/models/group_model.dart';
 import '../../../../data/models/user_model.dart';
-import '../text_field.dart';
+import '../custom_field.dart';
 
 
 class EditGroup extends StatefulWidget {

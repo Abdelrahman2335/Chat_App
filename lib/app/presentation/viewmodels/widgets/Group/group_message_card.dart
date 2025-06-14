@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/constants/message_constants.dart';
-import '../../../../core/custom_data_time.dart';
+import '../../../../core/utils/custom_data_time.dart';
 import '../../../../core/services/firebase_service.dart';
 import '../../../../data/models/message_model.dart';
 import '../../pages/photo_view.dart';

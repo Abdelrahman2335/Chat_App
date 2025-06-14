@@ -58,10 +58,10 @@ class _ContactHomeScreenState extends ConsumerState<ContactHomeScreen> {
 
     return Scaffold(
       floatingActionButton: ActionBottom(
-        emailCon: emailCon,
+        emailController: emailCon,
         icon: Iconsax.user_add,
-        bottomName: "Add contact",
-        onPressedLogic: contactLogic,
+        buttonLabel: "Add contact",
+        onPressed: contactLogic,
       ),
       appBar: AppBar(
         title: isSearch

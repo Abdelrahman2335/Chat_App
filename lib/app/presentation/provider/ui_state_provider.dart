@@ -1,12 +1,28 @@
+import 'dart:ui';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final hidePassProvider = NotifierProvider<HidePassNotifier, bool>(() => HidePassNotifier());
+import '../../data/models/ui_state_model.dart';
 
-class HidePassNotifier extends Notifier<bool> {
-  @override
-  bool build() => true;
+class UIStateNotifier extends StateNotifier<UIState> {
+  UIStateNotifier() : super(UIState.initial());
 
-  void toggle() => state = !state;
+  void toggleTheme() {
+    state = state.copyWith(isDarkMode: !state.isDarkMode);
+  }
 
-  void set(bool value) => state = value;
+  void toggleColor(Color selectedColor) {
+    state = state.copyWith(color: selectedColor);
+  }
+
+  void setClearText() {}
+
+  void togglePassword() {
+    state = state.copyWith(hidePassword: !state.hidePassword);
+  }
+
 }
+
+final uiStateNotifier = StateNotifierProvider<UIStateNotifier, UIState>((ref) {
+  return UIStateNotifier();
+});

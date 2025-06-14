@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:chat_app/app/core/utils/dialog_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../core/utils/error_mapper.dart';
 import '../../provider/chat/chat_home_provider.dart';
 import '../widgets/Chat/chat_card.dart';
 import '../widgets/floating_action_bottom.dart';
@@ -27,53 +29,27 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final chatRooms = ref.watch(chatRoomsProvider);
-
+    final createRoomState = ref.watch(createRoomProvider(emailCon.text));
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      floatingActionButton: ActionBottom(
-        emailCon: emailCon,
-        icon: Iconsax.message_add,
-        bottomName: "Create Chat",
-        onPressedLogic: () {
-
-          ref.read(createRoomProvider(emailCon.text).future).then((_) {
-            // TODO: navigate to the chat, and try to remove context
-            // emailCon.clear();
-            // Navigator.pop(context);
-          }).catchError((error) {
-            log("Error when create room $error");
-            String errorMessage = "";
-            if (error.toString().contains("Room already exist")) {
-
-              errorMessage = "Room already exist";
-            }
-            if (error.toString().contains("Email not exist")) {
-              errorMessage = "Email not exist";
-            }if (error.toString().contains("You can't chat with yourself")) {
-              errorMessage = "You can't chat with yourself";
-            }
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Error'),
-                  content: Text(errorMessage == ""
-                      ? "Something went wrong"
-                      : errorMessage),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
+      floatingActionButton: createRoomState.isLoading
+          ? const CircularProgressIndicator()
+          : ActionBottom(
+              emailController: emailCon,
+              icon: Iconsax.message_add,
+              buttonLabel: "Create Chat",
+              onPressed: () async {
+                // TODO: navigate to the chat, and try to remove context
+                try {
+                await ref.read(createRoomProvider(emailCon.text).future);
+                log("Pressed");
+                } catch (error) {
+                  String errorMsg = ErrorMap.mapErrorToMessage(error);
+                  log("Error message in the UI: $errorMsg");
+                  showErrorDialog(context, errorMsg);
+                }
               },
-            );
-          });
-        },
-      ),
+            ),
       appBar: AppBar(
         title: const Text("Chats"),
       ),
