@@ -29,12 +29,9 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final chatRooms = ref.watch(chatRoomsProvider);
-    final createRoomState = ref.watch(createRoomProvider(emailCon.text));
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      floatingActionButton: createRoomState.isLoading
-          ? const CircularProgressIndicator()
-          : ActionBottom(
+      floatingActionButton: ActionBottom(
               emailController: emailCon,
               icon: Iconsax.message_add,
               buttonLabel: "Create Chat",
@@ -42,8 +39,14 @@ class _ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
                 // TODO: navigate to the chat, and try to remove context
                 try {
                 await ref.read(createRoomProvider(emailCon.text).future);
+
+                Navigator.of(context).pop();
+
+                emailCon.clear();
                 log("Pressed");
                 } catch (error) {
+
+
                   String errorMsg = ErrorMap.mapErrorToMessage(error);
                   log("Error message in the UI: $errorMsg");
                   showErrorDialog(context, errorMsg);

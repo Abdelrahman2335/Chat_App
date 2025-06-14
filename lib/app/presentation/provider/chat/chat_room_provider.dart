@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -31,7 +32,9 @@ Future<void> readMessage(
   ref,
   String roomId,
 ) async {
-  final List<Message> messages = ref.watch(getMessagesProvider(roomId));
+
+  log("we are in readMessage method");
+  final List<Message> messages = await ref.watch(getMessagesProvider(roomId).future);
   final repository = ref.watch(chatRoomRepoProvider);
   await repository.readMessage(roomId, messages);
 }
