@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,54 +9,35 @@ import '../../../../core/services/firebase_service.dart';
 import '../../../../data/models/message_model.dart';
 import '../../pages/photo_view.dart';
 
-class ChatMessageCard extends ConsumerStatefulWidget {
-  final int index;
-  final Message messageContent;
-  final String roomId;
-  final bool selected;
+class GroupMessageCard extends ConsumerWidget {
+  final Message message;
 
-  const ChatMessageCard({
+  const GroupMessageCard({
     super.key,
-    required this.index,
-    required this.messageContent,
-    required this.roomId,
-    required this.selected,
+    required this.message,
   });
 
   @override
-  ConsumerState<ChatMessageCard> createState() => _ChatMessageCardState();
-}
-
-class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
-  @override
-  void initState() {
-    log("read message");
-    log("Message id: ${widget.messageContent.id}");
-    log("Room id: ${widget.roomId}");
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentUserId = FirebaseService().auth.currentUser!.uid;
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.sizeOf(context).width;
+    final currentUserId = FirebaseService().auth.currentUser?.uid;
 
-    bool isMe = widget.messageContent.fromId == currentUserId;
-    // Color chatColor = isDark ? Colors.white : Colors.black;
-    return Container(
-      decoration: BoxDecoration(
-          color: widget.selected ? Colors.grey : Colors.transparent,
-          borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.symmetric(vertical: 1),
+    if (currentUserId == null) {
+      return const SizedBox.shrink(); // Handle null case gracefully
+    }
+
+    final isMe = message.senderId == currentUserId;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (isMe) _buildEditButton(),
-          _buildMessage(context,isMe, screenWidth),
+          _buildMessageBubble(context, isMe, screenWidth),
         ],
-
       ),
     );
   }
@@ -73,7 +52,8 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
     );
   }
 
-  Widget _buildMessage(BuildContext context, bool isMe, double screenWidth) {
+  Widget _buildMessageBubble(
+      BuildContext context, bool isMe, double screenWidth) {
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -111,7 +91,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
       child: Text(
-        widget.messageContent.senderName ?? 'Unknown',
+        message.senderName ?? 'Unknown',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.primary,
@@ -124,10 +104,10 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
     final messageType = _getMessageType();
 
     switch (messageType) {
-      case MessageType.text:
-        return _buildTextMessage(context);
       case MessageType.image:
         return _buildImageMessage(context);
+      case MessageType.text:
+        return _buildTextMessage(context);
     }
   }
 
@@ -137,7 +117,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: CachedNetworkImage(
-          imageUrl: widget.messageContent.msg,
+          imageUrl: message.messageContent,
           placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(),
           ),
@@ -163,7 +143,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
 
   Widget _buildTextMessage(BuildContext context) {
     return Text(
-      widget.messageContent.msg,
+      message.messageContent,
       style: Theme.of(context).textTheme.bodyMedium,
     );
   }
@@ -181,7 +161,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   }
 
   Widget _buildReadStatus() {
-    final isRead = widget.messageContent.read?.isNotEmpty ?? false;
+    final isRead = message.read?.isNotEmpty ?? false;
     return Icon(
       Iconsax.tick_circle,
       size: MessageConstants.iconSize,
@@ -190,7 +170,7 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   }
 
   Widget _buildTimestamp(BuildContext context) {
-    final timestamp = widget.messageContent.createdAt;
+    final timestamp = message.createdAt;
     if (timestamp == null) return const SizedBox.shrink();
 
     return Text(
@@ -202,15 +182,13 @@ class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
   }
 
   MessageType _getMessageType() {
-    return widget.messageContent.type == "image"
-        ? MessageType.image
-        : MessageType.text;
+    return message.type == "image" ? MessageType.image : MessageType.text;
   }
 
   void _navigateToPhotoView(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PhotoViewScreen(image: widget.messageContent.msg),
+        builder: (context) => PhotoViewScreen(image: message.messageContent),
       ),
     );
   }

@@ -53,4 +53,30 @@ class UserModel {
       "my_users": myUsers,
     };
   }
+
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? about,
+    String? image,
+    String? createdAt,
+    String? lastSeen,
+    String? pushToken,
+    bool? online,
+    List? myUsers,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      about: about ?? this.about,
+      image: image ?? this.image,
+      createdAt: createdAt ?? this.createdAt,
+      lastSeen: lastSeen ?? this.lastSeen,
+      pushToken: pushToken ?? this.pushToken,
+      online: online ?? this.online,
+      myUsers: myUsers ?? this.myUsers,
+    );
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 
+import 'package:chat_app/app/data/firebase/fire_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../main.dart';
 import '../../../../core/utils/custom_data_time.dart';
-import '../../../../data/firebase/fire_database.dart';
 import '../../../../data/firebase/fire_storage.dart';
 import '../../../../data/models/user_model.dart';
 import '../../../provider/provider.dart';
@@ -192,7 +192,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(16)),
                 onPressed: () {
                   if (nameCon.text != "" && aboutCon.text != "") {
-                    FireData().editProfile(nameCon.text, aboutCon.text).then(
+                    FireDatabase().editProfile(nameCon.text, aboutCon.text).then(
                       (value) {
                         setState(() {
                           changeAbout = false;

@@ -1,7 +1,5 @@
-
-import 'package:chat_app/app/presentation/viewmodels/layout.dart';
+import 'package:chat_app/app/presentation/views/layout.dart';
 import 'package:chat_app/main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -13,15 +11,16 @@ class InfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FireAuth fireAuth = FireAuth();
     TextEditingController nameCon = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
+            onPressed: () {
+              fireAuth.signOut();
+            },
             icon: const Icon(Iconsax.logout_1),
           )
         ],
@@ -56,23 +55,15 @@ class InfoScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(16)),
                 onPressed: () async {
                   if (nameCon.text != "".trim()) {
-                    User? user = FirebaseAuth.instance.currentUser!;
-                    try{
-                    await user
-                        .updateDisplayName(nameCon.text)
-                        .then(
-                      (value) async {
-                      await  FireAuth.createUser();
-                        return Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LayOutApp(),
-                            ),
-                            (route) => false);
-                      },
-                    );}catch(e){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to create account or save data: $e")));
-                    }
+                    await fireAuth.updateProfile(name: nameCon.text);
+
+                    fireAuth.createUser().then(
+                          (_) => Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LayOutApp()),
+                              (route) => false),
+                        );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

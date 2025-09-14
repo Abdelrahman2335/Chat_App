@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
@@ -24,14 +26,17 @@ class ChatCard extends ConsumerWidget {
       data: (chatUser) {
         return Card(
           child: ListTile(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatScreen(
-                    friendData: chatUser,
-                    roomId: room.id!,
-                  ),
-                )),
+            onTap: () {
+              log("The Room Id is: ${room.id}");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                      friendData: chatUser,
+                      roomId: room.id!,
+                    ),
+                  ));
+            },
             title: Text(chatUser.name!),
             subtitle: Text(
               room.lastMessage! == "" ? chatUser.about! : room.lastMessage!,
@@ -49,7 +54,7 @@ class ChatCard extends ConsumerWidget {
                   ),
             trailing: unreadMessages.when(
                 data: (counter) {
-             return     room.lastMessage == ""
+                  return room.lastMessage == ""
                       ? const SizedBox()
                       : counter != 0
                           ? Badge(
@@ -60,8 +65,9 @@ class ChatCard extends ConsumerWidget {
                               label: Text(counter.toString()),
                               largeSize: 30,
                             )
-                          : Text(CustomDateTime.timeByHour(room.lastMessageTime!)
-                              .toString());
+                          : Text(
+                              CustomDateTime.timeByHour(room.lastMessageTime!)
+                                  .toString());
                 },
                 error: (error, stackTrace) => const Card(),
                 loading: () => const Card()),

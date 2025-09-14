@@ -12,7 +12,6 @@ import '../../../provider/group/group_room_provider.dart';
 import 'group_member.dart';
 import 'group_message_card.dart';
 
-
 class GroupScreen extends ConsumerStatefulWidget {
   final GroupRoom groupRoom;
 
@@ -23,7 +22,6 @@ class GroupScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupScreenState extends ConsumerState<GroupScreen> {
-
   late final TextEditingController _messageController;
 
   @override
@@ -58,7 +56,8 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    final groupMembers = ref.read(getGroupMembersProvider(widget.groupRoom.members));
+    final groupMembers =
+        ref.read(getGroupMembersProvider(widget.groupRoom.members));
 
     return AppBar(
       title: Column(
@@ -209,8 +208,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
   // Helper methods
   List<Message> _sortMessagesByDate(List<Message> messages) {
     return [...messages]..sort((a, b) =>
-    b.createdAt?.compareTo(a.createdAt ?? DateTime.now().toString()) ?? 0
-    );
+        b.createdAt?.compareTo(a.createdAt ?? DateTime.now().toString()) ?? 0);
   }
 
   bool _canSendMessage() {
@@ -219,10 +217,10 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
 
   Message _createMessage(String content) {
     return Message(
-      toId: "",
+      receiverId: "",
       senderName: null,
-      fromId: null,
-      msg: content,
+      senderId: null,
+      messageContent: content,
       type: "text",
       createdAt: null,
       read: "",
@@ -256,9 +254,9 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
 
   void _sendMessageToGroup(Message message) {
     ref.read(groupRoomRepoProvider).sendGroupMessage(
-      message,
-      widget.groupRoom.id,
-    );
+          message,
+          widget.groupRoom.id,
+        );
   }
 
   void _onEmojiPressed() {

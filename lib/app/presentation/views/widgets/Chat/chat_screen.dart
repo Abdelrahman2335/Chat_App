@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/models/user_model.dart';
@@ -36,9 +38,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
 
     // Initialize chat state
-    WidgetsBinding.instance.addPostFrameCallback((_) async{
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      log("Room Id is: ${widget.roomId}");
       ref.read(chatStateProvider(_chatParams).notifier).initialize();
-    await  ref.read(readMessageProvider(widget.roomId).future);
+      await ref.read(readMessageProvider(widget.roomId).future);
     });
   }
 
@@ -55,7 +58,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     // Listen to chat state changes
     ref.listen<ChatState>(
       chatStateProvider(_chatParams),
-          (previous, next) {
+      (previous, next) {
         _handleStateChanges(previous, next);
       },
     );

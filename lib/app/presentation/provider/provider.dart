@@ -1,7 +1,4 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:chat_app/app/core/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,19 +11,20 @@ class ProviderApp extends StateNotifier<String> {
   ThemeMode themeMode = ThemeMode.system;
   int mainColor = 0xff4050B5;
   UserModel? me;
+  final FirebaseService _firebaseService = FirebaseService();
 
   getUserData() async {
-    String myId = FirebaseAuth.instance.currentUser!.uid;
-    await FirebaseFirestore.instance
+    String myId = _firebaseService.auth.currentUser!.uid;
+    await _firebaseService.firestore
         .collection("users")
         .doc(myId)
         .get()
-        .then((value) => me = UserModel.fromJson(value.data()??{}));
-    FirebaseMessaging.instance.requestPermission();
-    FirebaseMessaging.instance.getToken().then((value) {
+        .then((value) => me = UserModel.fromJson(value.data() ?? {}));
+    _firebaseService.firebaseMessaging.requestPermission();
+    _firebaseService.firebaseMessaging.getToken().then((value) {
       if (value != null) {
         me!.pushToken = value;
-        FireAuth().updateToken(value);
+        FireAuth().updateToken();
       }
     });
   }
@@ -55,5 +53,5 @@ class ProviderApp extends StateNotifier<String> {
   }
 }
 
-final providerApp = StateNotifierProvider<ProviderApp, String>(
-    (ref) => ProviderApp());
+final providerApp =
+    StateNotifierProvider<ProviderApp, String>((ref) => ProviderApp());

@@ -18,7 +18,7 @@ class CreateGroup extends ConsumerStatefulWidget {
 
 class _CreateGroupState extends ConsumerState<CreateGroup> {
   TextEditingController gName = TextEditingController();
-  List members = [];
+  List<String> members = [];
   List myContact = [];
 
   @override

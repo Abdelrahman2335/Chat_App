@@ -20,7 +20,6 @@ class UIStateNotifier extends StateNotifier<UIState> {
   void togglePassword() {
     state = state.copyWith(hidePassword: !state.hidePassword);
   }
-
 }
 
 final uiStateNotifier = StateNotifierProvider<UIStateNotifier, UIState>((ref) {

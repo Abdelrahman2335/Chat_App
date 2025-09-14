@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:chat_app/app/core/constants/message_constants.dart';
+import 'package:chat_app/app/core/services/firebase_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,12 +51,12 @@ class ChatState {
 
 // Chat State Notifier
 class ChatStateNotifier extends StateNotifier<ChatState> {
-  ChatStateNotifier(this._ref, this._roomId, this._friendData) : super(const ChatState());
+  ChatStateNotifier(this._ref, this._roomId, this._friendData)
+      : super(const ChatState());
 
   final Ref _ref;
   final String _roomId;
   final UserModel _friendData;
-
 
   // Initialize chat
   void initialize() {
@@ -74,7 +75,7 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
   // Message selection handling
   void toggleMessageSelection(Message message) {
     final messageId = message.id!;
-    final senderId = message.fromId!;
+    final senderId = message.senderId!;
 
     final newSelectedIds = Set<String>.from(state.selectedMessageIds);
     final newSelectedSenders = Set<String>.from(state.selectedSenderIds);
@@ -86,7 +87,7 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
       newSelectedSenders.remove(senderId);
 
       if (message.type == "text") {
-        newCopiedMessages.remove(message.msg);
+        newCopiedMessages.remove(message.messageContent);
       }
     } else {
       // Add selection
@@ -94,7 +95,7 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
       newSelectedSenders.add(senderId);
 
       if (message.type == "text") {
-        newCopiedMessages.add(message.msg);
+        newCopiedMessages.add(message.messageContent);
       }
     }
 
@@ -120,16 +121,17 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
 
   // Send text message
   Future<void> sendTextMessage() async {
+    final FirebaseService firebaseService = FirebaseService();
     if (state.messageText.trim().isEmpty) return;
 
     state = state.copyWith(isLoading: true, error: null);
 
     try {
       final message = Message(
-        toId: _friendData.id!,
-        senderName: null,
-        fromId: null,
-        msg: state.messageText.trim(),
+        receiverId: _friendData.id!,
+        senderName: firebaseService.auth.currentUser!.displayName,
+        senderId: firebaseService.auth.currentUser!.uid,
+        messageContent: state.messageText.trim(),
         type: 'text',
         createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         read: '',
@@ -150,10 +152,10 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
 
     try {
       final message = Message(
-        toId: _friendData.id!,
+        receiverId: _friendData.id!,
         senderName: null,
-        fromId: null,
-        msg: MessageConstants.welcomeMessage,
+        senderId: null,
+        messageContent: MessageConstants.welcomeMessage,
         type: 'text',
         createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
         read: '',
@@ -199,7 +201,7 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-       _ref.read(
+      _ref.read(
         deleteMessageProvider(_roomId, state.selectedMessageIds.toList()),
       );
       clearSelection();
@@ -231,8 +233,9 @@ class ChatStateNotifier extends StateNotifier<ChatState> {
 }
 
 // Provider for ChatStateNotifier
-final chatStateProvider = StateNotifierProvider.family<ChatStateNotifier, ChatState, ChatParams>(
-      (ref, params) => ChatStateNotifier(ref, params.roomId, params.friendData),
+final chatStateProvider =
+    StateNotifierProvider.family<ChatStateNotifier, ChatState, ChatParams>(
+  (ref, params) => ChatStateNotifier(ref, params.roomId, params.friendData),
 );
 
 // Parameters class for the provider
@@ -258,7 +261,8 @@ class ChatParams {
 }
 
 // Additional providers for specific functionality
-final sortedMessagesProvider = Provider.family<List<Message>, String>((ref, roomId) {
+final sortedMessagesProvider =
+    Provider.family<List<Message>, String>((ref, roomId) {
   final messages = ref.watch(getMessagesProvider(roomId));
   return messages.when(
     data: (data) {
@@ -272,7 +276,8 @@ final sortedMessagesProvider = Provider.family<List<Message>, String>((ref, room
 });
 
 // Provider for checking if a message is selected
-final isMessageSelectedProvider = Provider.family<bool, MessageSelectionParams>((ref, params) {
+final isMessageSelectedProvider =
+    Provider.family<bool, MessageSelectionParams>((ref, params) {
   final chatState = ref.watch(chatStateProvider(params.chatParams));
   return chatState.selectedMessageIds.contains(params.messageId);
 });

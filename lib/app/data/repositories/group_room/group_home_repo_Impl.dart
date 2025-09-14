@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:chat_app/app/domain/repositories/group/group_home_repo.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/services/firebase_service.dart';
 import '../../models/group_model.dart';
-
-part 'group_home_repo_Impl.g.dart';
+part 'group_home_repo_impl.g.dart';
 
 class GroupHomeRepoImpl implements GroupHomeRepo {
   final FirebaseService _firebaseService = FirebaseService();
@@ -63,6 +63,6 @@ class GroupHomeRepoImpl implements GroupHomeRepo {
 // }
 
 @riverpod
-GroupHomeRepo groupHomeRepoImpl(ref) {
+GroupHomeRepo groupHomeRepoImpl(Ref ref) {
   return GroupHomeRepoImpl();
 }

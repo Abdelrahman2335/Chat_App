@@ -14,34 +14,34 @@ part 'chat_home_provider.g.dart';
 FirebaseService firebaseService = FirebaseService();
 
 @riverpod
-Stream<List<ChatRoom>> chatRooms(ref) {
+Stream<List<ChatRoom>> chatRooms(Ref ref) {
   final repository = ref.watch(chatRepoProvider);
   return repository.getUserChatRooms();
 }
 
 @riverpod
-Future<void> createRoom(ref, String email) async {
+Future<void> createRoom(Ref ref, String email) async {
   final repository = ref.read(chatRepoProvider);
   await repository.createRoom(email);
 }
 
 @riverpod
-Stream<UserModel> chatCard(ref, ChatRoom room) {
+Stream<UserModel> chatCard(Ref ref, ChatRoom room) {
   final repository = ref.watch(chatRepoProvider);
   return repository.chatCard(room);
 }
 
 @riverpod
- Future<int> unReadMessages(Ref ref, String roomId) async {
+Future<int> unReadMessages(Ref ref, String roomId) async {
   final repository = ref.watch(getMessagesProvider(roomId));
-  int counter =  repository.value?.where((element) {
-   if(element.fromId != firebaseService.auth.currentUser!.uid){
-     return element.read == '';
-   }else{
-     return false;
-   }
-
-  }).length ?? 0;
+  int counter = repository.value?.where((element) {
+        if (element.senderId != firebaseService.auth.currentUser!.uid) {
+          return element.read == '';
+        } else {
+          return false;
+        }
+      }).length ??
+      0;
   log("Note counter is: $counter");
   return counter;
 }

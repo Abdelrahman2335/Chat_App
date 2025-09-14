@@ -1,5 +1,5 @@
 import 'package:chat_app/app/core/services/firebase_service.dart';
-import 'package:chat_app/app/presentation/viewmodels/pages/setup_profile.dart';
+import 'package:chat_app/app/presentation/views/pages/setup_profile.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,10 +1,10 @@
 
+import 'package:chat_app/app/data/firebase/fire_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../data/firebase/fire_database.dart';
 import '../../../../data/models/group_model.dart';
 import '../../../../data/models/user_model.dart';
 import '../custom_field.dart';
@@ -43,7 +43,7 @@ class _EditGroupState extends State<EditGroup> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          FireData()
+          FireDatabase()
               .editGroup(widget.groupRoom.id, gName.text, members)
               .then((value) => Navigator.pop(context));
         },

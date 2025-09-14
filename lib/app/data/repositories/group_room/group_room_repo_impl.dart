@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:chat_app/app/data/models/message_model.dart';
 import 'package:chat_app/app/data/models/user_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/services/firebase_service.dart';
 import '../../../domain/repositories/group/group_room_repo.dart';
+part 'group_room_repo_impl.g.dart';
 
 class GroupRoomRepoImpl implements GroupRoomRepo {
   final FirebaseService _firebaseService = FirebaseService();
@@ -78,15 +79,14 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
   @override
   Future<void> sendGroupMessage(Message message, String groupId) async {
     try {
-      if (groupId.isEmpty ||
-          message.msg.trim().isEmpty) {
+      if (groupId.isEmpty || message.messageContent.trim().isEmpty) {
         log("[sendGMessage] Skipped: empty groupId or message");
         log("groupId: $groupId");
-        log("message: ${message.msg}");
+        log("message: ${message.messageContent}");
         return;
       }
 
-      message.fromId ??= _firebaseService.auth.currentUser!.uid;
+      message.senderId ??= _firebaseService.auth.currentUser!.uid;
 
       message.createdAt ??= DateTime.now().millisecondsSinceEpoch.toString();
       message.senderName ??= _firebaseService.auth.currentUser!.displayName!;
@@ -101,7 +101,8 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
           .collection("groups")
           .doc(groupId)
           .update({
-        "lastMessage":  message.type == "image" ? "image" : message.msg,
+        "lastMessage":
+            message.type == "image" ? "image" : message.messageContent,
         "lastMessageTime": dateTime
       });
     } catch (error) {
@@ -130,12 +131,12 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
 
       await sendGroupMessage(
           Message(
-              msg: imageUrl,
+              messageContent: imageUrl,
               senderName: _firebaseService.auth.currentUser!.displayName!,
               type: "image",
-              toId: toId,
+              receiverId: toId,
               // we can don't need this, but check it later
-              fromId: currentId,
+              senderId: currentId,
               createdAt: dateTime,
               read: ''),
           groupId);
@@ -145,5 +146,5 @@ class GroupRoomRepoImpl implements GroupRoomRepo {
   }
 }
 
-Provider<GroupRoomRepo> groupRoomRepoProvider =
-    Provider((ref) => GroupRoomRepoImpl());
+@riverpod
+GroupRoomRepo groupRoomRepo(ref) => GroupRoomRepoImpl();

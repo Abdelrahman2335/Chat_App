@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,36 +11,52 @@ import '../../../../core/services/firebase_service.dart';
 import '../../../../data/models/message_model.dart';
 import '../../pages/photo_view.dart';
 
+class ChatMessageCard extends ConsumerStatefulWidget {
+  final int index;
+  final Message messageContent;
+  final String roomId;
+  final bool selected;
 
-
-class GroupMessageCard extends ConsumerWidget {
-  final Message message;
-
-  const GroupMessageCard({
+  const ChatMessageCard({
     super.key,
-    required this.message,
+    required this.index,
+    required this.messageContent,
+    required this.roomId,
+    required this.selected,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatMessageCard> createState() => _ChatMessageCardState();
+}
 
+class _ChatMessageCardState extends ConsumerState<ChatMessageCard> {
+  @override
+  void initState() {
+    log("read message");
+    log("Message id: ${widget.messageContent.id}");
+    log("Room id: ${widget.roomId}");
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUserId = FirebaseService().auth.currentUser!.uid;
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final currentUserId = FirebaseService().auth.currentUser?.uid;
 
-    if (currentUserId == null) {
-      return const SizedBox.shrink(); // Handle null case gracefully
-    }
-
-    final isMe = message.fromId == currentUserId;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+    bool isMe = widget.messageContent.senderId == currentUserId;
+    // Color chatColor = isDark ? Colors.white : Colors.black;
+    return Container(
+      decoration: BoxDecoration(
+          color: widget.selected ? Colors.grey : Colors.transparent,
+          borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (isMe) _buildEditButton(),
-          _buildMessageBubble(context, isMe, screenWidth),
+          _buildMessage(context, isMe, screenWidth),
         ],
       ),
     );
@@ -54,14 +72,14 @@ class GroupMessageCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildMessageBubble(BuildContext context, bool isMe, double screenWidth) {
-
+  Widget _buildMessage(BuildContext context, bool isMe, double screenWidth) {
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(isMe ? MessageConstants.borderRadius : 0),
-          bottomRight: Radius.circular(isMe ? 0 : MessageConstants.borderRadius),
+          bottomRight:
+              Radius.circular(isMe ? 0 : MessageConstants.borderRadius),
           topLeft: const Radius.circular(MessageConstants.borderRadius),
           topRight: const Radius.circular(MessageConstants.borderRadius),
         ),
@@ -92,11 +110,11 @@ class GroupMessageCard extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
       child: Text(
-        message.senderName ?? 'Unknown',
+        widget.messageContent.senderName ?? 'Unknown',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.primary,
+            ),
       ),
     );
   }
@@ -105,10 +123,10 @@ class GroupMessageCard extends ConsumerWidget {
     final messageType = _getMessageType();
 
     switch (messageType) {
+      case MessageType.text:
+        return _buildTextMessage(context);
       case MessageType.image:
         return _buildImageMessage(context);
-      case MessageType.text:
-      return _buildTextMessage(context);
     }
   }
 
@@ -118,7 +136,7 @@ class GroupMessageCard extends ConsumerWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: CachedNetworkImage(
-          imageUrl: message.msg,
+          imageUrl: widget.messageContent.messageContent,
           placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(),
           ),
@@ -144,7 +162,7 @@ class GroupMessageCard extends ConsumerWidget {
 
   Widget _buildTextMessage(BuildContext context) {
     return Text(
-      message.msg,
+      widget.messageContent.messageContent,
       style: Theme.of(context).textTheme.bodyMedium,
     );
   }
@@ -162,7 +180,7 @@ class GroupMessageCard extends ConsumerWidget {
   }
 
   Widget _buildReadStatus() {
-    final isRead = message.read?.isNotEmpty ?? false;
+    final isRead = widget.messageContent.read?.isNotEmpty ?? false;
     return Icon(
       Iconsax.tick_circle,
       size: MessageConstants.iconSize,
@@ -171,25 +189,28 @@ class GroupMessageCard extends ConsumerWidget {
   }
 
   Widget _buildTimestamp(BuildContext context) {
-    final timestamp = message.createdAt;
+    final timestamp = widget.messageContent.createdAt;
     if (timestamp == null) return const SizedBox.shrink();
 
     return Text(
       CustomDateTime.timeByHour(timestamp).toString(),
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-        color: Colors.grey[600],
-      ),
+            color: Colors.grey[600],
+          ),
     );
   }
 
   MessageType _getMessageType() {
-    return message.type == "image" ? MessageType.image : MessageType.text;
+    return widget.messageContent.type == "image"
+        ? MessageType.image
+        : MessageType.text;
   }
 
   void _navigateToPhotoView(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PhotoViewScreen(image: message.msg),
+        builder: (context) =>
+            PhotoViewScreen(image: widget.messageContent.messageContent),
       ),
     );
   }

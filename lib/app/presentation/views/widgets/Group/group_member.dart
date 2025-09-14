@@ -1,11 +1,11 @@
 
+import 'package:chat_app/app/data/firebase/fire_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../data/firebase/fire_database.dart';
 import '../../../../data/models/group_model.dart';
 import '../../../../data/models/user_model.dart';
 import 'group_edit.dart';
@@ -80,12 +80,12 @@ class _GroupMemberScreenState extends ConsumerState<GroupMemberScreen> {
                                   ? IconButton(
                                       onPressed: () {
                                         admin
-                                            ? FireData().removeAdmin(
+                                            ? FireDatabase().removeAdmin(
                                                 widget.chatMembers.id,
                                                 userList[index].id).then((value) => {setState(() {
                                                   widget.chatMembers.admin!.remove(userList[index].id);
                                                 }),})
-                                            : FireData().promptAdmin(
+                                            : FireDatabase().promptAdmin(
                                                 widget.chatMembers.id,
                                                 userList[index].id).then((value) => {setState(() {
                                           widget.chatMembers.admin!.add(userList[index].id);
@@ -97,7 +97,7 @@ class _GroupMemberScreenState extends ConsumerState<GroupMemberScreen> {
                               isAdmin && myId != userList[index].id
                                   ? IconButton(
                                       onPressed: () {
-                                        FireData()
+                                        FireDatabase()
                                             .removeMember(
                                                 widget.chatMembers.id,
                                                 userList[index].id)
